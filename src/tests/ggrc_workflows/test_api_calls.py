@@ -10,7 +10,7 @@ from unittest import TestCase
 import os
 from ggrc import db
 from ggrc.app import app
-from ggrc_workflows.models import Workflow, TaskGroup
+from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask, Cycle
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
@@ -68,14 +68,30 @@ class TestWorkflowsApi(TestCase):
     response, wf = self.generator.activate_workflow(wf)
 
   def test_one_time_workflow_edits(self):
-
-    _, wf = self.generator.generate_workflow(self.one_time_workflow_1)
+    wf_dict = copy.deepcopy(self.one_time_workflow_1)
+    _, wf = self.generator.generate_workflow(wf_dict)
 
     wf_dict = {"title": "modified one time wf"}
-    _, modified_wf = self.generator.modify_workflow(wf, data=wf_dict)
+    self.generator.modify_workflow(wf, data=wf_dict)
 
-    self.generator.generate_cycle(modified_wf)
-    self.generator.activate_workflow(modified_wf)
+    modified_wf = db.session.query(Workflow).filter(Workflow.id == wf.id).one()
+    self.assertEqual(wf_dict["title"], modified_wf.title)
+
+  def test_one_time_wf_activate(self):
+    wf_dict = copy.deepcopy(self.one_time_workflow_1)
+    _, wf = self.generator.generate_workflow(wf_dict)
+    self.generator.generate_cycle(wf)
+    self.generator.activate_workflow(wf)
+
+    tasks = [len(tg.get("task_group_tasks", [])) * max(1, len(tg.get("task_group_objects", [])))
+             for tg in self.one_time_workflow_1["task_groups"]]
+
+    cycle_tasks = db.session.query(CycleTaskGroupObjectTask).join(
+      Cycle).join(Workflow).filter(Workflow.id == wf.id).all()
+    active_wf = db.session.query(Workflow).filter(Workflow.id == wf.id).one()
+
+    self.assertEqual(sum(tasks), len(cycle_tasks))
+    self.assertEqual(active_wf.status, "Active")
 
   def create_test_cases(self):
     self.weekly_wf_1 = {
