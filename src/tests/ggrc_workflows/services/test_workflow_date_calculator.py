@@ -8,9 +8,10 @@ from tests.ggrc import TestCase
 from ggrc_workflows.services.workflow_date_calculator import WorkflowDateCalculator
 from ggrc_workflows.models import *
 from ggrc.models import *
+from nose.plugins.skip import SkipTest
 
+@SkipTest
 class BaseWorkflowDateCalculator(TestCase):
-  SQLALCHEMY_DATABASE_URI = "sqlite://"
 
   def setUp(self):
     pass
