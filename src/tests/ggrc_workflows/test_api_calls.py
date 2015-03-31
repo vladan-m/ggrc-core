@@ -3,23 +3,22 @@
 # Created By: miha@reciprocitylabs.com
 # Maintained By: miha@reciprocitylabs.com
 
-import logging
 import random
 import copy
 from unittest import TestCase
 
-import sys, os
+import os
 from ggrc import db
 from ggrc.app import app
 from ggrc_workflows.models import Workflow, TaskGroup
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
-from nose.plugins.skip import SkipTest
 
 
 if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
+
 
 class TestWorkflowsApi(TestCase):
 
@@ -29,7 +28,7 @@ class TestWorkflowsApi(TestCase):
     self.generator = WorkflowsGenerator()
     self.ggrc_generator = GgrcGenerator()
 
-    self.random_objects = [] # self.generator.generate_random_objects()
+    self.random_objects = self.generator.generate_random_objects()
     self.create_test_cases()
 
   def tearDown(self):

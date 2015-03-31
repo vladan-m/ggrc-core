@@ -3,11 +3,8 @@
 # Created By: miha@reciprocitylabs.com
 # Maintained By: miha@reciprocitylabs.com
 
-import ggrc_workflows
-from ggrc.services.common import Resource
 from datetime import date
 from ggrc import db
-from ggrc.app import app
 from ggrc import builder
 from ggrc_workflows.models import (Workflow, TaskGroup, TaskGroupTask,
                                    TaskGroupObject, Cycle)
@@ -76,15 +73,15 @@ class WorkflowsGenerator(Generator):
     obj_name = "task_group_task"
 
     tgt = TaskGroupTask(
-      task_group_id= task_group.id,
-      context_id= task_group.context.id,
-      title= "tgt " + self.random_str(),
-      start_date= default_start,
-      end_date= default_end,
-      relative_start_day= random.randrange(1, day_range),
-      relative_start_month= random.randrange(1, 12),
-      relative_end_day= random.randrange(1, day_range),
-      relative_end_month= random.randrange(1, 12),
+      task_group_id=task_group.id,
+      context_id=task_group.context.id,
+      title="tgt " + self.random_str(),
+      start_date=default_start,
+      end_date=default_end,
+      relative_start_day=random.randrange(1, day_range),
+      relative_start_month=random.randrange(1, 12),
+      relative_end_day=random.randrange(1, day_range),
+      relative_end_month=random.randrange(1, 12),
       contact_id=1
     )
     obj_dict = self.obj_to_dict(tgt, obj_name)
@@ -101,10 +98,10 @@ class WorkflowsGenerator(Generator):
     obj_name = "task_group_object"
 
     tgo = TaskGroupObject(
-      object_id = obj.id,
-      object = obj,
-      task_group_id = task_group.id,
-      context_id = task_group.context.id
+      object_id=obj.id,
+      object=obj,
+      task_group_id=task_group.id,
+      context_id=task_group.context.id
     )
     obj_dict = self.obj_to_dict(tgo, obj_name)
 
@@ -135,7 +132,6 @@ class WorkflowsGenerator(Generator):
 
     return self.generate(Cycle, obj_name, obj_dict)
 
-
   def activate_workflow(self, workflow):
     db.session.add(workflow)
     return self.modify_workflow(workflow, {
@@ -159,4 +155,3 @@ class WorkflowsGenerator(Generator):
     response, workflow = self.modify(wf, obj_name, default)
 
     return response, workflow
-
