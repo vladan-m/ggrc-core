@@ -5,11 +5,10 @@
 
 import random
 import copy
-from unittest import TestCase
+from tests.ggrc import TestCase
 
 import os
 from ggrc import db
-from ggrc.app import app
 from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask, Cycle
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
@@ -23,7 +22,6 @@ if os.environ.get('TRAVIS', False):
 class TestWorkflowsApi(TestCase):
 
   def setUp(self):
-    app.config["SERVER_NAME"] = "localhost"
     self.api = Api()
     self.generator = WorkflowsGenerator()
     self.ggrc_generator = GgrcGenerator()
@@ -32,7 +30,7 @@ class TestWorkflowsApi(TestCase):
     self.create_test_cases()
 
   def tearDown(self):
-    app.config.pop("SERVER_NAME")
+    pass
 
   def test_create_workflows(self):
     wf_dict = copy.deepcopy(self.one_time_workflow_1)
@@ -92,6 +90,20 @@ class TestWorkflowsApi(TestCase):
 
     self.assertEqual(sum(tasks), len(cycle_tasks))
     self.assertEqual(active_wf.status, "Active")
+
+  def test_delete_calls(self):
+    _, workflow = self.generator.generate_workflow()
+    self.generator.generate_task_group(workflow)
+    _, task_group = self.generator.generate_task_group(workflow)
+    task_groups = db.session.query(TaskGroup).filter(TaskGroup.workflow_id == workflow.id).all()
+    self.assertEqual(len(task_groups), 2)
+
+    response = self.generator.api.delete(task_group, task_group.id)
+    self.assert200(response)
+
+    task_groups = db.session.query(TaskGroup).filter(TaskGroup.workflow_id == workflow.id).all()
+    self.assertEqual(len(task_groups), 1)
+
 
   def create_test_cases(self):
     self.weekly_wf_1 = {

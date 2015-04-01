@@ -36,6 +36,7 @@ class TestCase(BaseTestCase):
     #   self.testbed.deactivate()
 
   def create_app(self):
+    app.config["SERVER_NAME"] = "localhost"
     app.testing = True
     app.debug = False
     return app
