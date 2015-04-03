@@ -13,218 +13,121 @@ from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask,
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
+from nose.plugins.skip import SkipTest
 
 
 if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
 
 
-class TestWorkflowsApi(TestCase):
+class TestWorkflowsApiPost(TestCase):
 
   def setUp(self):
     self.api = Api()
-    self.generator = WorkflowsGenerator()
-    self.ggrc_generator = GgrcGenerator()
-
-    self.random_objects = self.generator.generate_random_objects()
-    self.create_test_cases()
 
   def tearDown(self):
     pass
 
-  def test_create_workflows(self):
-    wf_dict = copy.deepcopy(self.one_time_workflow_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
-    self.assertIsInstance(wf, Workflow)
+  def test_send_invalid_data(self):
+    data = self.get_workflow_dict()
+    del data["workflow"]["title"]
+    del data["workflow"]["context"]
+    response = self.api.post(Workflow, data)
+    self.assert400(response)
 
-    task_groups = db.session.query(TaskGroup)\
-        .filter(TaskGroup.workflow_id == wf.id).all()
+  def test_create_one_time_workflows(self):
+    data = self.get_workflow_dict()
+    response = self.api.post(Workflow, data)
+    self.assertEqual(response.status_code, 201)
 
-    self.assertEqual(len(task_groups),
-                     len(self.one_time_workflow_1["task_groups"]))
+  def test_create_weekly_workflows(self):
+    data = self.get_workflow_dict()
+    data["workflow"]["frequency"] = "weekly"
+    data["workflow"]["title"] = "Weekly"
+    response = self.api.post(Workflow, data)
+    self.assertEqual(response.status_code, 201)
 
-  def test_weekly_workflows(self):
-    wf_dict = copy.deepcopy(self.weekly_wf_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
-    self.assertIsInstance(wf, Workflow)
+  def test_create_monthly_workflows(self):
+    data = self.get_workflow_dict()
+    data["workflow"]["frequency"] = "monthly"
+    data["workflow"]["title"] = "Monthly"
+    response = self.api.post(Workflow, data)
+    self.assertEqual(response.status_code, 201)
 
-    task_groups = db.session.query(TaskGroup)\
-        .filter(TaskGroup.workflow_id == wf.id).all()
+  def test_create_quarterly_workflows(self):
+    data = self.get_workflow_dict()
+    data["workflow"]["frequency"] = "quarterly"
+    data["workflow"]["title"] = "Quarterly"
+    response = self.api.post(Workflow, data)
+    self.assertEqual(response.status_code, 201)
 
-    self.assertEqual(len(task_groups),
-                     len(self.weekly_wf_1["task_groups"]))
+  def test_create_annually_workflows(self):
+    data = self.get_workflow_dict()
+    data["workflow"]["frequency"] = "annually"
+    data["workflow"]["title"] = "Annually"
+    response = self.api.post(Workflow, data)
+    self.assertEqual(response.status_code, 201)
 
-  def test_activate_one_time_wf(self):
-    wf_dict = copy.deepcopy(self.one_time_workflow_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
-    self.assertIsInstance(wf, Workflow)
-    task_groups = db.session.query(TaskGroup)\
-        .filter(TaskGroup.workflow_id == wf.id).all()
-    self.assertEqual(len(task_groups),
-                     len(self.one_time_workflow_1["task_groups"]))
+  def test_create_task_group(self):
+    wf_data = self.get_workflow_dict()
+    wf_data["workflow"]["title"] = "Create_task_group"
+    wf_response = self.api.post(Workflow, wf_data)
 
-    response, wf = self.generator.activate_workflow(wf)
+    wf = wf_response.json["workflow"]
+    data = self.get_task_group_dict(wf)
 
-  def test_one_time_workflow_edits(self):
-    wf_dict = copy.deepcopy(self.one_time_workflow_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
+    response = self.api.post(TaskGroup, data)
+    self.assertEqual(response.status_code, 201)
 
-    wf_dict = {"title": "modified one time wf"}
-    self.generator.modify_workflow(wf, data=wf_dict)
+  @SkipTest
+  def test_create_task_group_invalid_workflow_data(self):
+    wf = {"id": -1, "context": {"id": -1}}
+    data = self.get_task_group_dict(wf)
 
-    modified_wf = db.session.query(Workflow).filter(Workflow.id == wf.id).one()
-    self.assertEqual(wf_dict["title"], modified_wf.title)
+    response = self.api.post(TaskGroup, data)
+    self.assert400(response)
 
-  def test_one_time_wf_activate(self):
-    wf_dict = copy.deepcopy(self.one_time_workflow_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
-    self.generator.generate_cycle(wf)
-    self.generator.activate_workflow(wf)
-
-    tasks = [len(tg.get("task_group_tasks", [])) * max(1, len(tg.get("task_group_objects", [])))
-             for tg in self.one_time_workflow_1["task_groups"]]
-
-    cycle_tasks = db.session.query(CycleTaskGroupObjectTask).join(
-      Cycle).join(Workflow).filter(Workflow.id == wf.id).all()
-    active_wf = db.session.query(Workflow).filter(Workflow.id == wf.id).one()
-
-    self.assertEqual(sum(tasks), len(cycle_tasks))
-    self.assertEqual(active_wf.status, "Active")
-
-  def test_delete_calls(self):
-    _, workflow = self.generator.generate_workflow()
-    self.generator.generate_task_group(workflow)
-    _, task_group = self.generator.generate_task_group(workflow)
-    task_groups = db.session.query(TaskGroup).filter(TaskGroup.workflow_id == workflow.id).all()
-    self.assertEqual(len(task_groups), 2)
-
-    response = self.generator.api.delete(task_group, task_group.id)
-    self.assert200(response)
-
-    task_groups = db.session.query(TaskGroup).filter(TaskGroup.workflow_id == workflow.id).all()
-    self.assertEqual(len(task_groups), 1)
-
-
-  def create_test_cases(self):
-    self.weekly_wf_1 = {
-      "title": "weekly thingy",
-      "description": "start this many a time",
-      "frequency": "weekly",
-      "task_groups": [{
-          "title": "tg_2",
-          "task_group_tasks": [{
-              "description": self.generator.random_str(100),
-              "relative_end_day": 1,
-              "relative_end_month": None,
-              "relative_start_day": 5,
-              "relative_start_month": None,
-            }, {
-              "title": "monday task",
-              "relative_end_day": 1,
-              "relative_end_month": None,
-              "relative_start_day": 1,
-              "relative_start_month": None,
-            }, {
-              "title": "weekend task",
-              "relative_end_day": 4,
-              "relative_end_month": None,
-              "relative_start_day": 1,
-              "relative_start_month": None,
-            },
-          ],
-          "task_group_objects": self.random_objects
-        },
-      ]
-    }
-
-    self.one_time_workflow_1 = {
-      "title": "one time wf test",
-      "description": "some test workflow",
-      "task_groups": [{
-          "title": "tg_1",
-          "task_group_tasks": [{}, {}, {}]
-        }, {
-          "title": "tg_2",
-          "task_group_tasks": [{
-              "description": self.generator.random_str(100)
-            }, {}
-          ],
-          "task_group_objects": self.random_objects[:2]
-        }, {
-          "title": "tg_3",
-          "task_group_tasks": [{
-              "title": "simple task 1",
-              "description": self.generator.random_str(100)
-            }, {
-              "title": self.generator.random_str(),
-              "description": self.generator.random_str(100)
-            }, {
-              "title": self.generator.random_str(),
-              "description": self.generator.random_str(100)
-            }
-          ],
-          "task_group_objects": self.random_objects
+  def get_workflow_dict(self):
+    data = {
+        "workflow": {
+            "custom_attribute_definitions": [],
+            "custom_attributes": {},
+            "title": "One_time",
+            "description": "",
+            "frequency": "one_time",
+            "notify_on_change": False,
+            "task_group_title": "Task Group 1",
+            "notify_custom_message": "",
+            "owners": None,
+            "context": None,
         }
-      ]
     }
-    self.one_time_workflow_2 = {
-      "title": "test_wf_title",
-      "description": "some test workflow",
-      "task_groups": [{
-        "title": "tg_1",
-        "task_group_tasks": [{}, {}, {}]
-      },
-        {"title": "tg_2",
-         "task_group_tasks": [{
-           "description": self.generator.random_str(100)
-            },
-           {}
-         ],
-         "task_group_objects": self.random_objects[:2]
-         },
-        {"title": "tg_3",
-         "task_group_tasks": [{
-           "title": "simple task 1",
-           "description": self.generator.random_str(100)
-         }, {
-           "title": self.generator.random_str(),
-           "description": self.generator.random_str(100)
-         }, {
-           "title": self.generator.random_str(),
-           "description": self.generator.random_str(100)
-         }],
-         "task_group_objects": []
-         }
-      ]
-    }
+    return data
 
-    self.monthly_workflow_1 = {
-      "title": "monthly test wf",
-      "description": "start this many a time",
-      "frequency": "monthly",
-      "task_groups": [
-        {"title": "tg_2",
-         "task_group_tasks": [{
-             "description": self.generator.random_str(100),
-             "relative_end_day": 1,
-             "relative_end_month": None,
-             "relative_start_day": 5,
-             "relative_start_month": None,
+  def get_task_group_dict(self, wf):
+    data = {
+        "task_group": {
+            "custom_attribute_definitions": [],
+            "custom_attributes": {},
+            "_transient": {},
+            "contact": {
+                "id": 1,
+                "href": "/api/people/1",
+                "type": "Person"
             },
-            {"title": "monday task",
-             "relative_end_day": 1,
-             "relative_end_month": None,
-             "relative_start_day": 1,
-             "relative_start_month": None,
-             },
-            {"title": "weekend task",
-             "relative_end_day": 4,
-             "relative_end_month": None,
-             "relative_start_day": 1,
-             "relative_start_month": None,
-             },
-          ],
-         "task_group_objects": self.random_objects
-         },
-      ]
+            "workflow": {
+                "id": wf["id"],
+                "href": "/api/workflows/%d" % wf["id"],
+                "type": "Workflow"
+            },
+            "context": {
+                "id": wf["context"]["id"],
+                "href": "/api/contexts/%d" % wf["context"]["id"],
+                "type": "Context"
+            },
+            "modal_title": "Create Task Group",
+            "title": "Create_task_group",
+            "description": "",
+        }
     }
+    return data
