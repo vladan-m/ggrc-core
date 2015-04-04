@@ -13,6 +13,7 @@ from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask,
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
+from nose.plugins.skip import SkipTest
 
 from ggrc_workflows import start_recurring_cycles
 
@@ -20,6 +21,7 @@ if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
 
 
+@SkipTest
 class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):

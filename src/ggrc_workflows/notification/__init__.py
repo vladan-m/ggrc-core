@@ -13,7 +13,7 @@ from sqlalchemy import inspect
 
 import ggrc_workflows.models as models
 from ggrc.services.common import Resource
-from ggrc.models import NotificationConfig
+from ggrc.models import Notification, NotificationType, NotificationConfig
 from ggrc_basic_permissions.models import Role, UserRole
 from ggrc import db
 from ggrc import settings
@@ -28,6 +28,8 @@ def handle_workflow_put(sender, obj=None, src=None, service=None):
 
 @Resource.model_posted.connect_via(models.Cycle)
 def handle_cycle_post(sender, obj=None, src=None, service=None):
-  pass
+
+  import ipdb; ipdb.set_trace()
+
 
 
