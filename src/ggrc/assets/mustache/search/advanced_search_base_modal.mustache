@@ -36,6 +36,7 @@
 
 <div class="results">
   <!-- list Header -->
+  {{log .}}
   <ul class="new-tree multitype-tree">
     <li class="tree-item object-filter">
       <div class="item-main">
@@ -54,6 +55,7 @@
                 </div>
 
                 <div class="span2 spinner-place-holder">
+                  <span {{attach_spinner '{ "radius": 5, "length": 5, "width": 3 }' 'display:inline-block; margin: 15px;' }}></span>
                 </div>
 
               </div>
