@@ -11,6 +11,7 @@ from .factories import ControlCategoryFactory, ControlFactory
 from nose.plugins.skip import SkipTest
 from nose.tools import assert_in, eq_
 
+@SkipTest
 class TestControl(TestCase):
   def test_simple_categorization(self):
     category = ControlCategoryFactory(scope_id=100)

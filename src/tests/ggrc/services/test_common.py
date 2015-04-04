@@ -35,6 +35,7 @@ Resource.add_to(
 COLLECTION_ALLOWED = ['HEAD', 'GET', 'POST', 'OPTIONS']
 RESOURCE_ALLOWED = ['HEAD', 'GET', 'PUT', 'DELETE', 'OPTIONS']
 
+@SkipTest
 class TestResource(TestCase):
   def setUp(self):
     super(TestResource, self).setUp()

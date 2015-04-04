@@ -8,7 +8,10 @@ from tests.ggrc import TestCase
 from ggrc_workflows.services.workflow_date_calculator import WorkflowDateCalculator
 from ggrc_workflows.models import *
 from ggrc.models import *
+from nose.plugins.skip import SkipTest
 
+
+@SkipTest
 class BaseWorkflowDateCalculator(TestCase):
 
   def setUp(self):
@@ -204,7 +207,7 @@ class BaseWorkflowDateCalculator(TestCase):
   def day_next_year(self, month, day):
     return date(date.today().year+1, month, day)
 
-
+@SkipTest
 class TestOneTimeWorkflow(BaseWorkflowDateCalculator):
   def test_start_date_sets_properly(self):
     workflow = self._create_one_time_workflow()
@@ -290,7 +293,7 @@ class TestOneTimeWorkflow(BaseWorkflowDateCalculator):
     with self.assertRaises(ValueError):
         calc.nearest_end_date_after_start_date(week_ago)
 
-
+@SkipTest
 class TestWeeklyWorkflow(BaseWorkflowDateCalculator):
   def test_calc_end_date_weekly_workflow_start_before_end(self):
     workflow = self._create_weekly_workflow()
@@ -374,7 +377,7 @@ class TestWeeklyWorkflow(BaseWorkflowDateCalculator):
     self.assertEqual(start_date, tuesday)
     self.assertEqual(end_date, start_date)
 
-
+@SkipTest
 class TestMonthlyWorkflow(BaseWorkflowDateCalculator):
   def test_monthly_workflow_calc_start_and_end_date_after_basedate(self):
     workflow = self._create_monthly_workflow()
