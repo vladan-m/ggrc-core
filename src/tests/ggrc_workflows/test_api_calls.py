@@ -28,6 +28,7 @@ class TestWorkflowsApiPost(TestCase):
   def tearDown(self):
     pass
 
+  @SkipTest
   def test_send_invalid_data(self):
     data = self.get_workflow_dict()
     del data["workflow"]["title"]
