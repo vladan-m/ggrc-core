@@ -21,3 +21,13 @@ from ggrc.login import get_current_user
 
 
 
+@Resource.model_put.connect_via(models.Workflow)
+def handle_workflow_put(sender, obj=None, src=None, service=None):
+  pass
+
+
+@Resource.model_posted.connect_via(models.Cycle)
+def handle_cycle_post(sender, obj=None, src=None, service=None):
+  pass
+
+

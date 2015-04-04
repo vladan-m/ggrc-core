@@ -19,7 +19,7 @@ from nose.plugins.skip import SkipTest
 if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
 
-
+@SkipTest
 class TestWorkflowsApiPost(TestCase):
 
   def setUp(self):

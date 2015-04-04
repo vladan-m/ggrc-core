@@ -616,8 +616,7 @@ def handle_cycle_put(
 
 # Check if workflow should be Inactive after recurrence change
 @Resource.model_put.connect_via(models.Workflow)
-def handle_workflow_put(
-    sender, obj=None, src=None, service=None):
+def handle_workflow_put(sender, obj=None, src=None, service=None):
   update_workflow_state(obj)
 
 @Resource.model_posted.connect_via(models.CycleTaskEntry)
@@ -872,3 +871,4 @@ ROLE_CONTRIBUTIONS = WorkflowRoleContributions()
 ROLE_DECLARATIONS = WorkflowRoleDeclarations()
 ROLE_IMPLICATIONS = WorkflowRoleImplications()
 
+import ggrc_workflows.notification
