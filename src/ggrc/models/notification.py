@@ -1,7 +1,7 @@
-# Copyright (C) 2014 Google Inc., authors, and contributors <see AUTHORS file>
+# Copyright (C) 2015 Google Inc., authors, and contributors <see AUTHORS file>
 # Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
 # Created By: mouli@meics.org
-# Maintained By: dan@reciprocitylabs.com
+# Maintained By: miha@reciprocitylabs.com
 
 """
  GGRC notification SQLAlchemy layer data model extensions
@@ -54,10 +54,12 @@ class Notification(Base, db.Model):
       db.Integer, db.ForeignKey('object_types.id'), nullable=False)
   notification_type_id = db.Column(
       db.Integer, db.ForeignKey('notification_types.id'), nullable=False)
-
-  notification_type = db.relationship(
-      'notification_types', foreign_keys='Notification.notification_type_id')
   sent_at = db.Column(db.DateTime, nullable=True)
   template = db.Column(db.String, nullable=False)
   custom_mesdb = db.Column(db.Text, nullable=True)
   force_notifications = db.Column(db.Boolean, nullable=True)
+
+  object_type = db.relationship(
+      'ObjectType', foreign_keys='Notification.object_type_id')
+  notification_type = db.relationship(
+      'NotificationType', foreign_keys='Notification.notification_type_id')

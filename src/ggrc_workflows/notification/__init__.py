@@ -28,6 +28,7 @@ def handle_workflow_put(sender, obj=None, src=None, service=None):
 
 @Resource.model_posted.connect_via(models.Cycle)
 def handle_cycle_post(sender, obj=None, src=None, service=None):
+  obj_type = db.session.query(ObjectType).filter(ObjectType.name == 'Cycle')
 
   import ipdb; ipdb.set_trace()
 

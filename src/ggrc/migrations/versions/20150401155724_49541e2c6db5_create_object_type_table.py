@@ -25,6 +25,10 @@ def upgrade():
       sa.Column('id', sa.Integer(), nullable=False),
       sa.Column('name', sa.String(length=250), nullable=False),
       sa.Column('description', sa.String(length=250), nullable=True),
+      sa.Column('created_at', sa.DateTime(), nullable=True),
+      sa.Column('modified_by_id', sa.Integer(), nullable=True),
+      sa.Column('updated_at', sa.DateTime(), nullable=True),
+      sa.Column('context_id', sa.Integer(), nullable=True),
       sa.PrimaryKeyConstraint('id')
   )
   op.create_index('object_types_name', 'object_types', ['name'], unique=True)

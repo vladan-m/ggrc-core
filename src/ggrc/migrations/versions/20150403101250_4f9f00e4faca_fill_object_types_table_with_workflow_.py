@@ -22,6 +22,10 @@ def upgrade():
       column('id', sa.Integer),
       column('name', sa.String),
       column('description', sa.Text),
+      column('created_at', sa.DateTime),
+      column('modified_by_id', sa.Integer),
+      column('updated_at', sa.DateTime),
+      column('context_id', sa.Integer),
   )
 
   op.bulk_insert(
