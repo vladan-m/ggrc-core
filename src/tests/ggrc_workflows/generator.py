@@ -156,7 +156,7 @@ class WorkflowsGenerator(Generator):
 
     return response, workflow
 
-  def modify_cycle_task_group_object_task(self, obj, data{}):
+  def modify_cycle_task_group_object_task(self, obj, data={}):
 
     obj_name = "cycle_task_group_object_task"
 

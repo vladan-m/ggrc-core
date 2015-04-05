@@ -34,7 +34,7 @@ class NotificationServices():
 
   def call_service(self, name, pn):
     service = self.get_service_function(name)
-    service(pn.object_id)
+    return service(pn)
 
 services = NotificationServices()
 
@@ -43,20 +43,21 @@ def get_pending_notifications():
   pending_notifications = db.session.query(Notification).filter(
       Notification.sent_at == None).all()
 
-  agrigate_data = {
-    "tasks": defaultdict(list)
+  aggregate_data = {
+    "assigned_tasks": defaultdict(list),
+    "due_tasks": defaultdict(list),
+    "workflow_owners": defaultdict(list),
   }
 
   for pn in pending_notifications:
-    import ipdb; ipdb.set_trace()
     data = services.call_service(pn.object_type.name, pn)
 
-    for email, person_tasks in data["tasks"]:
-      aggrigate_data[email] += person_tasks
+    for data_type in data.keys():
+      for email, person_tasks in data[data_type].items():
+        aggregate_data[data_type][email] += person_tasks
 
+  return aggregate_data
 
-
-  pass
 
 def dispatch_notifications():
   pass

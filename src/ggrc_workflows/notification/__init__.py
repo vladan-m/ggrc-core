@@ -5,7 +5,7 @@
 
 
 from datetime import timedelta
-from datetime import datetime
+from datetime import datetime, date
 from math import floor
 from collections import defaultdict
 
@@ -56,21 +56,23 @@ def register_listeners():
       db.session.add(notification)
 
 
-def get_cycle_notification_data(cycle_id):
+def get_cycle_notification_data(notification):
+  end_delta = timedelta(notification.notification_type.advance_notice_end)
+
+  cycle_id = notification.object_id
   cycle = db.session.query(Cycle).filter(Cycle.id == cycle_id).one()
   tasks = defaultdict(list)
+  due_tasks = defaultdict(list)
   for task in cycle.cycle_task_group_object_tasks:
     tasks[task.contact.email].append(task.__dict__)
+    if date.today() + end_delta >= task.end_date:
+      due_tasks[task.contact.email].append(task.__dict__)
 
-  owners = [{"name": person.name,
-             "email": person.email}
-            for person in cycle.workflow.people]
+  owners = {"mail": cycle.workflow.__dict__}
 
-  import ipdb
-  ipdb.set_trace()
-
-  return {"tasks": tasks,
-          "owners": owners
+  return {"assigned_tasks": tasks,
+          "due_tasks": due_tasks,
+          "workflow_owners": owners
           }
 
 

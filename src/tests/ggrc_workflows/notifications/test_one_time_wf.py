@@ -40,9 +40,11 @@ class TestOneTimeWorkflowNotification(TestCase):
     pass
 
   def test_one_time_wf_activate(self):
+    def get_person(person_id):
+      return db.session.query(Person).filter(Person.id == person_id).one()
 
-    person_1 = self.random_people[0].id
-    person_2 = self.random_people[1].id
+
+
 
     with freeze_time("2015-04-10"):
       wf_dict = copy.deepcopy(self.one_time_workflow_1)
@@ -53,28 +55,30 @@ class TestOneTimeWorkflowNotification(TestCase):
 
       notifications = notification.get_pending_notifications()
 
-      self.assertEqual(len(notifications[person_1.email]["assigned_tasks"]), 2)
-      self.assertEqual(len(notifications[person_2.email]["assigned_tasks"]), 2)
+      person_1 = get_person(self.random_people[0].id)
+      person_2 = get_person(self.random_people[1].id)
+
+      self.assertEqual(len(notifications["assigned_tasks"][person_1.email]), 3)
+      self.assertEqual(len(notifications["assigned_tasks"][person_2.email]), 2)
 
     with freeze_time("2015-05-03"): # two days befor due date
       notifications = notification.get_pending_notifications()
-      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 0)
-      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+      self.assertEqual(len(notifications["due_tasks"][person_1.email]), 0)
+      self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
 
     with freeze_time("2015-05-04"): # one day befor due date
       notifications = notification.get_pending_notifications()
-      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 2)
-      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+      self.assertEqual(len(notifications["due_tasks"][person_1.email]), 2)
+      self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
 
     with freeze_time("2015-05-05"): # due date
       notifications = notification.get_pending_notifications()
 
-      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 2)
-      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+      self.assertEqual(len(notifications["due_tasks"][person_1.email]), 2)
+      self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
 
 
     # person_1 and person_2 should have 2 notifications for tasks
-    # import ipdb; ipdb.set_trace()
 
 
 

@@ -42,7 +42,8 @@ class NotificationType(Base, db.Model):
 
   name = db.Column(db.String, nullable=False)
   description = db.Column(db.String, nullable=True)
-  advance_notice = db.Column(db.DateTime, nullable=True)
+  advance_notice_start = db.Column(db.DateTime, nullable=True)
+  advance_notice_end = db.Column(db.DateTime, nullable=True)
   template = db.Column(db.String, nullable=True)
 
 
