@@ -6,6 +6,7 @@
 from datetime import date, timedelta
 from ggrc.services.common import Resource
 from ggrc.models import *
+from ggrc_basic_permissions.models import *
 from ggrc.app import app
 from ggrc import db
 from tests.ggrc.api_helper import Api
@@ -27,7 +28,7 @@ class Generator():
     if not end or start > end:
       end = start + timedelta(days=7)
     return start + timedelta(
-      seconds=random.randint(0, int((end - start).total_seconds())))
+        seconds=random.randint(0, int((end - start).total_seconds())))
 
   def get_object(self, obj_class, obj_id):
     try:
@@ -60,10 +61,10 @@ class Generator():
     obj = obj_class(title=self.random_str())
     obj_dict = self.obj_to_dict(obj, obj_name)
     obj_dict[obj_name].update({"owners": [{
-          "id": 1,
-          "href": "/api/people/1",
-          "type": "Person"
-        }]})
+        "id": 1,
+        "href": "/api/people/1",
+        "type": "Person"
+    }]})
     obj_dict[obj_name].update(data)
     return self.generate(obj_class, obj_name, obj_dict)
 
@@ -78,34 +79,78 @@ class Generator():
         random_objects.append(obj)
     return random_objects
 
+
 class GgrcGenerator(Generator):
 
   def generate_policy(self, data={}):
     obj_name = "policy"
     default = {
-      obj_name: {
-        "title": "policy " + self.random_str(),
-        "custom_attribute_definitions": [],
-        "custom_attributes": {},
-        "kind": "",
-        "notes": "",
-        "status": "Draft",
-        "url": "",
-        "end_date": "",
-        "description": "",
-        "context": None,
-        "contact": {
-          "id": 1,
-          "href": "/api/people/1",
-          "type": "Person"
-        },
-        "owners": [{
-          "id": 1,
-          "href": "/api/people/1",
-          "type": "Person"
-        }],
-      }
+        obj_name: {
+            "title": "policy " + self.random_str(),
+            "custom_attribute_definitions": [],
+            "custom_attributes": {},
+            "kind": "",
+            "notes": "",
+            "status": "Draft",
+            "url": "",
+            "end_date": "",
+            "description": "",
+            "context": None,
+            "contact": {
+                "id": 1,
+                "href": "/api/people/1",
+                "type": "Person"
+            },
+            "owners": [{
+                "id": 1,
+                "href": "/api/people/1",
+                "type": "Person"
+            }],
+        }
     }
     default[obj_name].update(data)
 
     return self.generate(Policy, obj_name, default)
+
+  def generate_user_role(self, person, role):
+    data = {
+        "user_role": {
+            "context": None,
+            "person": {
+                "href": "/api/person/%d" % person.id,
+                "id": person.id,
+                "type": "Person"
+            },
+            "role": {
+                "href": "/api/roles/%d" % role.id,
+                "id": role.id,
+                "type": "Role"
+            }
+        }
+    }
+    return self.generate(UserRole, "user_role", data)
+
+  def generate_person(self, data={}, user_role=None):
+    obj_name = 'person'
+    default = {
+        obj_name: {
+            "context": None,
+            "name": self.random_str(chars=string.ascii_letters),
+            "email": "%s@%s.%s" % (
+                self.random_str(chars=string.ascii_letters),
+                self.random_str(chars=string.ascii_letters),
+                self.random_str(length=3, chars=string.ascii_letters),
+            ),
+            "is_enabled": True
+        }
+    }
+
+    default[obj_name].update(data)
+
+    response, person = self.generate(Person, obj_name, default)
+
+    if user_role:
+      role = db.session.query(Role).filter(Role.name == user_role).first()
+      self.generate_user_role(person, role)
+
+    return response, person
