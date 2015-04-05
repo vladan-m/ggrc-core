@@ -6,6 +6,7 @@
 
 from datetime import timedelta
 from datetime import datetime
+from collections import defaultdict
 from math import floor
 
 from flask import current_app, request
