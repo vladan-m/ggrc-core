@@ -26,8 +26,8 @@ def upgrade():
       sa.Column('id', sa.Integer(), nullable=False),
       sa.Column('name', sa.String(length=250), nullable=False),
       sa.Column('description', sa.String(length=250), nullable=True),
-      sa.Column('advance_notice', sa.DateTime(), nullable=True),
-      sa.Column('template', sa.String(length=250), nullable=True),
+      sa.Column('advance_notice', sa.Integer(), nullable=True),
+      sa.Column('template', sa.String(length=250), nullable=False),
       sa.Column('created_at', sa.DateTime(), nullable=True),
       sa.Column('modified_by_id', sa.Integer(), nullable=True),
       sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -43,7 +43,6 @@ def upgrade():
       sa.Column('object_type_id', sa.Integer(), nullable=False),
       sa.Column('notification_type_id', sa.Integer(), nullable=False),
       sa.Column('sent_at', sa.DateTime(), nullable=True),
-      sa.Column('template', sa.String(length=250), nullable=False),
       sa.Column('custom_message', sa.Text(), nullable=True),
       sa.Column(
           'force_notifications', sa.Boolean(), default=False, nullable=False),

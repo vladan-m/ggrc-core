@@ -12,10 +12,12 @@ from ggrc.login import get_current_user, get_current_user_id
 from ggrc.services.registry import service
 from ggrc.views.registry import object_view
 from ggrc.rbac.permissions import is_allowed_update
+from ggrc.models import all_models
 from ggrc_basic_permissions.models import Role, UserRole, ContextImplication
 import ggrc_workflows.models as models
 from ggrc_workflows.models.mixins import RelativeTimeboxed
 from ggrc_workflows.services.workflow_date_calculator import WorkflowDateCalculator
+import ggrc_workflows.notification as notifications
 
 # Initialize signal handler for status changes
 from blinker import Namespace
@@ -44,8 +46,6 @@ blueprint = Blueprint(
 )
 
 
-from ggrc.models import all_models
-
 _workflow_object_types = [
     "Program", "Vendor", "OrgGroup",
     "Regulation", "Standard", "Policy", "Contract",
@@ -72,9 +72,8 @@ def get_public_config(current_user):
   """
   return {}
 
+
 # Initialize service endpoints
-
-
 def contributed_services():
   return [
       service('workflows', models.Workflow),
@@ -89,6 +88,13 @@ def contributed_services():
       service('cycle_task_group_objects', models.CycleTaskGroupObject),
       service('cycle_task_group_object_tasks', models.CycleTaskGroupObjectTask)
   ]
+
+
+def contributed_notifications():
+  return {
+      'Cycle': notifications.get_cycle_notification_data,
+      'TaskGroup': notifications.get_task_group_notification_data,
+  }
 
 
 def contributed_object_views():
@@ -905,4 +911,4 @@ ROLE_CONTRIBUTIONS = WorkflowRoleContributions()
 ROLE_DECLARATIONS = WorkflowRoleDeclarations()
 ROLE_IMPLICATIONS = WorkflowRoleImplications()
 
-import ggrc_workflows.notification
+notifications.register_listeners()

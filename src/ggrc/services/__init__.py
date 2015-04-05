@@ -3,7 +3,6 @@
 # Created By: david@reciprocitylabs.com
 # Maintained By: dan@reciprocitylabs.com
 
-from collections import namedtuple
 from .common import *
 from .registry import service
 

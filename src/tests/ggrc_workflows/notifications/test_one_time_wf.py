@@ -9,6 +9,7 @@ from tests.ggrc import TestCase
 
 import os
 from ggrc import db
+from ggrc import notification
 from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask, Cycle
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
@@ -48,6 +49,11 @@ class TestOneTimeWorkflowNotification(TestCase):
 
     self.assertEqual(sum(tasks), len(cycle_tasks))
     self.assertEqual(active_wf.status, "Active")
+
+    notifications = notification.get_pending_notifications()
+    import ipdb; ipdb.set_trace()
+
+
 
 
 

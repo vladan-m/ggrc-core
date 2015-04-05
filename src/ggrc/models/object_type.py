@@ -20,10 +20,5 @@ class ObjectType(Base, db.Model):
 
   name = db.Column(db.String, nullable=False)
   description = db.Column(db.Text, nullable=True)
-  force_notifications = db.Column(db.Boolean, nullable=True)
 
-  object_type = db.relationship(
-      'ObjectType', foreign_keys='Notification.object_type_id')
-  notification_type = db.relationship(
-      'NotificationType', foreign_keys='Notification.notification_type_id')
 
