@@ -21,15 +21,15 @@ class PersonGenerator():
   }
 
 
-  def __init__(self, role=None):
+  def __init__(self, name=None, role=None):
     self.role = role
     self.api = Api()
-    self.user = self.create_user()
+    self.user = self.create_user(name)
     if self.role:
       self.permissions = self.set_role()
 
-  def create_user(self):
-    name = names.get_full_name()
+  def create_user(self, name):
+    name = name if name else names.get_full_name()
     return self.api.post(Person, {'person': {
         'name': name,
         'is_enabled': True,
