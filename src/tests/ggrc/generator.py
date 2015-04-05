@@ -12,6 +12,7 @@ from ggrc import db
 from tests.ggrc.api_helper import Api
 import string
 import random
+import names
 
 
 class Generator():
@@ -57,6 +58,9 @@ class Generator():
       result = self.resource.object_for_json(obj, model_name)
     return result
 
+
+class GgrcGenerator(Generator):
+
   def generate_object(self, obj_class, obj_name, data={}):
     obj = obj_class(title=self.random_str())
     obj_dict = self.obj_to_dict(obj, obj_name)
@@ -68,19 +72,6 @@ class Generator():
     obj_dict[obj_name].update(data)
     return self.generate(obj_class, obj_name, obj_dict)
 
-  def generate_random_objects(self, count=5):
-    random_objects = []
-    classes = [Control, Objective, Standard, System]
-    for _ in range(count):
-      obj_class = random.choice(classes)
-      obj_name = obj_class.__name__.lower()
-      response, obj = self.generate_object(obj_class, obj_name)
-      if obj:
-        random_objects.append(obj)
-    return random_objects
-
-
-class GgrcGenerator(Generator):
 
   def generate_policy(self, data={}):
     obj_name = "policy"
@@ -132,25 +123,31 @@ class GgrcGenerator(Generator):
 
   def generate_person(self, data={}, user_role=None):
     obj_name = 'person'
+    name = names.get_full_name()
     default = {
         obj_name: {
             "context": None,
-            "name": self.random_str(chars=string.ascii_letters),
-            "email": "%s@%s.%s" % (
-                self.random_str(chars=string.ascii_letters),
-                self.random_str(chars=string.ascii_letters),
-                self.random_str(length=3, chars=string.ascii_letters),
-            ),
-            "is_enabled": True
+            "name": name,
+            "email": "%s@test.com" % name.replace(" ", ".").lower(),
+            "is_enabled": True,
         }
     }
-
     default[obj_name].update(data)
-
     response, person = self.generate(Person, obj_name, default)
 
-    if user_role:
+    if person and user_role:
       role = db.session.query(Role).filter(Role.name == user_role).first()
       self.generate_user_role(person, role)
 
     return response, person
+
+  def generate_random_objects(self, count=5):
+    random_objects = []
+    classes = [Control, Objective, Standard, System]
+    for _ in range(count):
+      obj_class = random.choice(classes)
+      obj_name = obj_class.__name__.lower()
+      response, obj = self.generate_object(obj_class, obj_name)
+      if obj:
+        random_objects.append(obj)
+    return random_objects

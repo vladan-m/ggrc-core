@@ -6,8 +6,8 @@
 
 from datetime import timedelta
 from datetime import datetime
-from collections import defaultdict
 from math import floor
+from collections import defaultdict
 
 from flask import current_app, request
 from sqlalchemy import inspect
@@ -58,10 +58,21 @@ def register_listeners():
 
 def get_cycle_notification_data(cycle_id):
   cycle = db.session.query(Cycle).filter(Cycle.id == cycle_id).one()
-  result = defaultdict(list)
+  tasks = defaultdict(list)
   for task in cycle.cycle_task_group_object_tasks:
-    result[task.contact].append(task)
-  return "hello world"
+    tasks[task.contact.email].append(task.__dict__)
+
+  owners = [{"name": person.name,
+             "email": person.email}
+            for person in cycle.workflow.people]
+
+  import ipdb
+  ipdb.set_trace()
+
+  return {"tasks": tasks,
+          "owners": owners
+          }
+
 
 def get_task_group_notification_data():
   return "hello world"

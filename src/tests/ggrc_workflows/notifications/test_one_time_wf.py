@@ -6,9 +6,12 @@
 import random
 import copy
 from tests.ggrc import TestCase
+from freezegun import freeze_time
+from datetime import date
 
 import os
 from ggrc import db
+from ggrc.models import Person
 from ggrc import notification
 from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask, Cycle
 from tests.ggrc_workflows.generator import WorkflowsGenerator
@@ -24,157 +27,100 @@ class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):
     self.api = Api()
-    self.generator = WorkflowsGenerator()
+    self.wf_generator = WorkflowsGenerator()
     self.ggrc_generator = GgrcGenerator()
 
-    # self.random_objects = self.generator.generate_random_objects()
-    self.random_objects = []
+    self.random_objects = self.ggrc_generator.generate_random_objects()
+    self.random_people = [
+        self.ggrc_generator.generate_person(user_role="gGRC Admin")[1]
+        for _ in range(5)]
     self.create_test_cases()
 
   def tearDown(self):
     pass
 
   def test_one_time_wf_activate(self):
-    wf_dict = copy.deepcopy(self.one_time_workflow_1)
-    _, wf = self.generator.generate_workflow(wf_dict)
-    self.generator.generate_cycle(wf)
-    self.generator.activate_workflow(wf)
 
-    tasks = [len(tg.get("task_group_tasks", [])) * max(1, len(tg.get("task_group_objects", [])))
-             for tg in self.one_time_workflow_1["task_groups"]]
+    person_1 = self.random_people[0].id
+    person_2 = self.random_people[1].id
 
-    cycle_tasks = db.session.query(CycleTaskGroupObjectTask).join(
-      Cycle).join(Workflow).filter(Workflow.id == wf.id).all()
-    active_wf = db.session.query(Workflow).filter(Workflow.id == wf.id).one()
+    with freeze_time("2015-04-10"):
+      wf_dict = copy.deepcopy(self.one_time_workflow_1)
+      _, wf = self.wf_generator.generate_workflow(wf_dict)
 
-    self.assertEqual(sum(tasks), len(cycle_tasks))
-    self.assertEqual(active_wf.status, "Active")
+      _, cycle = self.wf_generator.generate_cycle(wf)
+      self.wf_generator.activate_workflow(wf)
 
-    notifications = notification.get_pending_notifications()
+      notifications = notification.get_pending_notifications()
+
+      self.assertEqual(len(notifications[person_1.email]["assigned_tasks"]), 2)
+      self.assertEqual(len(notifications[person_2.email]["assigned_tasks"]), 2)
+
+    with freeze_time("2015-05-03"): # two days befor due date
+      notifications = notification.get_pending_notifications()
+      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 0)
+      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+
+    with freeze_time("2015-05-04"): # one day befor due date
+      notifications = notification.get_pending_notifications()
+      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 2)
+      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+
+    with freeze_time("2015-05-05"): # due date
+      notifications = notification.get_pending_notifications()
+
+      self.assertEqual(len(notifications[person_1.email]["due_tasks"]), 2)
+      self.assertEqual(len(notifications[person_2.email]["due_tasks"]), 0)
+
+
+    # person_1 and person_2 should have 2 notifications for tasks
+    # import ipdb; ipdb.set_trace()
+
 
 
   def create_test_cases(self):
-    self.weekly_wf_1 = {
-      "title": "weekly thingy",
-      "description": "start this many a time",
-      "frequency": "weekly",
-      "task_groups": [{
-          "title": "tg_2",
-          "task_group_tasks": [{
-              "description": self.generator.random_str(100),
-              "relative_end_day": 1,
-              "relative_end_month": None,
-              "relative_start_day": 5,
-              "relative_start_month": None,
-            }, {
-              "title": "monday task",
-              "relative_end_day": 1,
-              "relative_end_month": None,
-              "relative_start_day": 1,
-              "relative_start_month": None,
-            }, {
-              "title": "weekend task",
-              "relative_end_day": 4,
-              "relative_end_month": None,
-              "relative_start_day": 1,
-              "relative_start_month": None,
-            },
-          ],
-          "task_group_objects": self.random_objects
-        },
-      ]
-    }
+    def person_dict(person_id):
+      return {
+          "href": "/api/people/%d" % person_id,
+          "id": person_id,
+          "type": "Person"
+      }
 
     self.one_time_workflow_1 = {
-      "title": "one time wf test",
-      "description": "some test workflow",
-      "task_groups": [{
-          "title": "tg_1",
-          "task_group_tasks": [{}, {}, {}]
-        }, {
-          "title": "tg_2",
-          "task_group_tasks": [{
-              "description": self.generator.random_str(100)
-            }, {}
-          ],
-          "task_group_objects": self.random_objects[:2]
-        }, {
-          "title": "tg_3",
-          "task_group_tasks": [{
-              "title": "simple task 1",
-              "description": self.generator.random_str(100)
+        "title": "one time test workflow",
+        "description": "some test workflow",
+        "owners": [person_dict(self.random_people[3].id)],
+        "task_groups": [{
+            "title": "one time task group",
+            "task_group_tasks": [{
+                "title": "task 1",
+                "description": "some task",
+                "contact": person_dict(self.random_people[0].id),
+                "start_date": date(2015, 5, 1), # friday
+                "end_date": date(2015, 5, 5),
             }, {
-              "title": self.generator.random_str(),
-              "description": self.generator.random_str(100)
+                "title": "task 2",
+                "description": "some task",
+                "contact": person_dict(self.random_people[1].id),
+                "start_date": date(2015, 5, 4),
+                "end_date": date(2015, 5, 7),
+            }],
+            "task_group_objects": self.random_objects[:2]
+        }, {
+            "title": "another one time task group",
+            "task_group_tasks": [{
+                "title": "task 1 in tg 2",
+                "description": "some task",
+                "contact": person_dict(self.random_people[0].id),
+                "start_date": date(2015, 5, 8), # friday
+                "end_date": date(2015, 5, 12),
             }, {
-              "title": self.generator.random_str(),
-              "description": self.generator.random_str(100)
-            }
-          ],
-          "task_group_objects": self.random_objects
-        }
-      ]
+                "title": "task 2 in tg 2",
+                "description": "some task",
+                "contact": person_dict(self.random_people[2].id),
+                "start_date": date(2015, 5, 1), # friday
+                "end_date": date(2015, 5, 5),
+            }],
+            "task_group_objects": []
+        }]
     }
-    self.one_time_workflow_2 = {
-      "title": "test_wf_title",
-      "description": "some test workflow",
-      "task_groups": [{
-        "title": "tg_1",
-        "task_group_tasks": [{}, {}, {}]
-      },
-        {"title": "tg_2",
-         "task_group_tasks": [{
-           "description": self.generator.random_str(100)
-            },
-           {}
-         ],
-         "task_group_objects": self.random_objects[:2]
-         },
-        {"title": "tg_3",
-         "task_group_tasks": [{
-           "title": "simple task 1",
-           "description": self.generator.random_str(100)
-         }, {
-           "title": self.generator.random_str(),
-           "description": self.generator.random_str(100)
-         }, {
-           "title": self.generator.random_str(),
-           "description": self.generator.random_str(100)
-         }],
-         "task_group_objects": []
-         }
-      ]
-    }
-
-    self.monthly_workflow_1 = {
-      "title": "monthly test wf",
-      "description": "start this many a time",
-      "frequency": "monthly",
-      "task_groups": [
-        {"title": "tg_2",
-         "task_group_tasks": [{
-             "description": self.generator.random_str(100),
-             "relative_end_day": 1,
-             "relative_end_month": None,
-             "relative_start_day": 5,
-             "relative_start_month": None,
-            },
-            {"title": "monday task",
-             "relative_end_day": 1,
-             "relative_end_month": None,
-             "relative_start_day": 1,
-             "relative_start_month": None,
-             },
-            {"title": "weekend task",
-             "relative_end_day": 4,
-             "relative_end_month": None,
-             "relative_start_day": 1,
-             "relative_start_month": None,
-             },
-          ],
-         "task_group_objects": self.random_objects
-         },
-      ]
-    }
-
-

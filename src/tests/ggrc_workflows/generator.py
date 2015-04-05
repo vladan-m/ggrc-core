@@ -155,3 +155,16 @@ class WorkflowsGenerator(Generator):
     response, workflow = self.modify(wf, obj_name, default)
 
     return response, workflow
+
+  def modify_cycle_task_group_object_task(self, obj, data{}):
+
+    obj_name = "cycle_task_group_object_task"
+
+    obj_dict = self.obj_to_dict(task)
+    obj_dict.update(data)
+
+    object_data = {obj_name: obj_dict}
+
+    response, generated_object = self.modify(obj, obj_name, default)
+
+    return response, generated_object

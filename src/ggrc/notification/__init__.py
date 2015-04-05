@@ -4,6 +4,7 @@
 # Maintained By: dan@reciprocitylabs.com
 
 
+from collections import defaultdict
 from .email import *
 from ggrc.extensions import get_extension_modules
 from ggrc.models import Notification, NotificationType, NotificationConfig
@@ -42,8 +43,19 @@ def get_pending_notifications():
   pending_notifications = db.session.query(Notification).filter(
       Notification.sent_at == None).all()
 
+  agrigate_data = {
+    "tasks": defaultdict(list)
+  }
+
   for pn in pending_notifications:
+    import ipdb; ipdb.set_trace()
     data = services.call_service(pn.object_type.name, pn)
+
+    for email, person_tasks in data["tasks"]:
+      aggrigate_data[email] += person_tasks
+
+
+
   pass
 
 def dispatch_notifications():
