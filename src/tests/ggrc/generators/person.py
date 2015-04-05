@@ -37,9 +37,13 @@ class PersonGenerator():
         'context': None,
       }})
 
+  def update_user(self):
+    self.user = self.api.get(Person, self.get_id())
+    return self.user
+
   def set_role(self):
     role_id = self.role if isinstance(self.role, (int, long, float, complex)) else self.roles[self.role]
-    return self.api.post(UserRole, {'user_role': {
+    response = self.api.post(UserRole, {'user_role': {
         'context': None,
         'type': 'UserRole',
         'modified_by': {
@@ -59,6 +63,8 @@ class PersonGenerator():
           'id': role_id,
         },
       }})
+    self.update_user()
+    return response
 
   def get_id(self):
     return self.user.json['person']['id']
