@@ -51,10 +51,6 @@ class TestOneTimeWorkflowNotification(TestCase):
     self.assertEqual(active_wf.status, "Active")
 
     notifications = notification.get_pending_notifications()
-    import ipdb; ipdb.set_trace()
-
-
-
 
 
   def create_test_cases(self):

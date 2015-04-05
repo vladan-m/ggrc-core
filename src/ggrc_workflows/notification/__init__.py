@@ -61,7 +61,6 @@ def get_cycle_notification_data(cycle_id):
   result = defaultdict(list)
   for task in cycle.cycle_task_group_object_tasks:
     result[task.contact].append(task)
-  import ipdb; ipdb.set_trace()
   return "hello world"
 
 def get_task_group_notification_data():
