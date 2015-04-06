@@ -55,6 +55,7 @@ class Notification(Base, db.Model):
       db.Integer, db.ForeignKey('object_types.id'), nullable=False)
   notification_type_id = db.Column(
       db.Integer, db.ForeignKey('notification_types.id'), nullable=False)
+  send_on = db.Column(db.DateTime, nullable=False)
   sent_at = db.Column(db.DateTime, nullable=True)
   custom_message = db.Column(db.Text, nullable=True)
   force_notifications = db.Column(db.Boolean, default=False, nullable=False)

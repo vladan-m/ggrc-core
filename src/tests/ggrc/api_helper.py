@@ -24,6 +24,22 @@ class Api():
     self.headers = {'Content-Type': 'application/json',
                     "X-Requested-By": "gGRC"
                     }
+    self.user_headers = {}
+
+  def set_user(self, person=None):
+    if  person:
+      self.user_headers = {
+        "X-ggrc-user": self.resource.as_json({
+          "name": person.name,
+          "email": person.email,
+        })
+      }
+
+    else:
+      self.user_headers = {}
+
+    self.tc.get("/logout")
+    self.tc.get("/login", headers=self.user_headers)
 
   def get_service(self, obj):
     if inspect.isclass(obj):
@@ -49,6 +65,7 @@ class Api():
       api_link = self.api_link(obj)
 
     headers.update(self.headers)
+    headers.update(self.user_headers)
 
     json_data = self.resource.as_json(data)
     logging.info("request json" + json_data)

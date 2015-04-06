@@ -93,7 +93,8 @@ def contributed_services():
 def contributed_notifications():
   return {
       'Cycle': notifications.get_cycle_notification_data,
-      'TaskGroup': notifications.get_task_group_notification_data,
+      'Workflow': notifications.get_workflow_notification_data,
+      'TaskGroupTask': notifications.get_task_group_task_notification_data,
   }
 
 

@@ -43,6 +43,7 @@ def upgrade():
       sa.Column('object_id', sa.Integer(), nullable=False),
       sa.Column('object_type_id', sa.Integer(), nullable=False),
       sa.Column('notification_type_id', sa.Integer(), nullable=False),
+      sa.Column('send_on', sa.DateTime(), nullable=False),
       sa.Column('sent_at', sa.DateTime(), nullable=True),
       sa.Column('custom_message', sa.Text(), nullable=True),
       sa.Column(

@@ -58,6 +58,8 @@ def get_pending_notifications():
 
   return aggregate_data
 
+def generate_notification_email(data):
+  return "hello world"
 
 def dispatch_notifications():
   pass
