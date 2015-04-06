@@ -11,6 +11,7 @@ import os
 from freezegun import freeze_time
 
 from ggrc import db
+from ggrc.models import Person, Notification
 from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask, Cycle
 from tests.ggrc.generators.person import PersonGenerator
 from tests.ggrc_workflows.generator import WorkflowsGenerator
@@ -23,6 +24,7 @@ if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
 
 
+@SkipTest
 class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):

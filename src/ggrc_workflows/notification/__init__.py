@@ -12,7 +12,7 @@ from collections import defaultdict
 from flask import current_app, request
 from sqlalchemy import inspect
 
-from ggrc_workflows.models import Workflow, Cycle
+from ggrc_workflows.models import Workflow, Cycle, CycleTaskGroupObjectTask
 from ggrc.services.common import Resource
 from ggrc.models import (
     Notification, NotificationType, NotificationConfig, ObjectType)
@@ -24,10 +24,45 @@ from ggrc.login import get_current_user
 
 def register_listeners():
 
+  def get_object_type(obj):
+    return db.session.query(ObjectType)\
+      .filter(ObjectType.name == obj.__class__.__name__).one()
+
+  def get_notification_type(name):
+    return db.session.query(NotificationType)\
+      .filter(NotificationType.name = name).one()
+
+
+  def get_notification(obj):
+    result = db.session.query(Notification).join(ObjectType).filter(
+        Notification.object_id == obj.id,
+        ObjectType.name == obj.__class__.__name__)
+    if result.count():
+      return result.one()
+
+    return None
+
   @Resource.model_put.connect_via(Workflow)
   def handle_workflow_put(sender, obj=None, src=None, service=None):
+    if obj.status != "Active":
+      return
+
+    if get_notification(obj):
+      return
+
+    notification = Notification()
+    notification.object_id = obj.id
+    notification.object_type = get_object_type(obj)
+    notification.notification_type = get_notification_type(obj.frequency)
+    # on workflow activation
+    import ipdb
+    ipdb.set_trace()
+
     pass
 
+  @Resource.model_put.connect_via(CycleTaskGroupObjectTask)
+  def aaa(sender, obj=None, src=None, service=None):
+    pass
 
   @Resource.model_posted.connect_via(Cycle)
   def handle_cycle_post(sender, obj=None, src=None, service=None):
@@ -36,7 +71,6 @@ def register_listeners():
 
     notification_type = db.session.query(
         NotificationType).filter(NotificationType.name == 'instant').one()
-
 
     db.session.flush()
 

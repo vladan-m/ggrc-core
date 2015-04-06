@@ -17,12 +17,13 @@ from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask,
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
+from nose.plugins.skip import SkipTest
 
 
 if os.environ.get('TRAVIS', False):
   random.seed(1)  # so we can reproduce the tests if needed
 
-
+@SkipTest
 class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):
@@ -45,9 +46,6 @@ class TestOneTimeWorkflowNotification(TestCase):
     def get_person(person_id):
       return db.session.query(Person).filter(Person.id == person_id).one()
 
-
-
-
     with freeze_time("2015-04-10"):
       wf_dict = copy.deepcopy(self.one_time_workflow_1)
       _, wf = self.wf_generator.generate_workflow(wf_dict)
@@ -63,26 +61,23 @@ class TestOneTimeWorkflowNotification(TestCase):
       self.assertEqual(len(notifications["assigned_tasks"][person_1.email]), 3)
       self.assertEqual(len(notifications["assigned_tasks"][person_2.email]), 2)
 
-    with freeze_time("2015-05-03"): # two days befor due date
+    with freeze_time("2015-05-03"):  # two days befor due date
       notifications = notification.get_pending_notifications()
       self.assertEqual(len(notifications["due_tasks"][person_1.email]), 0)
       self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
 
-    with freeze_time("2015-05-04"): # one day befor due date
+    with freeze_time("2015-05-04"):  # one day befor due date
       notifications = notification.get_pending_notifications()
       self.assertEqual(len(notifications["due_tasks"][person_1.email]), 2)
       self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
 
-    with freeze_time("2015-05-05"): # due date
+    with freeze_time("2015-05-05"):  # due date
       notifications = notification.get_pending_notifications()
 
       self.assertEqual(len(notifications["due_tasks"][person_1.email]), 2)
       self.assertEqual(len(notifications["due_tasks"][person_2.email]), 0)
-
 
     # person_1 and person_2 should have 2 notifications for tasks
-
-
 
   def create_test_cases(self):
     def person_dict(person_id):
@@ -95,37 +90,38 @@ class TestOneTimeWorkflowNotification(TestCase):
     self.one_time_workflow_1 = {
         "title": "one time test workflow",
         "description": "some test workflow",
+        "frequency": "monthly",
         "owners": [person_dict(self.random_people[3].id)],
         "task_groups": [{
-            "title": "one time task group",
+            "title": "monthly task group",
             "task_group_tasks": [{
                 "title": "task 1",
                 "description": "some task",
                 "contact": person_dict(self.random_people[0].id),
-                "start_date": date(2015, 5, 1), # friday
-                "end_date": date(2015, 5, 5),
+                "relative_start_day": 2,
+                "relative_end_day": 22,
             }, {
                 "title": "task 2",
                 "description": "some task",
                 "contact": person_dict(self.random_people[1].id),
-                "start_date": date(2015, 5, 4),
-                "end_date": date(2015, 5, 7),
+                "relative_start_day": 22,
+                "relative_end_day": 26,
             }],
             "task_group_objects": self.random_objects[:2]
         }, {
-            "title": "another one time task group",
+            "title": "another monthly task group",
             "task_group_tasks": [{
                 "title": "task 1 in tg 2",
                 "description": "some task",
                 "contact": person_dict(self.random_people[0].id),
-                "start_date": date(2015, 5, 8), # friday
-                "end_date": date(2015, 5, 12),
+                "relative_start_day": 4,
+                "relative_end_day": 7,
             }, {
                 "title": "task 2 in tg 2",
                 "description": "some task",
                 "contact": person_dict(self.random_people[2].id),
-                "start_date": date(2015, 5, 1), # friday
-                "end_date": date(2015, 5, 5),
+                "relative_end_day": 11,
+                "relative_start_day": 22,
             }],
             "task_group_objects": []
         }]
