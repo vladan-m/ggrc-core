@@ -30,7 +30,7 @@ def register_listeners():
 
   def get_notification_type(name):
     return db.session.query(NotificationType)\
-      .filter(NotificationType.name = name).one()
+      .filter(NotificationType.name == name).one()
 
 
   def get_notification(obj):
@@ -44,19 +44,21 @@ def register_listeners():
 
   @Resource.model_put.connect_via(Workflow)
   def handle_workflow_put(sender, obj=None, src=None, service=None):
+    import ipdb; ipdb.set_trace()
     if obj.status != "Active":
       return
 
     if get_notification(obj):
       return
 
-    notification = Notification()
-    notification.object_id = obj.id
-    notification.object_type = get_object_type(obj)
-    notification.notification_type = get_notification_type(obj.frequency)
-    # on workflow activation
-    import ipdb
-    ipdb.set_trace()
+    if obj.frequency == 'one_time':
+      notification = Notification()
+      notification.object_id = obj.id
+      notification.object_type = get_object_type(obj)
+      notification.notification_type = get_notification_type(obj.frequency)
+      db.session.add(notification)
+      db.session.flush()
+      # on workflow activation
 
     pass
 
