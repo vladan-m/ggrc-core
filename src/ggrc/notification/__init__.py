@@ -44,9 +44,11 @@ def get_pending_notifications():
       Notification.sent_at == None).all()
 
   aggregate_data = {
-    "assigned_tasks": defaultdict(list),
-    "due_tasks": defaultdict(list),
-    "workflow_owners": defaultdict(list),
+    "cycle_starts_in": defaultdict(list),
+    "task_reassigned": defaultdict(list),
+    "task_declined": defaultdict(list),
+    "task_due_in": defaultdict(list),
+    "task_due_today": defaultdict(list),
   }
 
   for pn in pending_notifications:
