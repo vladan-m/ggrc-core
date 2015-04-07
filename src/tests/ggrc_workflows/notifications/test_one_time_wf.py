@@ -40,7 +40,6 @@ class TestOneTimeWorkflowNotification(TestCase):
 
     self.create_users()
 
-
     db.session.query(Notification).delete()
 
     def init_decorator(init):
