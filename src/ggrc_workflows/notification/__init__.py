@@ -44,15 +44,15 @@ def get_cycle_notification_data(notification):
 
 
 def get_task_group_task_notification_data(notification):
-  task_group_taks = db.session.query(TaskGroupTask).filter(
-    TaskGroupTask.id == notification.object_id)
+  task_group_task = db.session.query(TaskGroupTask).filter(
+    TaskGroupTask.id == notification.object_id).one()
 
   tasks = defaultdict(list)
 
-  import ipdb; ipdb.set_trace()
+  email = task_group_task.contact.email
 
   for task_group_object in task_group_task.task_group.task_group_objects:
-    tasks.append({
+    tasks[email].append({
       "task_title": task_group_task,
     })
 

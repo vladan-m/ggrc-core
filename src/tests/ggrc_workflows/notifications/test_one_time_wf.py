@@ -18,6 +18,7 @@ from ggrc_workflows.models import Workflow, TaskGroup, CycleTaskGroupObjectTask,
 from tests.ggrc_workflows.generator import WorkflowsGenerator
 from tests.ggrc.api_helper import Api
 from tests.ggrc.generator import GgrcGenerator
+from nose.plugins.skip import SkipTest
 
 
 if os.environ.get('TRAVIS', False):
@@ -37,19 +38,8 @@ class TestOneTimeWorkflowNotification(TestCase):
         for _ in range(5)]
     self.create_test_cases()
 
-    _, self.owner1 = self.ggrc_generator.generate_person(
-        data={"name": "User1 Owner1", "email": "user1.owner1@gmail.com"},
-        user_role="gGRC Admin")
-    _, self.tgassignee1 = self.ggrc_generator.generate_person(
-        data={"name": "User2 TGassignee1",
-              "email": "user2.tgassignee1@gmail.com"},
-        user_role="gGRC Admin")
-    _, self.member1 = self.ggrc_generator.generate_person(
-        data={"name": "User3 Member1", "email": "user3.member1@gmail.com"},
-        user_role="gGRC Admin")
-    _, self.member2 = self.ggrc_generator.generate_person(
-        data={"name": "User4 Member2", "email": "user4.member2@gmail.com"},
-        user_role="gGRC Admin")
+    self.create_users()
+
 
     db.session.query(Notification).delete()
 
@@ -110,14 +100,16 @@ class TestOneTimeWorkflowNotification(TestCase):
       cycle_response, cycle = self.wf_generator.generate_cycle(wf)
       self.wf_generator.activate_workflow(wf)
 
-      import ipdb; ipdb.set_trace()
-      db.session.add(self.owner1)
-      db.session.add(self.tgassignee1)
-      db.session.add(self.member1)
+      # import ipdb; ipdb.set_trace()
+      # db.session.add(self.owner1)
+      # db.session.add(self.tgassignee1)
+      # db.session.add(self.member1)
 
-      notifications = notification.get_pending_notifications()
+      # notifications = notification.get_pending_notifications()
 
 
+
+  @SkipTest
   def test_one_time_wf_activate(self):
     def get_person(person_id):
       return db.session.query(Person).filter(Person.id == person_id).one()
@@ -201,3 +193,19 @@ class TestOneTimeWorkflowNotification(TestCase):
             "task_group_objects": []
         }]
     }
+
+  def create_users(self):
+    _, self.owner1 = self.ggrc_generator.generate_person(
+        data={"name": "User1 Owner1", "email": "user1.owner1@gmail.com"},
+        user_role="gGRC Admin")
+    _, self.tgassignee1 = self.ggrc_generator.generate_person(
+        data={"name": "User2 TGassignee1",
+              "email": "user2.tgassignee1@gmail.com"},
+        user_role="gGRC Admin")
+    _, self.member1 = self.ggrc_generator.generate_person(
+        data={"name": "User3 Member1", "email": "user3.member1@gmail.com"},
+        user_role="gGRC Admin")
+    _, self.member2 = self.ggrc_generator.generate_person(
+        data={"name": "User4 Member2", "email": "user4.member2@gmail.com"},
+        user_role="gGRC Admin")
+

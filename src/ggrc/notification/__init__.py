@@ -45,6 +45,7 @@ def get_pending_notifications():
 
   aggregate_data = {
     "cycle_starts_in": defaultdict(list),
+    "assigned_tasks": defaultdict(list),
     "task_reassigned": defaultdict(list),
     "task_declined": defaultdict(list),
     "task_due_in": defaultdict(list),
