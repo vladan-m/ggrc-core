@@ -39,25 +39,51 @@ class NotificationServices():
 services = NotificationServices()
 
 def get_pending_notifications():
+  """
+  notifications = {
+      "some@email.com": {
 
+          "cycle_starts_in": {
+              workflow.id : {
+                  "custom_message": ""
+
+                  "my_tasks" : # list of all tasks assigned to the user
+                      { task.id: {task_info}, ...}
+
+                  "my_task_groups" : # list of all task groups assigned to the user, including tasks
+                      { task_group.id: { task.id: {task_info}, ... }, ... }
+
+                  "workflow_tasks" : # list of all tasks in the workflow
+                      { task.id: {task_info}, ...}
+              }
+          }
+
+          "cycle_started": {
+
+          }
+
+          "due_in": # tasks due in X days (x depends on notification type)
+              { task.id: {task_info}, ...}
+
+          "due_today":
+              { task.id: {task_info}, ...}
+
+          "all_tasks_completed": # only workflow owner gets this
+              { workflow.id: {workflow_info}, ... }
+      }
+  }
+
+  """
   pending_notifications = db.session.query(Notification).filter(
       Notification.sent_at == None).all()
 
-  aggregate_data = {
-    "cycle_starts_in": defaultdict(list),
-    "assigned_tasks": defaultdict(list),
-    "task_reassigned": defaultdict(list),
-    "task_declined": defaultdict(list),
-    "task_due_in": defaultdict(list),
-    "task_due_today": defaultdict(list),
-  }
+  aggregate_data = defaultdict(lambda: defaultdict(list))
 
   for pn in pending_notifications:
     data = services.call_service(pn.object_type.name, pn)
-
-    for data_type in data.keys():
-      for email, person_tasks in data[data_type].items():
-        aggregate_data[data_type][email] += person_tasks
+    for email, notification_data in data.items():
+      for data_type, items in notification_data.items():
+        aggregate_data[email][data_type] += items
 
   return aggregate_data
 

@@ -45,19 +45,28 @@ def get_cycle_notification_data(notification):
 
 def get_task_group_task_notification_data(notification):
   task_group_task = db.session.query(TaskGroupTask).filter(
-    TaskGroupTask.id == notification.object_id).one()
+      TaskGroupTask.id == notification.object_id).one()
 
-  tasks = defaultdict(list)
+  tasks = []
 
-  email = task_group_task.contact.email
+  task_assignee_email = task_group_task.contact.email
+  task_group_assignee_email = task_group_task.task_group.contact.email
+  workflow_owner = db.session.query(UserRole).filter(
+      UserRole.context_id == task_group_task.task_group.workflow.context_id)
+  # TODO: add tasks to workflow owner
 
   for task_group_object in task_group_task.task_group.task_group_objects:
-    tasks[email].append({
-      "task_title": task_group_task,
+    tasks.append({
+        "task_title": task_group_task.title,
+        "object_title": task_group_object.object.title,
+        "task_id": task_group_task.id,
     })
 
-  return {
-    "assigned_tasks": tasks
+  return {task_assignee_email: {
+      "assigned_tasks": tasks
+  },
+      task_group_assignee_email: {},
+      workflow_owner: {},
   }
 
 

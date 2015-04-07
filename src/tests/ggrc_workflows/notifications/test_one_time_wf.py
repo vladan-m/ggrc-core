@@ -28,6 +28,7 @@ if os.environ.get('TRAVIS', False):
 class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):
+    import ipdb; ipdb.set_trace()
     self.api = Api()
     self.wf_generator = WorkflowsGenerator()
     self.ggrc_generator = GgrcGenerator()
@@ -99,12 +100,11 @@ class TestOneTimeWorkflowNotification(TestCase):
       cycle_response, cycle = self.wf_generator.generate_cycle(wf)
       self.wf_generator.activate_workflow(wf)
 
-      # import ipdb; ipdb.set_trace()
-      # db.session.add(self.owner1)
-      # db.session.add(self.tgassignee1)
-      # db.session.add(self.member1)
+      db.session.add(self.owner1)
+      db.session.add(self.tgassignee1)
+      db.session.add(self.member1)
 
-      # notifications = notification.get_pending_notifications()
+      notifications = notification.get_pending_notifications()
 
 
 
