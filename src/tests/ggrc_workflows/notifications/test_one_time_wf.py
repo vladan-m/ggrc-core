@@ -28,7 +28,6 @@ if os.environ.get('TRAVIS', False):
 class TestOneTimeWorkflowNotification(TestCase):
 
   def setUp(self):
-    import ipdb; ipdb.set_trace()
     self.api = Api()
     self.wf_generator = WorkflowsGenerator()
     self.ggrc_generator = GgrcGenerator()
@@ -195,16 +194,16 @@ class TestOneTimeWorkflowNotification(TestCase):
 
   def create_users(self):
     _, self.owner1 = self.ggrc_generator.generate_person(
-        data={"name": "User1 Owner1", "email": "user1.owner1@gmail.com"},
+        # data={"name": "User1 Owner1", "email": "user1.owner1@gmail.com"},
         user_role="gGRC Admin")
     _, self.tgassignee1 = self.ggrc_generator.generate_person(
-        data={"name": "User2 TGassignee1",
-              "email": "user2.tgassignee1@gmail.com"},
+        # data={"name": "User2 TGassignee1",
+        #       "email": "user2.tgassignee1@gmail.com"},
         user_role="gGRC Admin")
     _, self.member1 = self.ggrc_generator.generate_person(
-        data={"name": "User3 Member1", "email": "user3.member1@gmail.com"},
+        # data={"name": "User3 Member1", "email": "user3.member1@gmail.com"},
         user_role="gGRC Admin")
     _, self.member2 = self.ggrc_generator.generate_person(
-        data={"name": "User4 Member2", "email": "user4.member2@gmail.com"},
+        # data={"name": "User4 Member2", "email": "user4.member2@gmail.com"},
         user_role="gGRC Admin")
 

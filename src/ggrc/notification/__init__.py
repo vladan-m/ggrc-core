@@ -44,7 +44,7 @@ def get_pending_notifications():
       "some@email.com": {
 
           "cycle_starts_in": {
-              workflow.id : {
+              workflow.id: {
                   "custom_message": ""
 
                   "my_tasks" : # list of all tasks assigned to the user
@@ -56,11 +56,31 @@ def get_pending_notifications():
                   "workflow_tasks" : # list of all tasks in the workflow
                       { task.id: {task_info}, ...}
               }
+              , ...
           }
 
           "cycle_started": {
+              cycle.id: {
+                  "custom_message": ""
 
+                  "my_tasks" : # list of all tasks assigned to the user
+                      { task.id: {task_info}, ...}
+
+                  "my_task_groups" : # list of all task groups assigned to the user, including tasks
+                      { task_group.id: { task.id: {task_info}, ... }, ... }
+
+                  "workflow_tasks" : # list of all tasks in the workflow
+                      { task.id: {task_info}, ...}
+
+              }
+              , ...
           }
+
+          "task_declined":
+              { task.id: {task_info}, ...}
+
+          "task_reassigned":
+              { task.id: {task_info}, ...}
 
           "due_in": # tasks due in X days (x depends on notification type)
               { task.id: {task_info}, ...}
