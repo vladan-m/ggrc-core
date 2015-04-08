@@ -1,0 +1,20 @@
+- repo: git@github.com:pre-commit/pre-commit-hooks
+  sha: 4078cbedf0360dce2b7cd02cb2812fc50b76b98d
+  hooks:
+  - id: trailing-whitespace
+    files: src/.*\.*$
+  - id: autopep8-wrapper
+    files: src/.*\.py$
+    args: ['-i', '--ignore=E265,E309,E501']
+
+- repo: git@github.com:pre-commit/mirrors-jshint
+  sha: e86225836aadd058036f47a6de9b0ee0440476eb
+  hooks:
+  - id: jshint
+    files: src/.*\.js$
+
+- repo: git@github.com:hyperNURb/mirrors-jscs.git
+  sha: 3778961d22bba7e3c9c7a0568436799f4e609a3b
+  hooks:
+  - id: jscs
+    files: src/.*\.js$
