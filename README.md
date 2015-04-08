@@ -30,6 +30,8 @@ have the prerequisite software installed. Here are the steps:
 
     ```sh
     git submodule update --init
+    pip install pre-commit
+    pre-commit install
     vagrant up
     vagrant ssh
     build_compass
@@ -48,6 +50,7 @@ Now you're in the VM and ready to rock. Get to work!
 Most development is done in a stand-alone flask. We strive to make getting up 
 and running as simple as possible; to that end, launching the application is 
 simple:
+
 
 ```sh
 launch_ggrc
@@ -120,6 +123,33 @@ git submodule update
 
 As the dependencies change over time it will be necessary for developers to
 update to a new revision for one or more of the submodules.
+
+### Git hooks
+
+In order to have standardized code, we enforce some basic coding styles using [git commit hooks](http://githooks.com/). [Pre-commit](http://pre-commit.com) is tool that we use for handling linters. Linters and their settings are defined in `.pre-commit-config.yaml` while linter can have it's own file containing settings:
+
+- [JSCS](http://jscs.info/) - Settings file `.jscsrc`
+- [JSHint](http://jshint.com/) - Settings file `.jshintrc`
+- [autopep8](https://pypi.python.org/pypi/autopep8)
+
+
+To install [pre-commit](http://pre-commit.com) you should have `python` and `node` available on your system and run command in the project directory:
+
+```sh
+pip install pre-commit
+```
+
+In case you run into any trouble during the instalation, you should check [pre-commit installation documentation](http://pre-commit.com/#install)
+
+Once [pre-commit](http://pre-commit.com) is installed, you should install the git hooks by running command in the project directory:
+
+```sh
+pre-commit install
+```
+
+
+
+
 
 ### Ansible
 
