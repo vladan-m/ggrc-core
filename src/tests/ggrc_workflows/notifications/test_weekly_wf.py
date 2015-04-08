@@ -48,11 +48,23 @@ class TestOneTimeWorkflowNotification(TestCase):
     _, activated_wf = self.generator.activate_workflow(wf)
 
     # use this activated_wf.next_cycle_start_date and add timedelta to check x
-    # days befor the next cycle
-    with freeze_time("2012-01-14"): # test on the x days before the cycle starts
-      start_recurring_cycles()
 
-      #test if notifications have been made
+    # Weekly WF (#1 Start date in past, End date in future) - START
+    with freeze_time("4/7/2015"):
+      # start_recurring_cycles()
+
+    # Weekly WF (#2 Start date in Future, End date in Future) - START
+    with freeze_time("4/7/2015"):
+
+    # Weekly WF (#3 Start date in Past, End date in Past) - START
+    with freeze_time("4/9/2015"):
+
+    # Weekly WF (#4 Start date is Today, End date in Future) - START
+    with freeze_time("4/7/2015"):
+
+    # Weekly WF (#4 Start date is Today, End date in Future) - START
+    with freeze_time("4/7/2015"):
+
 
   def create_test_cases(self):
     def person_dict(person_id):
