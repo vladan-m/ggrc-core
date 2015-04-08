@@ -35,6 +35,7 @@ class TestOneTimeWorkflowNotification(TestCase):
     # self.random_objects = self.generator.generate_random_objects()
     self.random_objects = []
     self.create_test_cases()
+    self.create_users()
 
   def tearDown(self):
     pass
@@ -54,16 +55,20 @@ class TestOneTimeWorkflowNotification(TestCase):
       #test if notifications have been made
 
   def create_test_cases(self):
-    self.person_guest = PersonGenerator(role='reader')
-    self.person_reader = PersonGenerator(role='program_reader')
-    self.person_owner = PersonGenerator(role='program_owner')
+    def person_dict(person_id):
+      return {
+          "href": "/api/people/%d" % person_id,
+          "id": person_id,
+          "type": "Person"
+      }
 
     self.weekly_wf_1 = {
-      "title": "weekly thingy",
-      "description": "start this many a time",
+      "title": "Weekly WF",
+      "description": "Hi all. Did you know that Elbrus is #10 world highiest mountain? It is a dormant volcano and it's hight 5642m.",
       "frequency": "weekly",
+      "owners": [self.owner1.id],
       "task_groups": [{
-          "title": "tg_2",
+          "title": "TG #1 for the Weekly WF",
           "task_group_tasks": [{
               "title": "monday to friday",
               "description": self.generator.random_str(100),
@@ -105,4 +110,70 @@ class TestOneTimeWorkflowNotification(TestCase):
       ]
     }
 
+    self.weekly_wf_2 = {
+      "title": "Weekly WF",
+      "description": "Hi all. Did you know that Elbrus is #10 world highiest mountain? It is a dormant volcano and it's hight 5642m.",
+      "frequency": "weekly",
+      "owners": [self.owner1.id],
+      "task_groups": [{
+          "title": "TG #1 for the Weekly WF",
+          "contact": person_dict(self.tgassignee1.id),
+          "task_group_tasks": [{
+            "title": "task #1 for Weekly workflow",
+            "description": self.generator.random_str(100),
+            "relative_end_day": 3,
+            "relative_start_day": 5,
+            "contact": person_dict(self.member1.id),
+          }],
+          "task_group_objects": self.random_objects
+        },
+      ]
+    }
+
+    self.weekly_wf_3 = {
+      "title": "Weekly WF",
+      "description": "Hi all. Did you know that Elbrus is #10 world highiest mountain? It is a dormant volcano and it's hight 5642m.",
+      "frequency": "weekly",
+      "owners": [self.owner1.id],
+      "task_groups": [{
+          "title": "TG #1 for the Weekly WF",
+          "contact": person_dict(self.tgassignee1.id),
+          "task_group_tasks": [{
+            "title": "task #1 for Weekly workflow",
+            "description": self.generator.random_str(100),
+            "relative_end_day": 2,
+            "relative_start_day": 5,
+            "contact": person_dict(self.member1.id),
+          }],
+          "task_group_objects": self.random_objects
+        },
+      ]
+    }
+
+  self.weekly_wf_4 = {
+      "title": "Weekly WF",
+      "description": "Hi all. Did you know that Elbrus is #10 world highiest mountain? It is a dormant volcano and it's hight 5642m.",
+      "frequency": "weekly",
+      "owners": [self.tgassignee1.id],
+      "task_groups": [{
+          "title": "TG #1 for the Weekly WF",
+          "contact": person_dict(self.member2.id),
+          "task_group_tasks": [{
+            "title": "task #1 for Weekly workflow",
+            "description": self.generator.random_str(100),
+            "relative_end_day": 2,
+            "relative_start_day": 5,
+            "contact": person_dict(self.member1.id),
+          }],
+          "task_group_objects": self.random_objects
+        },
+      ]
+    }
+
+
+  def create_users(self):
+    _, self.owner1 = self.ggrc_generator.generate_person(user_role="gGRC Admin")
+    _, self.tgassignee1 = self.ggrc_generator.generate_person(user_role="gGRC Admin")
+    _, self.member1 = self.ggrc_generator.generate_person(user_role="gGRC Admin")
+    _, self.member2 = self.ggrc_generator.generate_person(user_role="gGRC Admin")
 
