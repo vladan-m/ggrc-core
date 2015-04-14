@@ -153,3 +153,10 @@
 .hide-me {
   display: none;
 }
+
+// Mockup subtree
+ul.new-tree {
+  .select {
+    overflow: visible;
+  }
+}
