@@ -1,8 +1,8 @@
 {{!
     Copyright (C) 2015 Google Inc., authors, and contributors <see AUTHORS file>
     Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
-    Created By: miha@reciprocitylabs.com
-    Maintained By: miha@reciprocitylabs.com
+    Created By: anze@reciprocitylabs.com
+    Maintained By: anze@reciprocitylabs.com
 }}
 
 {{{> "/static/mustache/base_objects/tree_view_filter.mustache"}}}
@@ -14,14 +14,23 @@
         {{model.title_singular}} Title
       </div>
     </div>
-    <div class="span2">
+    <div class="span1">
       <div class="oneline">
         Owner
       </div>
     </div>
-    <div class="span1">
-      <div class="oneline">
-        Code
+    <div class="span2">
+      <div class="row-fluid">
+        <div class="span6">
+          <div class="oneline centered">
+            Design
+          </div>
+        </div>
+        <div class="span6">
+          <div class="oneline centered">
+            Operational
+          </div>
+        </div>
       </div>
     </div>
     <div class="span1">

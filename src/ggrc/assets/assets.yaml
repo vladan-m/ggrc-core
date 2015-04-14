@@ -43,6 +43,7 @@ dashboard-js-files:
   - plugins/openclose.js
   - plugins/tooltip.js
   - plugins/popover.js
+  - plugins/popover_template.js
   - application.js
   - jquerypp.custom.js
   - spin.min.js
@@ -64,6 +65,7 @@ dashboard-js-files:
   - models/recently_viewed_object.js
   - models/search.js
   - models/audit_models.js
+  - models/issue.js
   - models/notification_config.js
   - controllers/filterable_controller.js
   - controllers/dashboard_widgets_controller.js
@@ -96,7 +98,6 @@ dashboard-js-files:
   - apps/business_objects.js
   - apps/dashboard.js
   - apps/custom_attributes.js
-  - roles/roles_modal_controller.js
   - dashboard.js
   - jquery.iframe-transport.js
   - jquery.remotipart-patched.js
@@ -154,7 +155,10 @@ dashboard-js-template-files:
   - controls/object_list.mustache
   - controls/tree.mustache
   - control_assessments/modal_content.mustache
+  - control_assessments/tree.mustache
+  - control_assessments/tree_header.mustache
   - control_assessments/tree_footer.mustache
+  - control_assessments/info.mustache
   - issues/modal_content.mustache
   - custom_attributes/modal_content.mustache
   - custom_attributes/info.mustache
@@ -185,6 +189,7 @@ dashboard-js-template-files:
   - facilities/modal_content.mustache
   - help/help_modal_content.mustache
   - help/help_modal_header.mustache
+  - help/filters_helper_content.mustache
   - markets/modal_content.mustache
   - modals/close_buttons.mustache
   - modals/confirm.mustache
@@ -234,7 +239,6 @@ dashboard-js-template-files:
   - programs/tree.mustache
   - projects/modal_content.mustache
   - regulations/modal_content.mustache
-  - roles/modal_content.mustache
   - roles/object_list.mustache
   - sections/info.mustache
   - sections/modal_content.mustache
