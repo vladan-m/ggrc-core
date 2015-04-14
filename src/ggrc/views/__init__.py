@@ -399,6 +399,13 @@ def audit_3_0_ca():
   """
   return render_template("/mockups/audit-3.0/control-assessment.html")
 
+@app.route("/mockups/subtree/")
+@login_required
+def subtree():
+  """Subtree mockup
+  """
+  return render_template("/mockups/subtree/index.html")
+
 @app.route("/permissions")
 @login_required
 def user_permissions():
