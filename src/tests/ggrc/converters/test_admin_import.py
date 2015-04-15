@@ -18,29 +18,12 @@ from nose.plugins.skip import SkipTest
 THIS_ABS_PATH = abspath(dirname(__file__))
 CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
 
-
-@SkipTest
 class TestSystemProcess(TestCase):
   def setUp(self):
     super(TestSystemProcess, self).setUp()
 
   def tearDown(self):
     super(TestSystemProcess, self).tearDown()
-
-  def test_system_collides_with_process_slug(self):
-    csv_filename = join(CSV_DIR, "system_over_process.csv")
-    proc1 = Process(slug="PROC-1", title="Existing Process")
-    db.session.add(proc1)
-    db.session.commit()
-    expected_error = "Code is already used for a Process"
-    options = {'dry_run': True}
-    converter = handle_csv_import(
-        SystemsConverter,
-        csv_filename,
-        **options
-    )
-    actual_error = converter.objects[0].errors_for('slug')[0]
-    self.assertEqual(expected_error, actual_error)
 
   def test_process_collides_with_system_slug(self):
     csv_filename = join(CSV_DIR, "process_over_system.csv")

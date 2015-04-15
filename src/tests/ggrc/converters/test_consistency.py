@@ -22,7 +22,6 @@ CSV_DIR = join(THIS_ABS_PATH, 'comparison_csvs/')
 TEST_FILE = "mappings_importEX.csv"
 
 
-@SkipTest
 class TestConsistency(TestCase):
   def setUp(self):
     self.csv_filename = "dummy_filename.csv"
@@ -45,18 +44,23 @@ class TestConsistency(TestCase):
     sys2 = System(slug="SLCA", title="System2")
     db.session.add(sys1)
     db.session.add(sys2)
+    db.session.commit()
+
     # read in the file that should match the output
     csv_filename = join(CSV_DIR, TEST_FILE)
     with open(csv_filename, "r") as f:
       expected_csv = AbstractCSV(f.read())
+
     sample_day = datetime(2013, 9, 25)
     pol1 = Policy(
       kind="Company Policy",
       title="Example Policy",
       slug="POL-123",
+      display_name="Example Policy"
     )
     db.session.add(pol1)
     db.session.commit()
+
     # import from spreadsheet to add to it
     import_options = {
         'parent_type': Policy,
@@ -73,6 +77,7 @@ class TestConsistency(TestCase):
         'parent_id': pol1.id,
         'export': True,
     }
+
     # then export right back
     handle_converter_csv_export(
         "dummy_filename.csv",
@@ -80,6 +85,7 @@ class TestConsistency(TestCase):
         ControlsConverter,
         **export_options
     )
+
     name, args, kwargs = mock_response.mock_calls[0]
     # called with one argument, which is a tuple w/ csv as first arg
     # so access first/only argument, then first arg of tuple
