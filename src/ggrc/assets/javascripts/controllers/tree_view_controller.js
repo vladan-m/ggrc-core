@@ -335,6 +335,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     , single_object : false
     , find_params : {}
     , sort_property : null
+    , sort_direction: null
     , sort_function : null
     , sortable : true
     , filter : null
@@ -443,6 +444,12 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                   that.hide_filter();
                 }
               });
+
+              can.bind.call(that.element.parent().find('.widget-col-title'),
+                            'click',
+                            function (event) {
+                              that.sort(event);
+                            });
         })));
       }
 
@@ -684,6 +691,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
         , $existing = this.element.children('li.cms_controllers_tree_view_node')
         , draw_items_dfds = []
         , sort_prop = this.options.sort_property
+        , sort_dir = this.options.sort_direction
         , sort_function = this.options.sort_function
         , filter = this.options.filter
         ;
@@ -706,10 +714,17 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                 compare = sort_function(old_item, new_item);
               }
               else {
-                compare = GGRC.Math.string_less_than(
-                  old_item[sort_prop],
-                  new_item[sort_prop]
-                );
+                if (sort_dir === "asc") {
+                    compare = GGRC.Math.string_less_than(
+                        old_item[sort_prop],
+                        new_item[sort_prop]
+                    );
+                }else{
+                    compare = GGRC.Math.string_more_than(
+                        old_item[sort_prop],
+                        new_item[sort_prop]
+                    );
+                }
               }
               if (compare) {
                 $item.insertAfter($existing.eq(j));
@@ -872,6 +887,21 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
 
       this.display_prefs.setFilterHidden(false);
       this.display_prefs.save();
+    }
+
+  , sort: function (event) {
+      var key = "title", order = "asc";
+
+      this.options.sort_function = function (val1, val2) {
+         if (val1[key] !== val2[key]){
+             var a = parseFloat(val1[key]) || val1[key],
+                 b = parseFloat(val2[key]) || val2[key];
+             return (a < b) ^ (order !== 'asc');
+         }
+         return false;
+      };
+
+      this.reload_list();
     }
 });
 
