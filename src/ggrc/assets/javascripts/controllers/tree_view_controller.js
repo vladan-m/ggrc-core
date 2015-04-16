@@ -895,12 +895,13 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
               : "asc";
 
       this.options.sort_function = function (val1, val2) {
-         if (val1[key] !== val2[key]){
-             var a = parseFloat(val1[key]) || val1[key],
-                 b = parseFloat(val2[key]) || val2[key];
-             return (a < b) ^ (order !== 'asc');
-         }
-         return false;
+        var a = val1.get_deep_property(key),
+            b = val2.get_deep_property(key);
+
+        if (a !== b){
+          return (a < b) ^ (order !== 'asc');
+        }
+        return false;
       };
 
       this.options.sort_direction = order;
