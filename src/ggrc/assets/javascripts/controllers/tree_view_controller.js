@@ -883,7 +883,8 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     }
 
   , sort: function (event) {
-      var key = $(event.currentTarget).data("field");
+      var $el = $(event.currentTarget),
+          key = $(event.currentTarget).data("field");
 
       if (key !== this.options.sort_by) {
           this.options.sort_direction = null;
@@ -904,6 +905,13 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
 
       this.options.sort_direction = order;
       this.options.sort_by = key;
+
+      $el.closest(".tree-header")
+          .find(".widget-col-title")
+          .removeClass("asc")
+          .removeClass("desc");
+
+      $el.addClass(order);
 
       this.reload_list();
     }
