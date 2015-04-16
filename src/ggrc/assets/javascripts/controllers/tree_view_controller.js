@@ -336,6 +336,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     , find_params : {}
     , sort_property : null
     , sort_direction: null
+    , sort_by: null
     , sort_function : null
     , sortable : true
     , filter : null
@@ -691,7 +692,6 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
         , $existing = this.element.children('li.cms_controllers_tree_view_node')
         , draw_items_dfds = []
         , sort_prop = this.options.sort_property
-        , sort_dir = this.options.sort_direction
         , sort_function = this.options.sort_function
         , filter = this.options.filter
         ;
@@ -714,17 +714,10 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                 compare = sort_function(old_item, new_item);
               }
               else {
-                if (sort_dir === "asc") {
-                    compare = GGRC.Math.string_less_than(
-                        old_item[sort_prop],
-                        new_item[sort_prop]
-                    );
-                }else{
-                    compare = GGRC.Math.string_more_than(
-                        old_item[sort_prop],
-                        new_item[sort_prop]
-                    );
-                }
+                compare = GGRC.Math.string_less_than(
+                    old_item[sort_prop],
+                    new_item[sort_prop]
+                );
               }
               if (compare) {
                 $item.insertAfter($existing.eq(j));
@@ -890,7 +883,15 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     }
 
   , sort: function (event) {
-      var key = "title", order = "asc";
+      var key = $(event.currentTarget).data("field");
+
+      if (key !== this.options.sort_by) {
+          this.options.sort_direction = null;
+      }
+
+      var order = this.options.sort_direction === "asc"
+              ? "desc"
+              : "asc";
 
       this.options.sort_function = function (val1, val2) {
          if (val1[key] !== val2[key]){
@@ -900,6 +901,9 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
          }
          return false;
       };
+
+      this.options.sort_direction = order;
+      this.options.sort_by = key;
 
       this.reload_list();
     }
