@@ -1098,7 +1098,7 @@ can.Model("can.Model.Cacheable", {
       return _.reduce(keys, function (res, key) {
         if (res && res.length) return res;
 
-        if (typeof val[key] === "undefined") {
+        if (typeof val[key] === "undefined" || val[key] === null) {
           return undefined;
         }else{
           if (typeof val[key].reify === "function") {
