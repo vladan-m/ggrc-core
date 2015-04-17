@@ -15,20 +15,29 @@
     <div class="span8">
     {{/is_dashboard}}
       <div class="title-heading oneline">
-        Task Title
+        <span class="widget-col-title" data-field="title">
+          Task Title
+          <i class="grcicon-carot"></i>
+        </span>
       </div>
     </div>
     <div class="span2">
       <div class="oneline">
         {{#is_dashboard}}
-          Mapped Objects
+          <span class="widget-col-title" data-field="cycle_task_group_object.object.title">
+            Mapped Objects
+            <i class="grcicon-carot"></i>
+          </span>
         {{/is_dashboard}}
       </div>
     </div>
     <div class="span2">
       <div class="oneline">
         {{#is_dashboard}}
-          Workflows
+          <span class="widget-col-title" data-field="cycle.workflow.title">
+            Workflow
+            <i class="grcicon-carot"></i>
+          </span>
         {{/is_dashboard}}
       </div>
     </div>
