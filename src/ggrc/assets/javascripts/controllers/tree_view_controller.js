@@ -436,22 +436,25 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
         dfds.push(
           can.view(this.options.header_view, $.when(this.options)).then(
             this._ifNotRemoved(function(frag) {
-              that.element.before(frag);
+              this.element.before(frag);
               // TODO: This is a workaround so we can toggle filter. We should refactor this ASAP.
-              can.bind.call(that.element.parent().find('.filter-trigger > a'), 'click', function (evnt) {
-                if (that.display_prefs.getFilterHidden()) {
-                  that.show_filter();
-                } else {
-                  that.hide_filter();
-                }
-              });
+              can.bind.call(
+                  this.element.parent().find('.filter-trigger > a'), 
+                  'click', 
+                  function () {
+                    if (this.display_prefs.getFilterHidden()) {
+                      this.show_filter();
+                    } else {
+                      this.hide_filter();
+                    }
+                  }.bind(this)
+              );
 
               can.bind.call(that.element.parent().find('.widget-col-title'),
                             'click',
-                            function (event) {
-                              that.sort(event);
-                            });
-        })));
+                            this.sort.bind(this)
+                           );
+        }.bind(this))));
       }
 
       // Init the spinner if items need to be loaded:
@@ -884,7 +887,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
 
   , sort: function (event) {
       var $el = $(event.currentTarget),
-          key = $(event.currentTarget).data("field");
+          key = $el.data("field");
 
       if (key !== this.options.sort_by) {
           this.options.sort_direction = null;

@@ -1088,9 +1088,9 @@ can.Model("can.Model.Cacheable", {
     
     if (!descriptor || !descriptor.length) {
       return undefined;
-    }else if (val[descriptor]) {
+    } else if (val[descriptor]) {
       return val[descriptor];
-    }else{
+    } else {
       var d = descriptor.split('.'),
           keys = d.shift().split('|'),
           rest = d.join('.');
@@ -1100,7 +1100,7 @@ can.Model("can.Model.Cacheable", {
 
         if (typeof val[key] === "undefined" || val[key] === null) {
           return undefined;
-        }else{
+        } else {
           if (typeof val[key].reify === "function") {
             val[key] = val[key].reify();
           }
