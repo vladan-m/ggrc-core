@@ -14,9 +14,11 @@
   .tree-action-list {
     @include reset-list();
     @include clearfix();
-    float: right;
+    text-align: right;
+    height: 28px;
     li {
-      float: left;
+      display: inline-block;
+      overflow: hidden;
       margin-left: 10px;
       line-height: 24px;
       .item-data {
@@ -96,11 +98,12 @@
       .tree-action-list {
         [class^="grcicon-"] {
           margin-top: 1px;
-          @include opacity(0.25);
+          @include opacity(0.5);
           @include transition(opacity 0.2s ease);
         }
         li {
           position: relative;
+          overflow: visible;
           .dropdown-menu {
             right: -12px;
             left: auto;
@@ -108,6 +111,7 @@
             @include border-radius(0);
             padding: 14px 30px 20px 30px;
             min-width: 340px;
+            text-align: left;
             h5 {
               font-size: 16px;
               font-weight: normal;
@@ -615,11 +619,6 @@
   }
   .custom-attr-wrap {
     border-top: 1px solid $itemBorder;
-    .hidden-fields-area,
-    .hidden-fields-area-custom {
-      margin-top: 15px;
-      border-bottom: 1px solid $itemBorder;
-    }
   }
   .info-widget-footer {
     padding-top: 3px;
@@ -628,6 +627,13 @@
       color: $textGray;
     }
   }
+}
+
+.hidden-fields-area,
+.hidden-fields-area-custom {
+  padding-top: 15px;
+  padding-left: 28px;
+  border-bottom: 1px solid $itemBorder;
 }
 
 .info {
@@ -1173,6 +1179,11 @@
   }
   .filter-button {
     @include clearfix();
+    a {
+      float: right;
+      margin-top: 12px !important;
+      margin-left: 10px;
+    }
     input[type="submit"] {
       margin-top: 7px;
       float: right;
@@ -1183,9 +1194,6 @@
       font-weight: normal;
     }
     i {
-      float: right;
-      margin-top: 12px !important;
-      margin-left: 10px;
       @include opacity(0.25);
       @include transition(opacity 0.2s ease);
       &:hover {
