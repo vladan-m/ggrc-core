@@ -509,7 +509,6 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
             this._ifNotRemoved(function(frag) {
               this.element.before(frag);
               // TODO: This is a workaround so we can toggle filter. We should refactor this ASAP.
-<<<<<<< HEAD
               can.bind.call(
                   this.element.parent().find('.filter-trigger > a'), 
                   'click', 
@@ -526,20 +525,12 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                             'click',
                             this.sort.bind(this)
                            );
-        }.bind(this))));
-=======
-              can.bind.call(that.element.parent().find('.filter-trigger > a'), 'click', function (evnt) {
-                if (that.display_prefs.getFilterHidden()) {
-                  that.show_filter();
-                } else {
-                  that.hide_filter();
-                }
-              });
-              can.bind.call(that.element.parent().find('.set-tree-attrs'), 'click', function (evnt) {
-                that.set_tree_attrs();
-              });
-        })));
->>>>>>> epic/mango
+               can.bind.call(this.element.parent().find('.set-tree-attrs'), 
+                             'click', 
+                             function () {
+                               this.set_tree_attrs();
+                             });
+            }.bind(this))));
       }
 
       // Init the spinner if items need to be loaded:
@@ -976,7 +967,6 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
       this.display_prefs.save();
     }
 
-<<<<<<< HEAD
   , sort: function (event) {
       var $el = $(event.currentTarget),
           key = $el.data("field");
@@ -1011,7 +1001,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
 
       this.reload_list();
     }
-=======
+
   /* Update the tree attributes as selected by the user CORE-1546
   */
   , set_tree_attrs : function () {
@@ -1047,7 +1037,6 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     //set user preferences for next time
 
   }
->>>>>>> epic/mango
 });
 
 can.Control("CMS.Controllers.TreeViewNode", {
