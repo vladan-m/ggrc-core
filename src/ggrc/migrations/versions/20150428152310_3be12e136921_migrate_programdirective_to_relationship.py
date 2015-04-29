@@ -3,7 +3,7 @@
 # Created By: anze@reciprocitylabs.com
 # Maintained By: anze@reciprocitylabs.com
 
-"""Remove ProgramDirective table
+"""Migrate ProgramDirective to Relationship
 
 Revision ID: 3be12e136921
 Revises: 57cc398ad417
