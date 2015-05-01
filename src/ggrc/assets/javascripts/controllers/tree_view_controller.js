@@ -526,10 +526,9 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                             this.sort.bind(this)
                            );
                can.bind.call(this.element.parent().find('.set-tree-attrs'), 
-                             'click', 
-                             function () {
-                               this.set_tree_attrs();
-                             });
+                             'click',
+                             this.set_tree_attrs.bind(this)
+                            );
             }.bind(this))));
       }
 
