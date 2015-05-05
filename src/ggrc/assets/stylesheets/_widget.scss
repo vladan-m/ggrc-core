@@ -1679,7 +1679,7 @@ ul.attr-list {
   overflow: hidden;
 }
 
-.widget-col-title {
+.widget-col-title[data-field] {
   display: inline-block;
   cursor: pointer;
   i {

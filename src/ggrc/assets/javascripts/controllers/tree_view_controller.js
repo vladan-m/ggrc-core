@@ -349,6 +349,19 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     , allow_mapping : true
     , allow_creating : true
     , child_options : [] //this is how we can make nested configs. if you want to use an existing
+    , sort_fields: {
+        owner: 'owners.0.name|email',
+        contact: 'contact.name|email',
+        slug: 'slug',
+        status: 'status',
+        title: 'title',
+        assignee: 'contact.name|email',
+        email: 'email',
+        authorizations: 'roles.0.permission_summary',
+        start_date: 'start_date',
+        end_date: 'end_date|due_on',
+        updated_at: 'updated_at'
+    }
     //example child option :
     // { property : "controls", model : CMS.Models.Control, }
     // { parent_find_param : "system_id" ... }
@@ -410,6 +423,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     CMS.Models.CustomAttributeDefinition.findAll({definition_type: model_name})
       .then(function (defs) {
         if (defs.length) {
+          
           //create custom_attr_list objects
           for (i = 0; i < defs.length; i++) {
             if (defs[i].attribute_type !== 'Rich Text') {
@@ -418,6 +432,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
               obj.attr_name = defs[i].title;
               obj.display_status = false;
               obj.attr_type = 'custom';
+                  
               select_attr_list.push(obj);
             }
           }
@@ -434,13 +449,16 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
           obj.mandatory = ['title'].indexOf(obj.attr_name) !== -1;
         }
 
-
         //Create display list
         can.each(select_attr_list, function (item) {
           if (item.attr_title !== 'Title' && item.display_status) {
-              display_attr_list.push(item);
+            if (this.options.sort_fields[item.attr_name.toLowerCase()]) {
+              item.attr_sort_field = this.options.sort_fields[item.attr_name.toLowerCase()];
+            }
+
+            display_attr_list.push(item);
           }
-        });
+        }.bind(this));
 
         this.options.attr('select_attr_list', select_attr_list);
         this.options.attr('display_attr_list', display_attr_list);
@@ -521,7 +539,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                   }.bind(this)
               );
 
-              can.bind.call(that.element.parent().find('.widget-col-title'),
+              can.bind.call(that.element.parent().find('.widget-col-title[data-field]'),
                             'click',
                             this.sort.bind(this)
                            );
@@ -971,7 +989,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
           key = $el.data("field");
 
       if (key !== this.options.sort_by) {
-          this.options.sort_direction = null;
+        this.options.sort_direction = null;
       }
 
       var order = this.options.sort_direction === "asc"
@@ -1031,6 +1049,12 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     this.options.attr('display_attr_list', this.options.display_attr_list);
     this.options.attr('display_attr_width',
       Math.floor(display_width/this.options.display_attr_list.length));
+
+   
+    can.bind.call(this.element.parent().find('.widget-col-title[data-field]'),
+                  'click',
+                  this.sort.bind(this)
+                 );
 
     this.reload_list();
     //set user preferences for next time

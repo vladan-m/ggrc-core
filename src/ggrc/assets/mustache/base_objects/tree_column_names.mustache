@@ -8,9 +8,12 @@
 <div class="span4">
   <div class="row-fluid">
     {{#display_attr_list}}
-      <div class="span{{display_attr_width}}">
+      <div class="span{{display_attr_width}} widget-col-title" {{#attr_sort_field}}data-field="{{attr_sort_field}}"{{/attr_sort_field}}>
         <div class="oneline">
           {{attr_title}}
+          {{#attr_sort_field}}
+            <i class="grcicon-carot"></i>
+          {{/attr_sort_field}}
         </div>
       </div>
     {{/display_attr_list}}
