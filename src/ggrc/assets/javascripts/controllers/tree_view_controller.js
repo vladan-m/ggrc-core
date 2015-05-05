@@ -417,8 +417,15 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
 
     //Get default attr list
     can.each(model.tree_view_options.attr_list || can.Model.Cacheable.attr_list, function (item) {
+        var name = item.attr_name.toLowerCase();
+
+        if (this.options.sort_fields[name]) {
+          item.attr_sort_field = this.options.sort_fields[name];
+        }
+
         select_attr_list.push(item);
-    });
+    }.bind(this));
+
     //Get custom attr_list
     CMS.Models.CustomAttributeDefinition.findAll({definition_type: model_name})
       .then(function (defs) {
@@ -452,10 +459,6 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
         //Create display list
         can.each(select_attr_list, function (item) {
           if (item.attr_title !== 'Title' && item.display_status) {
-            if (this.options.sort_fields[item.attr_name.toLowerCase()]) {
-              item.attr_sort_field = this.options.sort_fields[item.attr_name.toLowerCase()];
-            }
-
             display_attr_list.push(item);
           }
         }.bind(this));
