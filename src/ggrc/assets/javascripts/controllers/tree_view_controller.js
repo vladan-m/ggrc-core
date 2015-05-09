@@ -520,9 +520,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
       this._attached_deferred.resolve();
     }
   , init_view : function() {
-      var that = this
-        , dfds = []
-        ;
+      var dfds = [];
 
       if(this.options.header_view && this.options.show_header) {
         dfds.push(
@@ -542,35 +540,35 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
                   }.bind(this)
               );
 
-              can.bind.call(that.element.parent().find('.widget-col-title[data-field]'),
+              can.bind.call(this.element.parent().find('.widget-col-title[data-field]'),
                             'click',
                             this.sort.bind(this)
                            );
-               can.bind.call(this.element.parent().find('.set-tree-attrs'), 
-                             'click',
-                             this.set_tree_attrs.bind(this)
-                            );
+              can.bind.call(this.element.parent().find('.set-tree-attrs'), 
+                            'click',
+                            this.set_tree_attrs.bind(this)
+                           );
             }.bind(this))));
       }
 
       // Init the spinner if items need to be loaded:
       dfds.push(this.init_count().then(function(count) {
-        if (!that.element) {
+        if (!this.element) {
           return;
         }
         if (count()) {
-          that._loading_started();
+          this._loading_started();
         } else {
-          that.element.trigger("loaded");
+          this.element.trigger("loaded");
         }
-      }));
+      }.bind(this)));
 
       if (this.options.footer_view) {
         dfds.push(
           can.view(this.options.footer_view, this.options,
             this._ifNotRemoved(function(frag) {
-              that.element.append(frag);
-            })
+              this.element.append(frag);
+            }.bind(this))
           ));
       }
 
