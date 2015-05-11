@@ -352,6 +352,7 @@ CMS.Controllers.TreeLoader("CMS.Controllers.TreeView", {
     , sort_fields: {
         owner: 'owners.0.name|email',
         contact: 'contact.name|email',
+        secondary_contact: 'secondary_contact.name|email',
         slug: 'slug',
         status: 'status',
         title: 'title',
