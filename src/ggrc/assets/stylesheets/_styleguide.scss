@@ -172,3 +172,12 @@
     }
   }
 }
+
+.popover {
+  &.bottom {
+    margin-top: 5px !important;
+    right: auto !important;
+  }
+}
+
+.grcicon-carot-white { background-position:-78px -80px; }
