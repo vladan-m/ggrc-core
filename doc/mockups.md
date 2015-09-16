@@ -56,4 +56,5 @@
     (add it to the `new_mockup` folder and to `assets.yml`
     under `mockup-js-template-files`).
 
-    For an example on how to use mustache variables in your template and custom events see the sample mockup.
+    For an example on how to use mustache variables in your template and
+    custom events see the sample mockup `src/assets/mockups/sample`.
