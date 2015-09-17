@@ -24,3 +24,8 @@ def init_mockup_views():
   @login_required
   def mockup_sample2():
     return render_template("mockups/base.haml")
+
+  @app.route("/mockups/request")
+  @login_required
+  def mockup_request():
+    return render_template("mockups/base.haml")
