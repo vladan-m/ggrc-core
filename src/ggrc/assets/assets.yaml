@@ -370,5 +370,4 @@ mockup-js-files:
 mockup-js-template-files:
   - title.mustache
   - sample/sample.mustache
-  - request/request.mustache
   - request/info.mustache

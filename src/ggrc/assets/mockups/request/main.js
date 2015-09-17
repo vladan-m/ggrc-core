@@ -18,7 +18,7 @@
     // Object:
     object: {
       icon: "grciconlarge-audit",
-      title: "Request",
+      title: "My new request",
     },
     // Views:
     views: [{

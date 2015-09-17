@@ -17,57 +17,102 @@
     {{/is_info_pin}}
 
     {{> /static/mustache/base_objects/dropdown_menu.mustache}}
+    <a href="javascript://" class="btn btn-small btn-primary right-button">Complete</a>
 
     <div class="tier-content">
       {{^is_info_pin}}
-        {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
+        <div class="row-fluid wrap-row">
+          <div class="span6">
+            <h6>Title</h6>
+            <h3>My new request</h3>
+          </div>
+        </div>
       {{/is_info_pin}}
-      {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/notes.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/contacts.mustache' instance=instance}}}
-      {{{render '/static/mustache/base_objects/urls.mustache' instance=instance}}}
 
-      <div class="custom-attr-wrap">
-        <div class="row-fluid">
-          <div class="span12">
-            <div class="info-expand">
-              <a class="show-hidden-fields info-show-hide" href="javascript://">
-                <span class="out">
-                  <i class="grcicon-arrow-right"></i>
-                  Show
-                </span>
-                <span class="in">
-                  <i class="grcicon-arrow-bottom"></i>
-                  Hide
-                </span>
-                Advanced
-              </a>
+      <div class="row-fluid">
+        <div class="span9">
+
+          <div class="row-fluid wrap-row">
+            <div class="span12">
+              <h6>Description</h6>
+              <div class="rtf-block">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vitae ante dapibus lacus dictum vestibulum. Nullam finibus semper convallis. Ut libero mauris, viverra nec augue eget, congue viverra felis. Aenean ut arcu vel tortor rhoncus dictum id vel urna. Sed a enim laoreet diam lacinia euismod.
+              </div>
             </div>
           </div>
-        </div><!-- row-fluid end -->
-        <div class="hidden-fields-area" style="display:none;">
+
           <div class="row-fluid wrap-row">
-            <div class="span4">
-              <h6>Code</h6>
-              <p>
-                {{slug}}
-              </p>
+            <h6>Evidence</h6>
+          </div>
+
+        </div>
+        <div class="span3">
+
+          <div class="row-fluid wrap-row">
+            <div class="span12">
+              <h6>State</h6>
+              <div class="side-content">
+                <span class="state-value state-inprogress">In progress</span>
+              </div>
             </div>
-            <div class="span4">
-              <h6>Effective Date</h6>
-              <p>
-                {{localize_date start_date}}
-              </p>
+          </div>
+
+          <div class="row-fluid wrap-row">
+            <div class="span12">
+              <h6>People</h6>
+              <div class="side-content">
+                <ul class="label-list">
+                  <li>
+                    <label>
+                      Assignee
+                    </label>
+                    <a href="javascript://">Martin L.K.</a>
+                    <a href="javascript://"><i class="grcicon-edit"></i></a>
+                  </li>
+                  <li>
+                    <label>
+                      Requester
+                    </label>
+                    <a href="javascript://">Josh Smith</a>
+                    <a href="javascript://"><i class="grcicon-edit"></i></a>
+                  </li>
+                  <li>
+                    <label>
+                      Verifier
+                    </label>
+                    <a href="javascript://">Prasanna V.</a>
+                    <a href="javascript://"><i class="grcicon-edit"></i></a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="span4">
-              <h6>Stop Date</h6>
-              <p>
-              {{localize_date end_date}}
-              </p>
+          </div>
+
+          <div class="row-fluid wrap-row">
+            <div class="span12">
+              <h6>Dates</h6>
+              <div class="side-content">
+                <ul class="label-list">
+                  <li>
+                    <label>
+                      Created on
+                    </label>
+                    12/03/14
+                  </li>
+                  <li>
+                    <label>
+                      Due on
+                    </label>
+                    12/31/15
+                  </li>
+                </ul>
+              </div>
             </div>
-          </div><!-- row-fluid end -->
-        </div><!-- hidden-fields-area end -->
-      </div><!-- custom-attr-wrap end -->
+          </div>
+
+        </div>
+      </div>
+
     </div><!-- tier-content end -->
 
   {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
