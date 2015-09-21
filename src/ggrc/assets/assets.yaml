@@ -366,6 +366,7 @@ mockup-js-files:
   - mockuphelper_controller.js
   - sample/main.js
   - request/main.js
+  - request-info-pane/main.js
 
 mockup-js-template-files:
   - title.mustache
