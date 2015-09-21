@@ -141,8 +141,20 @@
 
 .file-list {
   @extend %reset-list;
-  font-size: 14px;
+  font-size: 16px;
+  .date {
+    color: $gray;
+    font-size: 11px;
+    font-style: italic;
+    display: inline-block;
+    margin-right: 4px;
+    line-height: 18px;
+    vertical-align: top;
+  }
   li {
     margin-bottom: 10px;
+    .entry-list & {
+      @extend %oneline;
+    }
   }
 }
