@@ -52,7 +52,7 @@
     padding: 0;
     border: none;
     background: none;
-    @include transition-duration(0.3s);
+    @include transition(all .3s ease);
     .icon-bar {
       display: block;
       margin-bottom: 3px;

@@ -965,16 +965,6 @@
   border:1px solid $lightGray;
 }
 
-
-.modal-section {
-  @extend %default-border-bottom;
-  padding-bottom:10px;
-  &:hover {
-    @include background-image(linear-gradient(left, $white, $lightGray, $white));
-    border-bottom:1px solid darken($lightGray,10%);
-  }
-}
-
 .expand-link {
   padding: 0 0 12px 0;
 

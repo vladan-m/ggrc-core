@@ -1,0 +1,15 @@
+/*
+ * Copyright (C) 2015 Google Inc., authors, and contributors <see AUTHORS file>
+ * Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * Created By: vladan@reciprocitylabs.com
+ * Maintained By: vladan@reciprocitylabs.com
+ */
+
+// Include all mixins
+@import "mixins/opacity";
+@import "mixins/border_radius";
+@import "mixins/box_shadow";
+@import "mixins/transition";
+@import "mixins/button_bgnd";
+@import "mixins/input_placeholder";
+@import "mixins/btn_size";

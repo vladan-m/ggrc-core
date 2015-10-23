@@ -6,8 +6,7 @@
  */
 
 .lhs-holder {
-  @include transition-property(left);
-  @include transition-duration(.8s);
+  @include transition(left .8s);
   overflow-x: hidden;
   left: -240px;
   &.active {
@@ -124,8 +123,7 @@ h4.search-title {
 
 .lhn-type {
   @include clearfix();
-  @include transition-property(left);
-  @include transition-duration(.8s);
+  @include transition(left .8s);
   min-width: 240px;
   left: -246px;
   &.active {
@@ -483,8 +481,7 @@ h4.search-title {
 }
 
 .bar-v {
-  @include transition-property(left);
-  @include transition-duration(.8s);
+  @include transition(left .8s);
   @include background-size(2px 30px);
   background-color: $white;
   background-image: image-url("bgnds/drag-v.png");

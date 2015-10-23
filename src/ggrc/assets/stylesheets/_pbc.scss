@@ -5,50 +5,6 @@
  * Maintained By: brad@reciprocitylabs.com
  */
 
-.ca-fields {
-  span {
-    color:$text;
-    font-size:$f-small;
-    
-    &.left-space {
-      margin-right: 12px;
-    }
-  }
-  .btn {
-    margin-left:0;
-    padding: 3px 1px;
-    @include border-radius(20px);
-    border-color:lighten($gray,10%);
-    i {
-      margin-top:0;
-    }
-    &.btn-success {
-      border-color: $btnGreen;
-    }
-    &.btn-warning {
-      border-color: $btnOrange;
-    }
-  }
-}
-
-.headline {
-  text-transform:uppercase;
-  margin-top:10px;
-  padding:4px;
-  font-size:$f-small;
-  color:$text;
-  [class*="span"] {
-    padding-bottom:0;
-    margin-bottom:0;
-    min-height:0;
-  }
-}
-
-span.tiny-title {
-  
-  color:$text;
-}
-
 .requests {
   .item-title {
     color:$text;
@@ -74,7 +30,7 @@ span.tiny-title {
     }
     span.request-title {
       text-transform:uppercase;
-      
+
       color:$subTitle;
       cursor:pointer;
     }
@@ -91,7 +47,7 @@ span.tiny-title {
         width:220px;
         border-color:darken($lightGray,15%);
         @include border-radius();
-      }    
+      }
     }
     .assignee {
       position:relative;
@@ -106,7 +62,7 @@ span.tiny-title {
         width:auto;
         border-color:darken($lightGray,15%);
         @include border-radius();
-      }    
+      }
     }
 
   }
@@ -129,7 +85,7 @@ span.tiny-title {
       margin-bottom:4px;
     }
     p {
-      
+
       &.disabled-text {
         color:lighten($gray,10%);
         margin-top:-2px;
@@ -143,18 +99,12 @@ span.tiny-title {
         margin-top: 0;
       }
     }
-    
+
   }
   .rtf {
     color:$text;
-    
-  }
-}
 
-h4.pbc-title {
-  font-weight:bold;
-  line-height:32px;
-  margin-right:10px;
+  }
 }
 
 .responses {
@@ -171,7 +121,7 @@ h4.pbc-title {
   input {
     line-height: 12px;
     height: 12px;
-    
+
     &.input-block-level {
       min-height: 22px;
     }
@@ -179,7 +129,7 @@ h4.pbc-title {
   select {
     line-height: 22px;
     height: 22px;
-    
+
   }
   .bg-caret {
     background: image-url('bgnd-responses.png') no-repeat 0 0;
@@ -192,7 +142,7 @@ h4.pbc-title {
   }
   .item-title {
     color:$responsTitle;
-    
+
     font-weight: bold;
   }
   ul.tree-structure {
@@ -274,22 +224,22 @@ h4.pbc-title {
     @include border-radius();
     padding:8px 12px;
     margin-bottom:8px;
-    
+
     .btn-group {
       li {
-        
+
         a {
           &:hover {
             strong {
               color:#fff;
             }
-            
+
           }
         }
       }
       i {
         margin-top:0;
-      }    
+      }
     }
     color: $text;
     h4 i {
@@ -337,7 +287,7 @@ h4.pbc-title {
     }
     h4 {
       color: $responsTitle;
-      
+
       font-weight: bold;
       line-height: 25px;
       span {
@@ -361,7 +311,7 @@ h4.pbc-title {
       }
     }
     .rtf {
-      
+
     }
     p {
       margin: 0;
@@ -379,7 +329,7 @@ h4.pbc-title {
       border: none;
       line-height: 16px;
       height: 16px;
-      
+
       text-decoration: none;
       padding: 0 18px 0 0;
       width: auto;
@@ -389,7 +339,7 @@ h4.pbc-title {
   }
   .inner-response {
     padding:8px 0;
-    
+
     color: $text;
     .items {
       margin-bottom: 20px;
@@ -424,7 +374,7 @@ h4.pbc-title {
     }
     .error {
       line-height: 13px;
-      
+
       font-weight: bold;
       color: $red;
       margin-top: 4px;
@@ -448,7 +398,7 @@ h4.pbc-title {
       }
       .btn {
         &.btn-add {
-          
+
           font-weight: normal;
           line-height: 16px;
           padding-right: 2px;
@@ -473,7 +423,7 @@ h4.pbc-title {
   li {
     .alert {
       font-weight: bold;
-      
+
       padding: 4px;
       line-height: 14px;
       margin-bottom: 10px;
@@ -531,7 +481,7 @@ ul.tree-structure {
         li {
           .alert {
             font-weight: bold;
-            
+
             padding: 4px;
             line-height: 14px;
           }
@@ -565,7 +515,7 @@ ul.tree-structure {
         }
       }
     }
-    
+
   }
   ul.pbc-requests {
     background:$white;
@@ -579,7 +529,7 @@ ul.tree-structure {
         .btn {
           i {
             margin-top:0;
-          }        
+          }
         }
         .item-actions {
           padding-right:4px;
@@ -638,7 +588,7 @@ input.pbc-request-assignee {
   @include box-shadow(none);
   margin-top:-3px;
   margin-bottom:0;
-  
+
   line-height:16px;
   height:16px;
   min-height:0;
@@ -666,7 +616,7 @@ ul.tree-structure.pbc-responses {
     .delete-response {
       @include opacity(1);
     }
-    
+
   }
 }
 
@@ -687,7 +637,7 @@ ul.tree-structure.pbc-responses {
     .success {
       color:$green;
       font-weight:bold;
-      
+
     }
   }
 }
@@ -705,12 +655,10 @@ ul li.inline-search-result.error {
     font-size:$f-regular;
     font-weight:normal;
     background: $addBtn;
-    @include background-image(linear-gradient(center top, lighten($addBtn, 5%) 5%, darken($addBtn, 5%) 100% ));
     text-shadow: 1px 1px 1px $btnAddShadow;
     border: 1px solid $addBtnBorder;
     &:active {
       @include box-shadow(inset 0 0 3px $darkGray);
-      @include background-image(linear-gradient(center top, darken($addBtn, 5%) 5%, lighten($addBtn, 5%) 100% ));
     }
   }
 }

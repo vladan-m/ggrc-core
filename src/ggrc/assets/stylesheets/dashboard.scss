@@ -2,7 +2,7 @@
  * Copyright (C) 2013 Google Inc., authors, and contributors <see AUTHORS file>
  * Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
  * Created By: brad@reciprocitylabs.com
- * Maintained By: predrag@reciprocitylabs.com
+ * Maintained By: vladan@reciprocitylabs.com
  */
 
 /* FIXME: Fix for https://github.com/rails/rails/issues/3686
@@ -12,21 +12,15 @@
 
 // NOTE! Don't use Sprockets 'require' statements inside SASS files
 
-// Required external stylesheets
-
-//@import "jquery-ui";
-
-
-// Whole file is commented. Leaving it for now. WIll be removed later.
-// @import "bootstrap-setup";
-
 @import "bootstrap";
 @import "bootstrap-responsive";
 
-@import "compass/css3";
+//@import "compass/css3";
 //@import "bootstrap-wysihtml5-0.0.2";
 
 @import "setup";
+@import "mixins";
+@import "placeholders";
 @import "common";
 @import "lhs";
 @import "layout";
@@ -57,47 +51,3 @@
 @import "js-helpers";
 
 @import "import-export";
-/*
-
-// editable styles start here
-
-  // variables, overrides, mixins
-  @import "setup";
-
-  // bootstrap rewrites
-  @import "rewrite";
-
-  // global definitions
-  @import "global";
-
-  // everything
-  @import "gcms";
-
-  // modals aka dialogs
-  @import "progressbars";
-
-
-  // modals aka dialogs
-  @import "modals";
-
-  // modals aka dialogs
-  @import "widgets";
-
-  // SVG graphing
-  @import "graph";
-
-  // icons
-  @import "icons";
-
-  // tables
-  @import "tables";
-
-
-  // new page structure and elements
-  @import "page-structure";
-
-  // fluid-layout styles
-  @import "fluid";
-
-
-*/
