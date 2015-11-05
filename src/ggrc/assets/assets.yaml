@@ -372,6 +372,7 @@ mockup-js-files:
 
   # Request
   - request/pages/info.js
+  - request/pages/workflow.js
   - request/pages/requests.js
   - request/pages/objectives.js
   - request/pages/regulations.js
@@ -391,6 +392,7 @@ mockup-js-template-files:
   # Request
   - title.mustache
   - request/info.mustache
+  - request/workflow.mustache
   - request/widget.mustache
   - request/assessment_modal.mustache
   - assessor/assessments.mustache
