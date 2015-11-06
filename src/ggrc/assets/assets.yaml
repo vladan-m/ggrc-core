@@ -397,6 +397,9 @@ mockup-js-template-files:
   - request/assessment_modal.mustache
   - assessor/assessments.mustache
   - request/workflow_modal.mustache
+  - request/workflow_modal_no_gdrive.mustache
+  - request/audit_modal.mustache
+  - request/audit_modal_no_gdrive.mustache
 
   # Base templates
   - base_templates/modal_base.mustache

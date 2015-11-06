@@ -51,9 +51,18 @@
                     Define Assessment template
                   </a>
                 </li>
-                {{#is_allowed 'update' instance context='for'}}
-                  {{> /static/mustache/base_objects/edit_object_link.mustache}}
-                {{/is_allowed}}
+                <li>
+                  <a href="#AuditModal" data-toggle="modal">
+                    <i class="grcicon-edit"></i>
+                    Edit
+                  </a>
+                </li>
+                <li>
+                  <a href="#AuditModalNoGdrive" data-toggle="modal">
+                    <i class="grcicon-edit"></i>
+                    noGdrive
+                  </a>
+                </li>
                 <li>
                   <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
                 </li>
@@ -229,3 +238,5 @@
 {{/instance}}
 
 {{> /static/mockups/request/assessment_modal.mustache }}
+{{> /static/mockups/request/audit_modal.mustache }}
+{{> /static/mockups/request/audit_modal_no_gdrive.mustache }}

@@ -1,4 +1,4 @@
-<div id="WorkflowModal" class="modal hide fade modal-selector ui-draggable" tabindex="-1" role="dialog" aria-labelledby="WorkflowModalLabel" aria-hidden="true">
+<div id="WorkflowModalNoGdrive" class="modal hide fade modal-selector ui-draggable" tabindex="-1" role="dialog" aria-labelledby="WorkflowModalNoGdriveLabel" aria-hidden="true">
   <div class="modal-header">
     <a class="modal-dismiss pull-right" href="javascript://" data-dismiss="modal">
       <i class="grcicon-x-grey"></i>
@@ -91,11 +91,9 @@
             <div class="row-fluid wrap-row">
               <div class="span12 small-info ">
                 <label class="multi-type-label">
-                  Workflow Folder <label style="display: inline"><i class="grcicon-help-black" rel="tooltip" data-original-title="If selected, all Workflow attachments go here."></i></label>
+                  Workflow Folder URL <span class="note">(optional)</span> <label style="display: inline"><i class="grcicon-help-black" rel="tooltip" data-original-title="If selected, all Workflow attachments go here."></i></label>
                 </label>
-                <a href="javascript://" tabindex="" class="entry-attachment tree-item-add" data-toggle="gdrive-picker" data-model="Workflow" data-type="folders" data-id="">
-                <i class="grcicon-gdrive"></i> Assign Google Drive folder
-              </a>
+                <input class="input-block-level" placeholder="Enter URL to the designated folder for this workflow" type="text" tabindex="6">
               </div>
             </div>
           </div>
