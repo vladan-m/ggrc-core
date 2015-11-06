@@ -396,6 +396,7 @@ mockup-js-template-files:
   - request/widget.mustache
   - request/assessment_modal.mustache
   - assessor/assessments.mustache
+  - request/workflow_modal.mustache
 
   # Base templates
   - base_templates/modal_base.mustache

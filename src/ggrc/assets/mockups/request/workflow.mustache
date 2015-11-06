@@ -45,9 +45,12 @@
                 <span class="bubble"></span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
-                {{#is_allowed 'update' instance context='for'}}
-                  {{> /static/mustache/base_objects/edit_object_link.mustache}}
-                {{/is_allowed}}
+                <li>
+                  <a href="#WorkflowModal" data-toggle="modal">
+                    <i class="grcicon-edit"></i>
+                    Edit
+                  </a>
+                </li>
                 <li>
                   <clipboard-link title="Get permalink" notify="true" text="{{get_permalink}}" />
                 </li>
