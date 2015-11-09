@@ -32,6 +32,7 @@
         default_height: opts.infopin || "min"
       }));
       new CMS.Controllers.MockupModalView(this.element);
+      new CMS.Controllers.MockupTaskComment(this.element);
 
       this.element.find(".title-content").html(can.view(this.options.title_view, opts.object));
       this.options.views = views;
@@ -111,6 +112,14 @@
       var isEnabled = el.val() === "Control";
       this.element.find(".js-toggle-controlplans").prop("disabled", !isEnabled)
           .closest("label").toggleClass("disabled", !isEnabled);
+    }
+  });
+
+  can.Control("CMS.Controllers.MockupTaskComment", {
+  }, {
+    ".add-attachment-js-toggle click": function (el, ev) {
+      el.hide();
+      $(".attach-item").show();
     }
   });
 

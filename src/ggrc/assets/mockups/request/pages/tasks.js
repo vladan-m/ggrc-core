@@ -10,120 +10,20 @@
       title: "My new task",
       info_title: "My new task",
       description: Generator.paragraph(7),
-      notes: Generator.paragraph(9),
-      test: Generator.paragraph(11),
       state: {
         title: "In Progress",
         class_name: "inprogress"
       },
       state_color: "inprogress",
-      type: "audit",
+      type: "task",
       status: "In Progress",
       id: "2",
-      comments: Generator.get("comment", 10, {sort: "date"}),
-      code: "REQ-007",
-      people: {
-        "assignee": Generator.get("user", 5),
-        "requester": Generator.get("user"),
-        "verifier": Generator.get("user", 3)
-      },
       created_on: "12/03/14",
       due_on: "12/31/15",
-      mapped: {
-        "objects": Generator.create({
-            icon: ["objective", "control", "regulation"],
-            title: "%title",
-            description: "%text",
-            state: ["In Progress", "Draft"]
-          }, {
-            count: 5,
-            randomize: ["state", "icon"]
-          }),
-        "requests": Generator.create({
-            icon: "requests",
-            title: "%title",
-            description: "%text",
-            state: ["In Progress", "Draft"]
-          }, {
-            count: 5,
-            randomize: "state"
-          }),
-        "issues": Generator.create({
-            icon: "issue",
-            title: "%title",
-            description: "%text",
-            state: ["In Progress", "Draft"]
-          }, {
-            count: 5,
-            randomize: "state"
-          })
-      },
-      logs: Generator.create({
-        author: "%user",
-        timestamp: "%date",
-        data: [{
-          status: "made changes",
-          field: "Comment",
-          original: {
-            text: "%text"
-          },
-          changed: {
-            text: "%text"
-          }
-        }, {
-          status: "made changes",
-          field: "Evidence",
-          original: {
-            files: []
-          },
-          changed: {
-            files: "%files"
-          }
-        }, {
-          status: "made changes",
-          field: "People - Requester",
-          original: {
-            author: "%user"
-          },
-          changed: {
-            author: "%user"
-          }
-        }, {
-          status: "created request",
-          field: ""
-        }, {
-          status: "made changes",
-          field: "Dates - Due on",
-          original: {
-            text: "%date"
-          },
-          changed: {
-            text: "%date"
-          }
-        }, {
-          status: "made changes",
-          field: "Dates - Created on",
-          original: {
-            text: "%date"
-          },
-          changed: {
-            text: "%date"
-          }
-        }, {
-          status: "made changes",
-          field: "Description",
-          original: {
-            text: "%text"
-          },
-          changed: {
-            text: "%text"
-          }
-        }]
-      }, {
-        count: 5,
-        randomize: "data"
-      }),
-      past_requests: Generator.get("request", 5),
+      object_type: "program",
+      object_title: "Google fiber Program",
+      workflow: "Test structure flexibility",
+      comment_text: "Some simple comment",
       children: [{
         title: "Other title",
         type: "process",

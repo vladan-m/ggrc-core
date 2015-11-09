@@ -410,8 +410,13 @@ mockup-js-template-files:
   - base_templates/info_panel/pin_actions.mustache
   - base_templates/info_panel/header.mustache
   - base_templates/info_panel/description.mustache
+  - base_templates/info_panel/task_description.mustache
+  - base_templates/info_panel/task_object.mustache
+  - base_templates/info_panel/task_workflow.mustache
+  - base_templates/info_panel/task_comments.mustache
   - base_templates/info_panel/mapped_objects.mustache
   - base_templates/info_panel/people_list.mustache
+  - base_templates/info_panel/people_list_edit.mustache
   - base_templates/info_panel/dates_list.mustache
   - base_templates/info_panel/comment_list.mustache
   - base_templates/info_panel/log_list.mustache
