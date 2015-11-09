@@ -89,7 +89,8 @@
       comment_attachments: new can.List(),
       templates: {
         "assessment": "/static/mockups/base_templates/assessment_panel.mustache",
-        "default": "/static/mockups/base_templates/request_panel.mustache"
+        "default": "/static/mockups/base_templates/request_panel.mustache",
+        "task": "/static/mockups/base_templates/task_panel.mustache"
       }
     }
   }, {

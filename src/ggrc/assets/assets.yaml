@@ -374,6 +374,7 @@ mockup-js-files:
   - request/pages/info.js
   - request/pages/workflow.js
   - request/pages/requests.js
+  - request/pages/tasks.js
   - request/pages/objectives.js
   - request/pages/regulations.js
   - request/pages/controls.js
@@ -428,6 +429,7 @@ mockup-js-template-files:
 
   # Other base templates files
   - base_templates/request_panel.mustache
+  - base_templates/task_panel.mustache
   - base_templates/assessment_panel.mustache
   - base_templates/tree.mustache
   - base_templates/tree-assessor.mustache
