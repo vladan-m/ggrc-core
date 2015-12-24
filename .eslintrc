@@ -29,6 +29,10 @@
       "ignoreComments": true,
       "ignoreUrls": true
     }],
+    "no-unused-vars": [2, {
+      "args": "none",
+      "vars": "all"
+    }],
     // Each variable declaration must have its own var keyword
     "one-var": [2, "never"]
   }
