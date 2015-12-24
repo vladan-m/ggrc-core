@@ -24,6 +24,12 @@
     "require-jsdoc": 0,
     "space-before-function-paren": [
       2, {"anonymous": "always", "named": "never"}
-    ]
+    ],
+    "max-len": [2, 80, 4, {
+      "ignoreComments": true,
+      "ignoreUrls": true
+    }],
+    // Each variable declaration must have its own var keyword
+    "one-var": [2, "never"]
   }
 }
