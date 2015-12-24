@@ -34,6 +34,7 @@
       "vars": "all"
     }],
     // Each variable declaration must have its own var keyword
-    "one-var": [2, "never"]
+    "one-var": [2, "never"],
+    "vars-on-top": 2
   }
 }
