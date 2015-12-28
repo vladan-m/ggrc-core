@@ -48,7 +48,7 @@
       "ignoreComments": true,
       "ignoreUrls": true
     }],
-    "no-implicit-coercion": [2, {"boolean": true}],
+    "no-implicit-coercion": [2, {"boolean": false}],
     "no-inline-comments": 0,
     "no-negated-condition": 0,
     "no-unused-vars": [2, {
