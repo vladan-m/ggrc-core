@@ -12,6 +12,7 @@
     "can": false,
     "CMS": false,
     "GGRC": false,
+    "Moment": false,
     "Mustache": false,
     "MutationObserver": false,
     "Permission": false,
