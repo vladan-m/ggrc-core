@@ -5,28 +5,32 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-(function (can, $) {
+/* eslint camelcase: 0 */
 
+(function (can, $) {
   /* Auditor Assignment Modal
   */
   GGRC.Controllers.Modals('GGRC.Controllers.AuditRoleSelector', {
-
     _templates: [
       'base_modal_view'
     ],
-
     defaults: {
-      base_modal_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/audit_modal.mustache',
+      base_modal_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/audit_modal.mustache',
       option_model: null,
       option_query: {},
       join_model: null,
-      modal_title: null,
+      modal_title: null
     },
-
     launch: function ($trigger, options) {
       // Extract parameters from data attributes
-      var href = $trigger.attr('data-href') || $trigger.attr('href'), modal_class = 'modal hide', modal_id = 'ajax-modal-' + href.replace(/[\/\?=\&#%]/g, '-').replace(/^-/, ''), $target = $('<div id="' + modal_id + '" class="' + modal_class + '"></div>'), scope = $trigger.attr('data-modal-scope') || null
-        ;
+      var href = $trigger.attr('data-href') || $trigger.attr('href');
+      var modal_class = 'modal hide';
+      var modal_id = 'ajax-modal-' +
+        href.replace(/[\/\?=\&#%]/g, '-').replace(/^-/, '');
+      var $target = $('<div id="' +
+        modal_id + '" class="' + modal_class + '"></div>');
+      var scope = $trigger.attr('data-modal-scope') || null;
 
       options.scope = scope;
       options.$target = $target;
@@ -34,27 +38,23 @@
       this.newInstance($target[0], $.extend({$trigger: $trigger}, options));
 
       return $target;
-    },
-
+    }
   }, {
     init: function () {
       this.init_context();
       this.init_view();
     },
-
     init_context: function () {
       if (!this.context) {
         this.context = new can.Observe($.extend({
           page_model: GGRC.page_model
-
         }, this.options));
       }
       return this.context;
     },
-
     init_view: function () {
-      var self = this, deferred = $.Deferred()
-        ;
+      var self = this;
+      var deferred = $.Deferred();
 
       can.view(
         this.options.base_modal_view,
@@ -77,15 +77,14 @@
       }
     },
     'a.btn[data-toggle=\'modal-submit\'] click': function (el, ev) {
-      var self = this, instance = this.options.instance
-        ;
+      var self = this;
 
       function finish() {
         CMS.Models[self.options.scope].cache[self.options.scope_id].refresh();
         self.element.trigger('modal:success').modal_form('hide');
       }
       this.saveAuditor(finish);
-    },
+    }
   });
 
   /* Role Assignment Modal Selector
@@ -129,33 +128,36 @@
     ],
 
     defaults: {
-      base_modal_view: GGRC.mustache_path + '/selectors/base_modal.mustache',
-      option_column_view: GGRC.mustache_path + '/selectors/option_column.mustache',
-      active_column_view: GGRC.mustache_path + '/selectors/active_column.mustache',
-      option_object_view: null, //GGRC.mustache_path + "/selectors/option_object.mustache",
-      active_object_view: null, //GGRC.mustache_path + "/selectors/active_object.mustache",
-      option_detail_view: GGRC.mustache_path + '/selectors/option_detail.mustache',
-
+      base_modal_view: GGRC.mustache_path +
+        '/selectors/base_modal.mustache',
+      option_column_view: GGRC.mustache_path +
+        '/selectors/option_column.mustache',
+      active_column_view: GGRC.mustache_path +
+        '/selectors/active_column.mustache',
+      option_object_view: null,
+      active_object_view: null,
+      option_detail_view: GGRC.mustache_path +
+        '/selectors/option_detail.mustache',
       option_model: null,
       option_query: {},
       active_query: {},
       join_model: null,
       join_query: {},
       join_object: null,
-
       selected_id: null,
-
       modal_title: null,
       option_list_title: null,
       active_list_title: null,
-      new_object_title: null,
+      new_object_title: null
     },
-
     launch: function ($trigger, options) {
       // Extract parameters from data attributes
-
-      var href = $trigger.attr('data-href') || $trigger.attr('href'), modal_id = 'ajax-modal-' + href.replace(/[\/\?=\&#%]/g, '-').replace(/^-/, ''), $target = $('<div id="' + modal_id + '" class="modal modal-selector hide"></div>'), scope = $trigger.attr('data-modal-scope') || null
-        ;
+      var href = $trigger.attr('data-href') || $trigger.attr('href');
+      var modal_id = 'ajax-modal-' +
+        href.replace(/[\/\?=\&#%]/g, '-').replace(/^-/, '');
+      var $target = $('<div id="' +
+        modal_id + '" class="modal modal-selector hide"></div>');
+      var scope = $trigger.attr('data-modal-scope') || null;
 
       options.scope = scope;
       $target.modal_form({}, $trigger);
@@ -174,20 +176,17 @@
       this.init_view();
       this.init_data();
     },
-
     '.object_column li click': 'select_object',
     '.option_column li click': 'select_option',
     '.confirm-buttons a.btn:not(.disabled) click': 'change_option',
-
     init_bindings: function () {
       this.join_list.bind('change', this.proxy('update_active_list'));
       this.context.bind('selected_object', this.proxy('refresh_join_list'));
       this.option_list.bind('change', this.proxy('update_option_radios'));
     },
-
     init_view: function () {
-      var self = this, deferred = $.Deferred()
-        ;
+      var self = this;
+      var deferred = $.Deferred();
 
       can.view(
         this.options.base_modal_view,
@@ -203,7 +202,6 @@
 
       return deferred;
     },
-
     init_data: function () {
       return $.when(
         this.refresh_object_list(),
@@ -211,16 +209,20 @@
         this.refresh_join_list()
       );
     },
-
     init_context: function () {
       if (!this.context) {
         this.context = new can.Observe($.extend({
-          objects: this.object_list, options: this.option_list, joins: this.join_list, actives: this.active_list, selected_object: null, selected_option: null, page_model: GGRC.page_model
+          objects: this.object_list,
+          options: this.option_list,
+          joins: this.join_list,
+          actives: this.active_list,
+          selected_object: null,
+          selected_option: null,
+          page_model: GGRC.page_model
         }, this.options));
       }
       return this.context;
     },
-
     update_active_list: function () {
       var self = this;
 
@@ -233,10 +235,8 @@
           });
         }));
     },
-
     refresh_object_list: function () {
-      var self = this
-        ;
+      var self = this;
 
       return this.options.object_model.findAll(
         $.extend({}, this.options.object_query),
@@ -247,17 +247,19 @@
           }
         });
     },
-
     refresh_option_list: function () {
-      var self = this, instance = GGRC.page_instance(), params = {}
-        ;
+      var self = this;
+      var instance = GGRC.page_instance();
+      var params = {};
 
       // If this is a private model, set the scope
       if (self.options.scope) {
         params.scope = self.options.scope;
-      } else if (instance && instance.constructor.shortName === 'Workflow' && instance.context) {
+      } else if (instance &&
+        instance.constructor.shortName === 'Workflow' && instance.context) {
         params.scope = 'Workflow';
-      } else if (instance && instance.constructor.shortName === 'Program' && instance.context) {
+      } else if (instance &&
+        instance.constructor.shortName === 'Program' && instance.context) {
         params.scope = 'Private Program';
       } else if (/admin/.test(window.location)) {
         params.scope__in = 'System,Admin';
@@ -268,14 +270,17 @@
       return this.options.option_model.findAll(
         $.extend(params, this.option_query),
         function (options) {
-          var scope = params.scope || 'System';
+          var description;
           options = can.makeArray(_.sortBy(options, 'role_order'));
           if (params.scope === 'Private Program') {
-            description = 'A person with the No Access role will not be able to see this Private Program.';
+            description = 'A person with the No Access role will not be' +
+              ' able to see this Private Program.';
           } else if (params.scope === 'Workflow') {
-            description = 'A person with the No Access role will not be able to update or contribute to this Workflow.';
+            description = 'A person with the No Access role will not be' +
+              ' able to update or contribute to this Workflow.';
           } else {
-            description = 'This role allows a user access to the MyWork dashboard and applications Help files.';
+            description = 'This role allows a user access to the MyWork' +
+              ' dashboard and applications Help files.';
           }
           options.unshift({
             name: 'No access',
@@ -286,16 +291,17 @@
           self.option_list.replace(options);
         });
     },
-
     refresh_join_list: function () {
-      var self = this, join_object = this.get_join_object(), join_query
-        ;
+      var self = this;
+      var join_object = this.get_join_object();
+      var join_query;
 
       if (join_object) {
         join_query = can.extend({}, this.options.extra_join_query);
         join_query[this.options.join_id_field] = this.get_join_object_id();
         if (this.options.join_type_field) {
-          join_query[this.options.join_type_field] = this.get_join_object_type();
+          join_query[this.options.join_type_field] =
+            this.get_join_object_type();
         }
 
         return this.options.join_model.findAll(
@@ -304,11 +310,9 @@
             self.join_list.replace(joins);
             self.update_option_radios();
           });
-      } else {
-        return $.Deferred().resolve();
       }
+      return $.Deferred().resolve();
     },
-
     update_option_radios: function () {
       var allowed_ids = can.map(this.context.options, function (join) {
         return join.id;
@@ -326,41 +330,34 @@
         }
       }.bind(this));
     },
-
-    /*" hide": function(el, ev) {
-      // FIXME: This should only happen if there has been a change.
-      //   - (actually, the "Related Widget" should just be Can-ified instead)
-      var list_target = this.options.$trigger.data('list-target');
-      if (list_target === "refresh" && this._data_changed)
-        setTimeout(can.proxy(window.location.reload, window.location), 10);
-    },*/
-
     select_object: function (el) {
       el.closest('.object_column').find('li').removeClass('selected');
       el.addClass('selected');
       this.context.attr('selected_object', el.data('object'));
-      //this.refresh_join_list();
     },
-
     select_option: function (el) {
       el.closest('.option_column').find('li').removeClass('selected');
       el.addClass('selected');
       this.context.attr('selected_option', el.data('option'));
     },
-
     change_option: function (el_, ev) {
-      var self = this, el = $('.people-selector').find('input[type=radio]:checked'), li = el.closest('li'), clicked_option = li.data('option') || {}, join, delete_dfds, already_exists = false
-        ;
+      var self = this;
+      var el = $('.people-selector').find('input[type=radio]:checked');
+      var li = el.closest('li');
+      var clicked_option = li.data('option') || {};
+      var join;
+      var delete_dfds;
+      var already_exists = false;
 
       // Look for and remove the existing join.
       delete_dfds = $.map(li.parent().children(), function (el) {
-        var el = $(el), option = el.closest('li').data('option'), join = self.find_join(option.id)
-        ;
+        var option = $(el).closest('li').data('option');
+        var join = self.find_join(option.id);
 
         if (join && join.role.id === clicked_option.id) {
           // Don't delete the role we marked to add.
           already_exists = true;
-          return;
+          return undefined;
         }
         if (join) {
           return join.refresh().done(function () {
@@ -373,10 +370,10 @@
 
       // Create the new join (skipping "No Access" role, with id == 0)
       if (clicked_option.id > 0 && !already_exists) {
-
         $.when.apply($, delete_dfds).then(function () {
           join = self.get_new_join(
-              clicked_option.id, clicked_option.scope, clicked_option.constructor.shortName);
+              clicked_option.id, clicked_option.scope,
+              clicked_option.constructor.shortName);
           join.save().then(function () {
             self.join_list.push(join);
             self.refresh_option_list();
@@ -385,29 +382,25 @@
         });
       }
     },
-
     // HELPERS
-
     find_join: function (option_id) {
-      var self = this
-        ;
+      var self = this;
 
       return can.reduce(
         this.join_list,
         function (result, join) {
-          if (result)
+          if (result) {
             return result;
-          if (self.match_join(option_id, join))
+          }
+          if (self.match_join(option_id, join)) {
             return join;
-        },
-        null);
+          }
+        }, null);
     },
-
     match_join: function (option_id, join) {
       return (join[this.options.option_attr] &&
               join[this.options.option_attr].id === option_id);
     },
-
     get_new_join: function (option_id, option_scope, option_type) {
       var join_params = {};
       join_params[this.options.option_attr] = {};
@@ -423,38 +416,34 @@
       }
       return new (this.options.join_model)(join_params);
     },
-
     get_join_object: function () {
       return this.context.attr('selected_object');
     },
-
     get_join_object_id: function () {
       return this.get_join_object().id;
     },
-
     get_join_object_type: function () {
       var join_object = this.get_join_object();
       return (join_object ? join_object.constructor.shortName : null);
     }
   });
 
-  function get_page_object() {
-    return GGRC.make_model_instance(GGRC.page_object);
-  }
-
   function get_option_set(name, data) {
     // Construct options for Authorizations selector
-    var context, object_query = {}, base_modal_view;
+    var context;
+    var object_query = {};
+    var base_modal_view;
+    var extra_join_query;
+
     // Set object-specific context if requested (for Audits)
     if (data.params && data.params.context) {
       context = data.params.context;
       extra_join_query = {context_id: context.id};
-    }
-    // Otherwise use the page context
-    else if (GGRC.page_object) {
+    } else if (GGRC.page_object) { // Otherwise use the page context
       context = GGRC.make_model_instance(GGRC.page_object).context;
-      if (!context)
+      if (!context) {
         throw new Error('`context` is required for Assignments model');
+      }
       context = context.stub();
       extra_join_query = {context_id: context.id};
     } else {
@@ -466,37 +455,68 @@
       object_query = {id: data.person_id};
     }
     if (data.base_modal === 'auditor') {
-      base_modal_view = '/ggrc_basic_permissions/people_roles/audit_modal.mustache';
+      base_modal_view =
+        '/ggrc_basic_permissions/people_roles/audit_modal.mustache';
     } else {
-      base_modal_view = '/ggrc_basic_permissions/people_roles/base_modal.mustache';
+      base_modal_view =
+        '/ggrc_basic_permissions/people_roles/base_modal.mustache';
     }
 
     return {
-      base_modal_view: GGRC.mustache_path + base_modal_view, option_column_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/option_column.mustache', option_detail_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/option_detail.mustache', active_column_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/active_column.mustache', object_column_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/object_column.mustache', object_detail_view: GGRC.mustache_path + '/ggrc_basic_permissions/people_roles/object_detail.mustache', new_object_title: 'Person', modal_title: data.modal_title || 'User Role Assignments', related_model_singular: 'Person', related_table_plural: 'people', related_title_singular: 'Person', related_title_plural: 'People', object_model: CMS.Models.Person, option_model: CMS.Models.Role, join_model: CMS.Models.UserRole, object_query: object_query
-
-      //join_object_attr
-      , option_attr: 'role'
-      //join_option_attr
-      , join_attr: 'person'
-      //join_option_id_field
-      , option_id_field: 'role_id', option_type_field: null
-      //join_object_id_field
-      , join_id_field: 'person_id', join_type_field: null, extra_join_fields: {
+      base_modal_view: GGRC.mustache_path +
+        base_modal_view,
+      option_column_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/option_column.mustache',
+      option_detail_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/option_detail.mustache',
+      active_column_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/active_column.mustache',
+      object_column_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/object_column.mustache',
+      object_detail_view: GGRC.mustache_path +
+        '/ggrc_basic_permissions/people_roles/object_detail.mustache',
+      new_object_title: 'Person',
+      modal_title: data.modal_title || 'User Role Assignments',
+      related_model_singular: 'Person',
+      related_table_plural: 'people',
+      related_title_singular: 'Person',
+      related_title_plural: 'People',
+      object_model: CMS.Models.Person,
+      option_model: CMS.Models.Role,
+      join_model: CMS.Models.UserRole,
+      object_query: object_query,
+      // join_object_attr
+      option_attr: 'role',
+      // join_option_attr
+      join_attr: 'person',
+      // join_option_id_field
+      option_id_field: 'role_id',
+      option_type_field: null,
+      // join_object_id_field
+      join_id_field: 'person_id',
+      join_type_field: null,
+      extra_join_fields: {
         context: context
-      }, extra_join_query: extra_join_query
+      },
+      extra_join_query: extra_join_query
     };
   }
 
   $(function () {
     $('body').on('click', '[data-toggle="user-roles-modal-selector"]', function (e) {
-      var $this = $(this), options = $this.data('modal-selector-options'), data_set = can.extend({}, $this.data()), object_params = $this.attr('data-object-params')
-        ;
-      data_set.params = object_params && JSON.parse(object_params.replace(/\\n/g, '\\n'));
+      var $this = $(this);
+      var options = $this.data('modal-selector-options');
+      var data_set = can.extend({}, $this.data());
+      var object_params = $this.attr('data-object-params');
+
+      data_set.params = object_params &&
+        JSON.parse(object_params.replace(/\\n/g, '\\n'));
 
       can.each($this.data(), function (v, k) {
         //  This is just a mapping of keys to underscored keys
-        var new_key = k.replace(
-                /[A-Z]/g, function (s) { return '_' + s.toLowerCase(); });
+        var new_key = k.replace(/[A-Z]/g, function (key) {
+          return '_' + key.toLowerCase();
+        });
         data_set[new_key] = v;
         //  If we changed the key at all, delete the original
         if (new_key !== k) {
@@ -504,28 +524,31 @@
         }
       });
 
-      if (typeof (options) === 'string')
-        options = get_option_set(
-          options, data_set
-        );
+      if (typeof (options) === 'string') {
+        options = get_option_set(options, data_set);
+      }
 
       e.preventDefault();
       e.stopPropagation();
 
       // Trigger the controller
-      GGRC.Controllers.UserRolesModalSelector.launch($this, options)
-        .on('relationshipcreated relationshipdestroyed', function (ev, data) {
-          //$this.trigger("modal:" + ev.type, data);
-        });
+      GGRC.Controllers.UserRolesModalSelector.launch($this, options);
     });
     $('body').on('click', '[data-toggle="audit-role-modal-selector"]', function (e) {
-      var $this = $(this), options = $this.data('modal-selector-options'), instance_id = $this.data('object-id'), data_set = can.extend({}, $this.data()), object_params = $this.attr('data-object-params'), scope = $this.data('modal-scope')
-        ;
-      data_set.params = object_params && JSON.parse(object_params.replace(/\\n/g, '\\n'));
+      var $this = $(this);
+      var options = $this.data('modal-selector-options');
+      var instance_id = $this.data('object-id');
+      var data_set = can.extend({}, $this.data());
+      var object_params = $this.attr('data-object-params');
+      var scope = $this.data('modal-scope');
+
+      data_set.params = object_params &&
+        JSON.parse(object_params.replace(/\\n/g, '\\n'));
       can.each($this.data(), function (v, k) {
-        //  This is just a mapping of keys to underscored keys
-        var new_key = k.replace(
-                /[A-Z]/g, function (s) { return '_' + s.toLowerCase(); });
+        // This is just a mapping of keys to underscored keys
+        var new_key = k.replace(/[A-Z]/g, function (key) {
+          return '_' + key.toLowerCase();
+        });
         data_set[new_key] = v;
         //  If we changed the key at all, delete the original
         if (new_key !== k) {
@@ -533,10 +556,9 @@
         }
       });
 
-      if (typeof (options) === 'string')
-        options = get_option_set(
-          options, data_set
-        );
+      if (typeof (options) === 'string') {
+        options = get_option_set(options, data_set);
+      }
 
       e.preventDefault();
       e.stopPropagation();
