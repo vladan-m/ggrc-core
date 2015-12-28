@@ -5,8 +5,9 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-(function (can) {
+/* eslint camelcase: 0 */
 
+(function (can) {
   can.Model.Cacheable('CMS.Models.Workflow', {
     root_object: 'workflow',
     root_collection: 'workflows',
@@ -26,7 +27,7 @@
       cycles: 'CMS.Models.Cycle.stubs',
       start_date: 'date',
       end_date: 'date',
-      //workflow_task_groups: "CMS.Models.WorkflowTaskGroup.stubs"
+      // workflow_task_groups: "CMS.Models.WorkflowTaskGroup.stubs"
       modified_by: 'CMS.Models.Person.stub',
       context: 'CMS.Models.Context.stub',
       custom_attribute_values: 'CMS.Models.CustomAttributeValue.stubs',
@@ -39,7 +40,7 @@
       }
     },
     obj_nav_options: {
-      show_all_tabs: true,
+      show_all_tabs: true
     },
     tree_view_options: {
       show_view: GGRC.mustache_path + '/workflows/tree.mustache',
@@ -54,7 +55,9 @@
     },
 
     init: function () {
-      this._super && this._super.apply(this, arguments);
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
       this.validateNonBlank('title');
       this.bind('destroyed', function (ev, inst) {
         if (inst instanceof CMS.Models.Workflow) {
@@ -76,29 +79,34 @@
           });
         }
       });
-    },
+    }
   }, {
     save: function () {
-      var that = this,
-        task_group_title = this.task_group_title,
-        redirect_link;
+      var that = this;
+      var taskGroupTitle = this.task_group_title;
+      var redirectLink;
 
       return this._super.apply(this, arguments).then(function (instance) {
-        redirect_link = instance.viewLink + '#task_group_widget';
-        if (!task_group_title) {
-          instance.attr('_redirect', redirect_link);
+        var tg;
+
+        redirectLink = instance.viewLink + '#task_group_widget';
+
+        if (!taskGroupTitle) {
+          instance.attr('_redirect', redirectLink);
           return instance;
         }
-        var tg = new CMS.Models.TaskGroup({
-          title: task_group_title,
+
+        tg = new CMS.Models.TaskGroup({
+          title: taskGroupTitle,
           workflow: instance,
-          contact: instance.people && instance.people[0] || instance.modified_by,
-          context: instance.context,
+          contact:
+            instance.people && instance.people[0] || instance.modified_by,
+          context: instance.context
         });
         return tg.save().then(function (tg) {
           // Prevent the redirect form workflow_page.js
           tg.attr('_no_redirect', true);
-          instance.attr('_redirect', redirect_link + '/task_group/' + tg.id);
+          instance.attr('_redirect', redirectLink + '/task_group/' + tg.id);
           return that;
         });
       });
@@ -106,8 +114,8 @@
     // Check if task groups are slated to start
     //   in the current week/month/quarter/year
     is_mid_frequency: function () {
-      var dfd = new $.Deferred(),
-        self = this;
+      var dfd = new $.Deferred();
+      var self = this;
 
       function _afterOrSame(d1, d2) {
         return d1.isAfter(d2, 'day') || d1.isSame(d2, 'day');
@@ -120,8 +128,12 @@
       }
       function _check_all_tasks(tasks) {
         tasks.each(function (task) {
-          var start, end, current = moment();
+          var start;
+          var end;
+          var current = moment();
+
           task = task.reify();
+
           switch (self.frequency) {
             case 'weekly':
               start = moment().isoWeekday(task.relative_start_day);
@@ -138,19 +150,30 @@
               }
               break;
             case 'quarterly':
-              start = _currentQuarter().date(task.relative_start_day).add('M', task.relative_start_month - 1);
-              end = _currentQuarter().date(task.relative_end_day).add('M', task.relative_end_month - 1);
+              start = _currentQuarter()
+                .date(task.relative_start_day)
+                .add('M', task.relative_start_month - 1);
+              end = _currentQuarter()
+                .date(task.relative_end_day)
+                .add('M', task.relative_end_month - 1);
+
               if (_afterOrSame(start, end)) {
                 end.add('q', 1);
               }
+
               break;
             case 'annually':
-              start = moment().date(task.relative_start_day).month(task.relative_start_month - 1);
-              end = moment().date(task.relative_end_day).month(task.relative_end_month - 1);
+              start = moment().date(task.relative_start_day)
+                .month(task.relative_start_month - 1);
+              end = moment().date(task.relative_end_day)
+                .month(task.relative_end_month - 1);
+
               if (_afterOrSame(start, end)) {
                 end.add('y', 1);
               }
               break;
+            default:
+              // do nothing
           }
           if (_afterOrSame(current, start) && _beforeOrSame(current, end)) {
             dfd.resolve(true);
@@ -166,8 +189,8 @@
       // Check each task in the workflow:
       this.refresh_all('task_groups', 'task_group_tasks').then(function (s) {
         var tasks = new can.List();
-        self.task_groups.each(function (task_group) {
-          task_group.reify().task_group_tasks.each(function (task) {
+        self.task_groups.each(function (taskGroup) {
+          taskGroup.reify().task_group_tasks.each(function (task) {
             tasks.push(task.reify());
           });
         });
@@ -208,9 +231,8 @@
         newdate = this.attr('start_date');
         if (newdate) {
           return newdate.getDate();
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -236,9 +258,8 @@
         newdate = this.attr('end_date');
         if (newdate) {
           return newdate.getDate();
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -247,7 +268,9 @@
     //  1 for Jan-Apr-Jul-Oct, 2 for Feb-May-Aug-Nov, 3 for Mar-Jun-Sep-Dec
     start_month_of_quarter: can.compute(function (val) {
       var newdate;
-      var month_lookup = [0, 4, 2]; //31-day months in quarter cycles: January, May, March
+
+      // 31-day months in quarter cycles: January, May, March
+      var month_lookup = [0, 4, 2];
 
       if (val) {
         newdate = new Date(this.start_date || null);
@@ -257,9 +280,8 @@
         newdate = this.attr('start_date');
         if (newdate) {
           return newdate.getMonth() % 3 + 1;
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -268,7 +290,9 @@
     //  1 for Jan-Apr-Jul-Oct, 2 for Feb-May-Aug-Nov, 3 for Mar-Jun-Sep-Dec
     end_month_of_quarter: can.compute(function (val) {
       var newdate;
-      var month_lookup = [0, 7, 2]; //31-day months in quarter cycles: January, May, March
+
+      // 31-day months in quarter cycles: January, May, March
+      var month_lookup = [0, 7, 2];
 
       if (val) {
         newdate = new Date(this.end_date || null);
@@ -278,9 +302,8 @@
         newdate = this.attr('end_date');
         if (newdate) {
           return newdate.getMonth() % 3 + 1;
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -288,14 +311,17 @@
     //  Sets month to the chosen month, and adjusts
     //  day of month to be within chosen month
     start_month_of_year: can.compute(function (val) {
+      var daysInMonth;
       var newdate;
+
       if (val) {
         if (val > 12) {
           val = 12;
         }
         newdate = new Date(this.start_date || null);
-        if (moment(newdate).date(1).month(val - 1).daysInMonth() < newdate.getDate()) {
-          newdate.setDate(moment(newdate).date(1).month(val - 1).daysInMonth());
+        daysInMonth = moment(newdate).date(1).month(val - 1).daysInMonth();
+        if (daysInMonth < newdate.getDate()) {
+          newdate.setDate(daysInMonth);
         }
         newdate.setMonth(val - 1);
         this.attr('start_date', newdate);
@@ -303,9 +329,8 @@
         newdate = this.attr('start_date');
         if (newdate) {
           return newdate.getMonth() + 1;
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -313,14 +338,17 @@
     //  Sets month to the chosen month, and adjusts
     //  day of month to be within chosen month
     end_month_of_year: can.compute(function (val) {
+      var daysInMonth;
       var newdate;
+
       if (val) {
         if (val > 12) {
           val = 12;
         }
         newdate = new Date(this.end_date || null);
-        if (moment(newdate).date(1).month(val - 1).daysInMonth() < newdate.getDate()) {
-          newdate.setDate(moment(newdate).date(1).month(val - 1).daysInMonth());
+        daysInMonth = moment(newdate).date(1).month(val - 1).daysInMonth();
+        if (daysInMonth < newdate.getDate()) {
+          newdate.setDate(daysInMonth);
         }
         newdate.setMonth(val - 1);
         this.attr('end_date', newdate);
@@ -328,9 +356,8 @@
         newdate = this.attr('end_date');
         if (newdate) {
           return newdate.getMonth() + 1;
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -341,17 +368,17 @@
     start_day_of_week: can.compute(function (val) {
       var newdate;
       if (val) {
-        val = +val;
+        val = parseInt(val, 10);
         newdate = new Date(this.start_date || null);
-        newdate.setDate((newdate.getDate() + 7 - newdate.getDay() + val - 1) % 7 + 1);
+        newdate.setDate(
+          (newdate.getDate() + 7 - newdate.getDay() + val - 1) % 7 + 1);
         this.attr('start_date', newdate);
       } else {
         newdate = this.attr('start_date');
         if (newdate) {
           return newdate.getDay();
-        } else {
-          return null;
         }
+        return null;
       }
     }),
 
@@ -362,19 +389,18 @@
     end_day_of_week: can.compute(function (val) {
       var newdate;
       if (val) {
-        val = +val;
+        val = parseInt(val, 10);
         newdate = new Date(this.end_date || null);
-        newdate.setDate((newdate.getDate() + 7 - newdate.getDay() + val - 1) % 7 + 1);
+        newdate.setDate(
+          (newdate.getDate() + 7 - newdate.getDay() + val - 1) % 7 + 1);
         this.attr('end_date', newdate);
       } else {
         newdate = this.attr('end_date');
         if (newdate) {
           return newdate.getDay();
-        } else {
-          return null;
         }
+        return null;
       }
     })
   });
-
 })(window.can);

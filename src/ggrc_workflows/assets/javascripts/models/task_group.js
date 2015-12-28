@@ -5,8 +5,9 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-(function (can) {
+/* eslint camelcase: 0 */
 
+(function (can) {
   can.Model.Cacheable('CMS.Models.TaskGroup', {
     root_object: 'task_group',
     root_collection: 'task_groups',
@@ -19,7 +20,10 @@
 
     mixins: ['contactable'],
     permalink_options: {
-      url: '<%= base.viewLink %>#task_group_widget/task_group/<%= instance.id %>',
+      url:
+        '<%= base.viewLink %>#task_group_widget' +
+        '/task_group' +
+        '/<%= instance.id %>',
       base: 'workflow'
     },
     attributes: {
@@ -30,7 +34,7 @@
       objects: 'CMS.Models.get_stubs',
       modified_by: 'CMS.Models.Person.stub',
       context: 'CMS.Models.Context.stub',
-      end_date: 'date',
+      end_date: 'date'
     },
 
     tree_view_options: {
@@ -42,7 +46,11 @@
 
     init: function () {
       var that = this;
-      this._super && this._super.apply(this, arguments);
+
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
+
       this.validateNonBlank('title');
       this.validateNonBlank('contact');
       this.validateContact(['_transient.contact', 'contact']);
@@ -84,38 +92,46 @@
 
     mixins: ['contactable'],
     permalink_options: {
-      url: '<%= base.viewLink %>#task_group_widget/task_group/<%= instance.task_group.id %>',
-      base: 'task_group:workflow'
+      base: 'task_group:workflow',
+      url:
+        '<%= base.viewLink %>#task_group_widget' +
+        '/task_group' +
+        '/<%= instance.task_group.id %>'
     },
     attributes: {
       context: 'CMS.Models.Context.stub',
       modified_by: 'CMS.Models.Person.stub',
-      task_group: 'CMS.Models.TaskGroup.stub',
+      task_group: 'CMS.Models.TaskGroup.stub'
     },
 
     init: function () {
       var that = this;
-      this._super && this._super.apply(this, arguments);
+
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
+
       this.validateNonBlank('title');
       this.validateNonBlank('contact');
       this.validateContact(['_transient.contact', 'contact']);
 
       this.validate(['start_date', 'end_date'], function (newVal, prop) {
-        var that = this,
-          workflow = GGRC.page_instance(),
-          dates_are_valid = true;
+        var that = this;
+        var workflow = GGRC.page_instance();
+        var datesAreValid = true;
 
-        if (!(workflow instanceof CMS.Models.Workflow))
-          return;
+        if (!(workflow instanceof CMS.Models.Workflow)) {
+          return '';
+        }
 
         // Handle cases of a workflow with start and end dates
         if (workflow.frequency === 'one_time') {
-          dates_are_valid =
-               that.start_date && 0 < that.start_date.length &&
-              that.end_date && 0 < that.end_date.length;
+          datesAreValid =
+            that.start_date && (that.start_date.length > 0) &&
+            that.end_date && (that.end_date.length > 0);
         }
 
-        if (!dates_are_valid) {
+        if (!datesAreValid) {
           return 'Start and/or end date is invalid';
         }
       });
@@ -146,14 +162,20 @@
     }
   }, {
     init: function () {
-      this._super && this._super.apply(this, arguments);
+      var properties;
+      var task;
+      var taskGroup;
+
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
+
       this.bind('task_group', function (ev, newTask) {
         if (!newTask) {
           return;
         }
         newTask = newTask.reify();
-        var task,
-          taskGroup = newTask.get_mapping('task_group_tasks').slice(0);
+        taskGroup = newTask.get_mapping('task_group_tasks').slice(0);
 
         do {
           task = taskGroup.splice(-1)[0];
@@ -163,22 +185,37 @@
         if (!task) {
           return;
         }
-        can.each('relative_start_day relative_start_month relative_end_day relative_end_month start_date end_date'.split(' '),
-          function (prop) {
-            if (task[prop] && !this[prop]) {
-              this.attr(prop, task.attr(prop) instanceof Date ? new Date(task[prop]) : task[prop]);
-            }
-          }, this);
+
+        properties = [
+          'relative_start_day',
+          'relative_start_month',
+          'relative_end_day',
+          'relative_end_month',
+          'start_date',
+          'end_date'
+        ];
+        can.each(properties, function (prop) {
+          if (task[prop] && !this[prop]) {
+            this.attr(
+              prop,
+              task.attr(prop) instanceof Date ?
+                new Date(task[prop]) :
+                task[prop]
+            );
+          }
+        }, this);
       });
     },
 
     _refresh_workflow_people: function () {
       //  TaskGroupTask assignment may add mappings and role assignments in
       //  the backend, so ensure these changes are reflected.
-      var task_group, workflow;
-      task_group = this.task_group.reify();
-      if (task_group.selfLink) {
-        workflow = task_group.workflow.reify();
+      var taskGroup;
+      var workflow;
+
+      taskGroup = this.task_group.reify();
+      if (taskGroup.selfLink) {
+        workflow = taskGroup.workflow.reify();
         return workflow.refresh().then(function (workflow) {
           return workflow.context.reify().refresh();
         });
@@ -186,12 +223,13 @@
     },
 
     response_options_csv: can.compute(function (val) {
-      if (val !== null) {
-        this.attr('response_options', $.map(val.split(','), $.proxy(''.trim.call, ''.trim)));
-      } else {
+      if (val === null) {
         return (this.attr('response_options') || []).join(', ');
       }
+
+      this.attr(
+        'response_options',
+        $.map(val.split(','), $.proxy(''.trim.call, ''.trim)));
     })
   });
-
 })(window.can);
