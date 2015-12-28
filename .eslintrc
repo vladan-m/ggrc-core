@@ -45,6 +45,11 @@
     }],
     // Each variable declaration must have its own var keyword
     "one-var": [2, "never"],
+    "quote-props": [2, "as-needed", { "numbers": true, "keywords": true }],
     "vars-on-top": 2
+
+    // CanJS uses a lot of these exceptions
+    "new-cap": 0,
+    "no-new": 0,
   }
 }
