@@ -5,8 +5,9 @@
  * Maintained By: silas@reciprocitylabs.com
  */
 
-(function (can) {
+/* eslint camelcase: 0, new-cap: 0 */
 
+(function (can) {
   can.Model.Cacheable('CMS.Models.Risk', {
     root_object: 'risk',
     root_collection: 'risks',
@@ -31,12 +32,15 @@
     },
 
     init: function () {
-      this._super && this._super.apply(this, arguments);
       var req_fields = ['title', 'description', 'contact'];
-      for (var i = 0; i < req_fields.length; i++) {
+      var i = 0;
+
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
+      for (; i < req_fields.length; i++) {
         this.validatePresenceOf(req_fields[i]);
       }
     }
   }, {});
-
 })(window.can);
