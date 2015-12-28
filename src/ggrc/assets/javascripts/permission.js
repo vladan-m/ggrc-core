@@ -5,26 +5,23 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-;(function(can) {
-var ADMIN_PERMISSION
-, _CONDITIONS_MAP = {
-    contains: function(instance, args) {
+(function (can) {
+  var ADMIN_PERMISSION, _CONDITIONS_MAP = {
+      contains: function (instance, args) {
       var value = Permission._resolve_permission_variable(args.value);
       var list_value = instance[args.list_property];
       for (var i = 0; i < list_value.length; i++) {
-        if (list_value[i].id == value.id) return true;
+        if (list_value[i].id === value.id) return true;
       }
       return false;
-    }
-    , is: function(instance, args) {
+    }, is: function (instance, args) {
       var value = Permission._resolve_permission_variable(args.value);
       var property_value = instance[args.property_name];
       if (property_value instanceof can.Stub) {
         property_value = property_value.reify();
       }
-      return value == property_value;
-    }
-    , in: function(instance, args) {
+      return value === property_value;
+    }, in: function (instance, args) {
       var value = Permission._resolve_permission_variable(args.value);
       var property_value = instance[args.property_name];
       if (property_value instanceof can.Stub) {
@@ -32,34 +29,25 @@ var ADMIN_PERMISSION
       }
       return value.indexOf(property_value) >= 0;
     }
-  }
-, permissions_compute = can.compute(GGRC.permissions);
+    }, permissions_compute = can.compute(GGRC.permissions);
 
-can.Construct("Permission", {
+  can.Construct('Permission', {
 
-  _admin_permission_for_context : function(context_id) {
-    return new Permission(
+    _admin_permission_for_context: function (context_id) {
+      return new Permission(
       ADMIN_PERMISSION.action, ADMIN_PERMISSION.resource_type, context_id);
-  }
-
-  , _all_resource_permission : function(permission) {
+    }, _all_resource_permission: function (permission) {
     return new Permission(
       permission.action, ADMIN_PERMISSION.resource_type, permission.context_id);
-  }
-
-  , _permission_match : function(permissions, permission) {
-    var resource_types = permissions[permission.action] || {}
-      , resource_type = resource_types[permission.resource_type] || {}
-      , contexts = resource_type['contexts'] || []
+  }, _permission_match: function (permissions, permission) {
+    var resource_types = permissions[permission.action] || {}, resource_type = resource_types[permission.resource_type] || {}, contexts = resource_type['contexts'] || []
       ;
 
     return (contexts.indexOf(permission.context_id) > -1);
-  }
-
-  , _is_allowed : function(permissions, permission) {
+  }, _is_allowed: function (permissions, permission) {
     if (!permissions)
       return false; //?
-    if (this._permission_match(permissions, new Permission(permission.action, permission.resource_type, null))){
+    if (this._permission_match(permissions, new Permission(permission.action, permission.resource_type, null))) {
       return true;
     }
     if (this._permission_match(permissions, permission))
@@ -77,34 +65,23 @@ can.Construct("Permission", {
           this._admin_permission_for_context(0)))
       return true;
     return false;
-  }
-
-  , _resolve_permission_variable : function (value) {
-    if ($.type(value) == 'string') {
-      if (value[0] == '$') {
-        if (value == '$current_user') {
+  }, _resolve_permission_variable: function (value) {
+    if ($.type(value) === 'string') {
+      if (value[0] === '$') {
+        if (value === '$current_user') {
           return CMS.Models.get_instance(GGRC.current_user);
         }
         throw new Error('unknown permission variable: ' + value);
       }
     }
     return value;
-  }
-
-
-  , _is_allowed_for : function(permissions, instance, action) {
+  }, _is_allowed_for: function (permissions, instance, action) {
     // Check for admin permission
     if (this._permission_match(permissions, this._admin_permission_for_context(0)))
       return true;
 
-    var action_obj = permissions[action] || {}
-      , instance_type =
-          instance.constructor ? instance.constructor.shortName : instance.type
-      , type_obj = action_obj[instance_type] || {}
-      , conditions_by_context = type_obj['conditions'] || {}
-      , resources = type_obj.resources || []
-      , context = instance.context || {id: null}
-      , conditions = conditions_by_context[context.id] || [];
+    var action_obj = permissions[action] || {}, instance_type =
+          instance.constructor ? instance.constructor.shortName : instance.type, type_obj = action_obj[instance_type] || {}, conditions_by_context = type_obj['conditions'] || {}, resources = type_obj.resources || [], context = instance.context || {id: null}, conditions = conditions_by_context[context.id] || [];
 
     if (~resources.indexOf(instance.id)) {
       return true;
@@ -126,52 +103,40 @@ can.Construct("Permission", {
       }
     }
     return false;
-  }
-
-  , is_allowed : function(action, resource_type, context_id) {
+  }, is_allowed: function (action, resource_type, context_id) {
     return this._is_allowed(
         permissions_compute(), new this(action, resource_type, context_id));
-  }
-
-  , is_allowed_for : function(action, resource) {
+  }, is_allowed_for: function (action, resource) {
     return this._is_allowed_for(permissions_compute(), resource, action);
-  }
-
-  , is_allowed_any : function(action, resource_type) {
+  }, is_allowed_any: function (action, resource_type) {
     var allowed = this.is_allowed(action, resource_type),
-        perms = permissions_compute();
+      perms = permissions_compute();
 
     if (!allowed) {
-      allowed = _.exists(perms, action, resource_type, "contexts", "length");
+      allowed = _.exists(perms, action, resource_type, 'contexts', 'length');
     }
     return !!allowed;
-  }
-
-  , page_context_id: function() {
+  }, page_context_id: function () {
     var page_instance = GGRC.page_instance();
     return (page_instance && page_instance.context && page_instance.context.id) || null;
-  }
-
-  , refresh : function() {
+  }, refresh: function () {
     return $.ajax({
-      url : "/permissions"
-      , type : "get"
-      , dataType : "json"
-    }).then(function(perm) {
+      url: '/permissions', type: 'get', dataType: 'json'
+    }).then(function (perm) {
       permissions_compute(perm);
       GGRC.permissions = perm;
     });
   }
-}, {
+  }, {
   //prototype
-  setup : function(action, resource_type, context_id) {
+    setup: function (action, resource_type, context_id) {
     this.action = action;
     this.resource_type = resource_type;
     this.context_id = context_id;
     return this;
   }
-});
+  });
 
-ADMIN_PERMISSION = new Permission('__GGRC_ADMIN__', '__GGRC_ALL__', 0);
+  ADMIN_PERMISSION = new Permission('__GGRC_ADMIN__', '__GGRC_ALL__', 0);
 
 })(this.can);

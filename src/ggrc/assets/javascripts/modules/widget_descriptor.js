@@ -14,7 +14,7 @@
   // content_controller_options: options passed directly to the content controller; the
   //   precise options depend on the controller itself.  They usually require instance
   //   and/or model and some view.
-  can.Construct("GGRC.WidgetDescriptor", {
+  can.Construct('GGRC.WidgetDescriptor', {
     /*
       make an info widget descriptor for a GGRC object
       You must provide:
@@ -22,17 +22,17 @@
       widget_view [optional] - a template for rendering the info.
     */
     make_info_widget: function (instance, widget_view) {
-      var default_info_widget_view = GGRC.mustache_path + "/base_objects/info.mustache";
+      var default_info_widget_view = GGRC.mustache_path + '/base_objects/info.mustache';
       return new this(
-        instance.constructor.shortName + ":info", {
-          widget_id: "info",
+        instance.constructor.shortName + ':info', {
+          widget_id: 'info',
           widget_name: function () {
             if (instance.constructor.title_singular === 'Person')
               return 'Info';
             else
-              return instance.constructor.title_singular + " Info";
+              return instance.constructor.title_singular + ' Info';
           },
-          widget_icon: "grcicon-info",
+          widget_icon: 'grcicon-info',
           content_controller: GGRC.Controllers.InfoWidget,
           content_controller_options: {
             instance: instance,
@@ -52,27 +52,27 @@
     make_tree_view: function (instance, far_model, mapping, extenders) {
       var descriptor = {
         content_controller: CMS.Controllers.TreeView,
-        content_controller_selector: "ul",
+        content_controller_selector: 'ul',
         widget_initial_content: '<ul class="tree-structure new-tree"></ul>',
         widget_id: far_model.table_singular,
         widget_guard: function () {
-          if (far_model.title_plural === "Audits" && instance instanceof CMS.Models.Program) {
-            return "context" in instance && !!(instance.context.id);
+          if (far_model.title_plural === 'Audits' && instance instanceof CMS.Models.Program) {
+            return 'context' in instance && !!(instance.context.id);
           }
           return true;
         },
         widget_name: function () {
-          var $objectArea = $(".object-area");
-          if ($objectArea.hasClass("dashboard-area") || instance.constructor.title_singular === "Person") {
+          var $objectArea = $('.object-area');
+          if ($objectArea.hasClass('dashboard-area') || instance.constructor.title_singular === 'Person') {
             if (/dashboard/.test(window.location)) {
-              return "My " + far_model.title_plural;
+              return 'My ' + far_model.title_plural;
             } else {
               return far_model.title_plural;
             }
-          } else if (far_model.title_plural === "Audits") {
-            return "Mapped Audits";
+          } else if (far_model.title_plural === 'Audits') {
+            return 'Mapped Audits';
           } else {
-            return (far_model.title_plural === "References" ? "Linked " : "Mapped ") + far_model.title_plural;
+            return (far_model.title_plural === 'References' ? 'Linked ' : 'Mapped ') + far_model.title_plural;
           }
         },
         widget_icon: far_model.table_singular,
@@ -91,11 +91,11 @@
 
       $.extend.apply($, [true, descriptor].concat(extenders || []));
 
-      return new this(instance.constructor.shortName + ":" + far_model.table_singular, descriptor);
+      return new this(instance.constructor.shortName + ':' + far_model.table_singular, descriptor);
     },
     newInstance: function (id, opts) {
       var ret;
-      if (!opts && typeof id === "object") {
+      if (!opts && typeof id === 'object') {
         opts = id;
         id = opts.widget_id;
       }

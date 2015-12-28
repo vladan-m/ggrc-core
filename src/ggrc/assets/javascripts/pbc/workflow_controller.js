@@ -5,15 +5,14 @@
  * Maintained By: brad@reciprocitylabs.com
  */
 
+(function (can, $) {
 
-(function(can, $) {
-
-can.Control("GGRC.Controllers.PbcWorkflows", {
+  can.Control('GGRC.Controllers.PbcWorkflows', {
 
 }, {
-  "{CMS.Models.ControlAssessment} created": function(model, ev, instance) {
+  '{CMS.Models.ControlAssessment} created': function (model, ev, instance) {
 
-    if(!(instance instanceof CMS.Models.ControlAssessment)) {
+    if (!(instance instanceof CMS.Models.ControlAssessment)) {
       return;
     }
 
@@ -24,9 +23,9 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
     instance.delay_resolving_save_until($.when(audit_dfd, control_dfd));
 
   },
-  "{CMS.Models.Issue} created": function(model, ev, instance) {
+  '{CMS.Models.Issue} created': function (model, ev, instance) {
 
-    if(!(instance instanceof CMS.Models.Issue)) {
+    if (!(instance instanceof CMS.Models.Issue)) {
       return;
     }
 
@@ -39,9 +38,9 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
     instance.delay_resolving_save_until($.when(audit_dfd, control_dfd));
 
   },
-  "{CMS.Models.Section} created": function(model, ev, instance) {
+  '{CMS.Models.Section} created': function (model, ev, instance) {
 
-    if(!(instance instanceof CMS.Models.Section)) {
+    if (!(instance instanceof CMS.Models.Section)) {
       return;
     }
 
@@ -51,20 +50,20 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
     instance.delay_resolving_save_until($.when(directive_dfd));
 
   },
-  "{CMS.Models.UserRole} created": function(model, ev, instance) {
-    if(!(instance instanceof CMS.Models.UserRole)) {
+  '{CMS.Models.UserRole} created': function (model, ev, instance) {
+    if (!(instance instanceof CMS.Models.UserRole)) {
       return;
     }
-    if (instance.role_name !== "Auditor") {
+    if (instance.role_name !== 'Auditor') {
       return;
     }
     // Find the program context
-    var dfd = instance.refresh_all("context", "related_object", "program", "context").then(function (program_context) {
+    var dfd = instance.refresh_all('context', 'related_object', 'program', 'context').then(function (program_context) {
       // Find existing auditor roles for program context
       return $.when(
           program_context,
           CMS.Models.UserRole.findAll({context_id: program_context.id, person_id: instance.person.id}),
-          CMS.Models.Role.findAll({ name : "ProgramReader" }));
+          CMS.Models.Role.findAll({name: 'ProgramReader'}));
     }).then(function (program_context, auditor_program_roles, reader_roles) {
       // Check if there are any existing roles for the user and program context
       if (auditor_program_roles.length) {
@@ -79,7 +78,7 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
     });
     instance.delay_resolving_save_until(dfd);
   },
-  _create_relationship: function(source, destination, context) {
+  _create_relationship: function (source, destination, context) {
 
     if (!destination) {
       return $.Deferred().resolve();
@@ -95,7 +94,7 @@ can.Control("GGRC.Controllers.PbcWorkflows", {
   }
 });
 
-$(function() {
+  $(function () {
   $(document.body).ggrc_controllers_pbc_workflows();
 });
 

@@ -5,14 +5,14 @@
     Maintained By: ivan@reciprocitylabs.com
 */
 
-(function(can) {
+(function (can) {
   can.extend(can.Control.prototype, {
     // Returns a function which will be halted unless `this.element` exists
     //   - useful for callbacks which depend on the controller's presence in
     //     the DOM
-    _ifNotRemoved: function(fn) {
+    _ifNotRemoved: function (fn) {
       var that = this;
-      return function() {
+      return function () {
         if (!that.element) {
           return;
         }
@@ -21,22 +21,21 @@
     },
 
     //make buttons non-clickable when saving
-    bindXHRToButton : function(xhr, el, newtext, disable) {
+    bindXHRToButton: function (xhr, el, newtext, disable) {
       // binding of an ajax to a click is something we do manually
-      var $el = $(el)
-      , oldtext = $el.text();
+      var $el = $(el), oldtext = $el.text();
 
-      if(newtext) {
+      if (newtext) {
         $el[0].innerHTML = newtext;
       }
-      $el.addClass("disabled pending-ajax");
+      $el.addClass('disabled pending-ajax');
       if (disable !== false) {
-        $el.attr("disabled", true);
+        $el.attr('disabled', true);
       }
-      xhr.always(function() {
+      xhr.always(function () {
         // If .text(str) is used instead of innerHTML, the click event may not fire depending on timing
         if ($el.length) {
-          $el.removeAttr("disabled").removeClass("disabled pending-ajax")[0].innerHTML = oldtext;
+          $el.removeAttr('disabled').removeClass('disabled pending-ajax')[0].innerHTML = oldtext;
         }
       });
     }

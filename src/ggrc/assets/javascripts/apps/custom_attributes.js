@@ -5,23 +5,23 @@
     Maintained By: anze@reciprocitylabs.com
 */
 
-(function(can, $) {
+(function (can, $) {
 
   can.Component.extend({
-    tag: "custom-attributes",
+    tag: 'custom-attributes',
     scope: {
       instance: null,
       // Make sure custom_attribute_definitions & custom_attribute_values
       // get loaded
-      load: "@",
+      load: '@',
       loading: false
     },
-    content: "<content/>",
+    content: '<content/>',
     events: {
     },
-    init: function() {
+    init: function () {
       var instance = this.scope.instance,
-          scope = this.scope;
+        scope = this.scope;
       if (!instance.class.is_custom_attributable) {
         return;
       }
@@ -30,16 +30,16 @@
         $.when(
           instance.load_custom_attribute_definitions(),
           instance.refresh_all('custom_attribute_values')
-        ).always(function() {
+        ).always(function () {
           scope.attr('loading', false);
         });
       }
     },
     helpers: {
-      with_value_for_id: function(id, options) {
+      with_value_for_id: function (id, options) {
         var ret;
         id = Mustache.resolve(id);
-        can.each(this.instance.custom_attribute_values, function(value) {
+        can.each(this.instance.custom_attribute_values, function (value) {
           value = value.reify();
           if (value.custom_attribute_id === id) {
             ret = value.attribute_value;

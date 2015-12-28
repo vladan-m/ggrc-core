@@ -4,11 +4,11 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function($) {
+(function ($) {
   // Fix positioning of bootstrap tooltips when on left/right edge of screen
   // Possibly remove this when upgrade to Bootstrap 2.3.0 (which has edge detection)
   var _tooltip_show = $.fn.tooltip.Constructor.prototype.show;
-  $.fn.tooltip.Constructor.prototype.show = function() {
+  $.fn.tooltip.Constructor.prototype.show = function () {
     var margin = 10,
       container_width = document.width,
       tip_pos, $arrow, offset, return_value;
@@ -67,7 +67,7 @@
       dataTooltip = $currentTarget.data('tooltip');
       $currentTip = dataTooltip && dataTooltip.$tip;
 
-      monitorFn = function() {
+      monitorFn = function () {
         dataTooltip = dataTooltip || $currentTarget.data('tooltip');
         $currentTip = $currentTip || (dataTooltip && dataTooltip.$tip);
 
@@ -85,14 +85,14 @@
       $currentTarget.data('tooltip-monitor', true);
     }
   }
-  ;
+  
 
-  $('body').on('shown', '.modal', function() {
+  $('body').on('shown', '.modal', function () {
     $('.tooltip').hide();
   });
 
   // Listeners for initial tooltip mouseovers
-  $('body').on('mouseover', '[data-toggle="tooltip"], [rel=tooltip]', function(e) {
+  $('body').on('mouseover', '[data-toggle="tooltip"], [rel=tooltip]', function (e) {
     var $currentTarget = $(e.currentTarget);
 
     if (!$currentTarget.data('tooltip')) {

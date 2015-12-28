@@ -5,16 +5,14 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-
-(function(root, GGRC, $, can) {
+(function (root, GGRC, $, can) {
   var doc = root.document,
-      body = doc.body,
-      $win = $(root),
-      $doc = $(doc),
-      $body = $(body);
+    body = doc.body,
+    $win = $(root),
+    $doc = $(doc),
+    $body = $(body);
 
-
-  $win.on('hashchange', function() {
+  $win.on('hashchange', function () {
     GGRC.current_url_compute(window.location);
   });
   $.migrateMute = true; //turn off console warnings for jQuery-migrate
@@ -23,35 +21,35 @@
   ZeroClipboard.config({swfPath: '/static/flash/ZeroClipboard.swf'});
 
   function ModelError(message, data) {
-    this.name = "ModelError";
-    this.message = message || "Invalid Model encountered";
+    this.name = 'ModelError';
+    this.message = message || 'Invalid Model encountered';
     this.data = data;
   }
   ModelError.prototype = Error.prototype;
-  root.cms_singularize = function(type) {
+  root.cms_singularize = function (type) {
     type = type.trim();
     var _type = type.toLowerCase();
     switch (_type) {
-      case "facilities":
-        type = type[0] + "acility"; break;
-      case "people":
-        type = type[0] + "erson"; break;
-      case "processes":
-        type = type[0] + "rocess"; break;
-      case "policies":
-        type = type[0] + "olicy"; break;
-      case "systems_processes":
-        type = type[0] + "ystem_" + type[8] + "rocess";
+      case 'facilities':
+        type = type[0] + 'acility'; break;
+      case 'people':
+        type = type[0] + 'erson'; break;
+      case 'processes':
+        type = type[0] + 'rocess'; break;
+      case 'policies':
+        type = type[0] + 'olicy'; break;
+      case 'systems_processes':
+        type = type[0] + 'ystem_' + type[8] + 'rocess';
         break;
       default:
-        type = type.replace(/s$/, "");
+        type = type.replace(/s$/, '');
     }
     return type;
   };
-  root.calculate_spinner_z_index = function() {
+  root.calculate_spinner_z_index = function () {
     var zindex = 0;
-    $(this).parents().each(function() {
-      var z = parseInt($(this).css("z-index"), 10);
+    $(this).parents().each(function () {
+      var z = parseInt($(this).css('z-index'), 10);
       if (z) {
         zindex = z;
         return false;
@@ -60,16 +58,16 @@
     return zindex + 10;
   };
 
-  $doc.ready(function() {
+  $doc.ready(function () {
     // monitor target, where flash messages are added
     var target = $('section.content div.flash')[0];
-    var observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
         // check for new nodes
         if (mutation.addedNodes !== null) {
           // remove the success message from non-expandable
           // flash success messages after five seconds
-          setTimeout(function() {
+          setTimeout(function () {
             $('.flash .alert').not(':has(ul.flash-expandable)').remove();
           }, 5000);
         }
@@ -86,43 +84,42 @@
       observer.observe(target, config);
     }
 
-    setTimeout(function() {
+    setTimeout(function () {
       $('.flash .alert-success').not(':has(ul.flash-expandable)').remove();
     }, 5000);
 
     // TODO: Not AJAX friendly
-    $('.bar[data-percentage]').each(function() {
+    $('.bar[data-percentage]').each(function () {
       $(this).css({
         width: $(this).data('percentage') + '%'
       });
     });
 
-
     // tree
-    $body.on('click', 'ul.tree .item-title', function(e) {
+    $body.on('click', 'ul.tree .item-title', function (e) {
       var $this = $(this),
         $content = $this.closest('li').find('.item-content');
 
-      if ($this.hasClass("active")) {
+      if ($this.hasClass('active')) {
         $content.slideUp('fast');
-        $this.removeClass("active");
+        $this.removeClass('active');
       } else {
         $content.slideDown('fast');
-        $this.addClass("active");
+        $this.addClass('active');
       }
 
     });
-    $body.on("change", ".rotate_control_assessment", function(ev) {
-      ev.currentTarget.click(function() {
+    $body.on('change', '.rotate_control_assessment', function (ev) {
+      ev.currentTarget.click(function () {
         ev.currentTarget.toggle();
       });
     });
-    setTimeout(function() {
+    setTimeout(function () {
       GGRC.queue_event(
-        can.map(GGRC.Templates, function(template, id) {
-          var key = can.view.toId(GGRC.mustache_path + "/" + id + ".mustache");
+        can.map(GGRC.Templates, function (template, id) {
+          var key = can.view.toId(GGRC.mustache_path + '/' + id + '.mustache');
           if (!can.view.cachedRenderers[key]) {
-            return function() {
+            return function () {
               can.view.mustache(key, template);
             };
           }
@@ -131,39 +128,39 @@
     }, 2000);
   });
 
-  $win.load(function() {
+  $win.load(function () {
     // affix setup
-    $win.scroll(function() {
+    $win.scroll(function () {
       if ($('.header-content').hasClass('affix')) {
         $('.header-content').next('.content').addClass('affixed');
       } else {
         $('.header-content').next('.content').removeClass('affixed');
       }
     });
-    $body.on('click', 'ul.tree-structure .item-main .grcobject, ul.tree-structure .item-main .openclose', function(evnt) {
+    $body.on('click', 'ul.tree-structure .item-main .grcobject, ul.tree-structure .item-main .openclose', function (evnt) {
       evnt.stopPropagation();
       $(this).openclose();
     });
     // Google Circle CTA Button
-    $body.on('mouseenter', '.square-trigger', function() {
+    $body.on('mouseenter', '.square-trigger', function () {
       var $this = $(this),
         $popover = $this.closest('.circle-holder').find('.square-popover');
 
       $popover.slideDown('fast');
-      $this.addClass("active");
+      $this.addClass('active');
       return false;
     });
-    $body.on('mouseleave', '.square-popover', function() {
+    $body.on('mouseleave', '.square-popover', function () {
       var $this = $(this),
         $trigger = $this.closest('.circle-holder').find('.square-trigger');
 
       $this.slideUp('fast');
       $trigger.removeClass('active');
-      $this.removeClass("active");
+      $this.removeClass('active');
       return false;
     });
     // References popup preview
-    $body.on('mouseenter', '.new-tree .tree-info a.reference', function() {
+    $body.on('mouseenter', '.new-tree .tree-info a.reference', function () {
       if ($(this).width() > $('.new-tree .tree-info').width()) {
         $(this).addClass('shrink-it');
       }
@@ -172,7 +169,7 @@
     // Popover trigger for person tooltip in styleguide
     // The popover disappears if the show/hide isn't controlled manually
     var last_popover;
-    $body.on('mouseenter', '.person-tooltip-trigger', function(ev) {
+    $body.on('mouseenter', '.person-tooltip-trigger', function (ev) {
       var target = $(ev.currentTarget),
         content = target.closest('.person-holder').find('.custom-popover-content').html();
 
@@ -188,11 +185,11 @@
             hide: 200
           },
           trigger: 'manual',
-          content: function() {
+          content: function () {
             return content;
           }
         });
-        target.data('popover').tip().addClass('person-tooltip').css("z-index", 2000);
+        target.data('popover').tip().addClass('person-tooltip').css('z-index', 2000);
       }
       var popover = target.data('popover');
       if (last_popover && last_popover !== popover) {
@@ -212,7 +209,7 @@
 
       last_popover = popover;
     });
-    $body.on('mouseenter', '.popover', function(ev) {
+    $body.on('mouseenter', '.popover', function (ev) {
       // Refresh the popover
       if (last_popover && last_popover.tip().is(':visible')) {
         ev.currentTarget = last_popover.$element[0];
@@ -220,7 +217,7 @@
         last_popover.hoverState = 'in';
       }
     });
-    $body.on('mouseleave', '.person-holder, .person-tooltip-trigger, .popover, .popover .square-popover', function(ev) {
+    $body.on('mouseleave', '.person-holder, .person-tooltip-trigger, .popover, .popover .square-popover', function (ev) {
       var target = $(ev.currentTarget),
         popover
       ;
@@ -244,8 +241,8 @@
     });
 
     // Tab indexing form fields in modal
-    $body.on('focus', '.modal', function() {
-      $('.wysiwyg-area').each(function() {
+    $body.on('focus', '.modal', function () {
+      $('.wysiwyg-area').each(function () {
         var $this = $(this),
           $textarea = $this.find('textarea.wysihtml5').attr('tabindex'),
           $descriptionField = $this.find('iframe.wysihtml5-sandbox');
@@ -253,27 +250,27 @@
         function addingTabindex() {
           $descriptionField.attr('tabindex', $textarea);
         }
-        setTimeout(addingTabindex, 100)
+        setTimeout(addingTabindex, 100);
       });
     });
 
     // Prevent link popup in code mode
-    $body.on('click', 'a[data-wysihtml5-command=popupCreateLink]', function(e) {
+    $body.on('click', 'a[data-wysihtml5-command=popupCreateLink]', function (e) {
       var $this = $(this);
       if ($this.hasClass('disabled')) {
         // The button is disabled, close the modal immediately
         $('body').find('.bootstrap-wysihtml5-insert-link-modal').modal('hide');
-        $this.closest('.wysiwyg-area').find('textarea').focus()
+        $this.closest('.wysiwyg-area').find('textarea').focus();
       }
     });
 
     // Watermark trigger
-    $body.on('click', '.watermark-trigger', function() {
+    $body.on('click', '.watermark-trigger', function () {
       var $this = $(this),
         $showWatermark = $this.closest('.tree-item').find('.watermark-icon');
 
       $showWatermark.fadeIn('fast');
-      $this.addClass("active");
+      $this.addClass('active');
       $this.html('<span class="utility-link"><i class="grcicon-watermark"></i> Watermarked</span>');
 
       return false;
@@ -282,29 +279,29 @@
     // top nav dropdown position
     function dropdownPosition() {
       var $this = $(this),
-        $dropdown = $this.closest(".hidden-widgets-list").find(".dropdown-menu"),
-        $menu_item = $dropdown.find(".inner-nav-item").find("a"),
+        $dropdown = $this.closest('.hidden-widgets-list').find('.dropdown-menu'),
+        $menu_item = $dropdown.find('.inner-nav-item').find('a'),
         offset = $this.offset(),
         win = $(window),
         win_width = win.width();
 
       if (win_width - offset.left < 322) {
-        $dropdown.addClass("right-pos");
+        $dropdown.addClass('right-pos');
       } else {
-        $dropdown.removeClass("right-pos");
+        $dropdown.removeClass('right-pos');
       }
       if ($menu_item.length === 1) {
-        $dropdown.addClass("one-item");
+        $dropdown.addClass('one-item');
       } else {
-        $dropdown.removeClass("one-item");
+        $dropdown.removeClass('one-item');
       }
     }
-    $(".dropdown-toggle").on("click", dropdownPosition);
+    $('.dropdown-toggle').on('click', dropdownPosition);
   });
   root.getPageToken = function getPageToken() {
-    return $(document.body).data("page-subtype")
-      || $(document.body).data("page-type")
-      || window.location.pathname.substring(1, (window.location.pathname + "/").indexOf("/", 1));
+    return $(document.body).data('page-subtype') ||
+      $(document.body).data('page-type') ||
+      window.location.pathname.substring(1, (window.location.pathname + '/').indexOf('/', 1));
   };
   // Make sure GGRC.config is defined (needed to run Karma tests)
   GGRC.config = GGRC.config || {};

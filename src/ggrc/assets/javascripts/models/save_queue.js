@@ -5,7 +5,7 @@
     Maintained By: anze@reciprocitylabs.com
 */
 
-(function(can, $) {
+(function (can, $) {
 
   /*  GGRC.SaveQueue
    *
@@ -21,7 +21,7 @@
    *
    *  enqueue(obj: CMS.Models.Cacheable, save_args) -> null
    */
-  can.Construct("GGRC.SaveQueue", {
+  can.Construct('GGRC.SaveQueue', {
 
     DELAY: 100, // Number of ms to wait before the first batch is fired
     BATCH: GGRC.config.MAX_INSTANCES || 3, // Maximum number of POST/PUT requests at any given time
@@ -33,24 +33,24 @@
       var that = this;
       return function () {
         var objs = bucket.objs.splice(0, 100),
-            body = _.map(objs, function (obj) {
+          body = _.map(objs, function (obj) {
               var o = {};
               o[bucket.type] = obj.serialize();
               return o;
             }),
-            dfd = $.ajax({
-              type: "POST",
-              url: "/api/" + bucket.plural,
+          dfd = $.ajax({
+              type: 'POST',
+              url: '/api/' + bucket.plural,
               data: body
             }).promise();
         dfd.always(function (data, type) {
-          if (type === "error") {
+          if (type === 'error') {
             data = data.responseJSON;
             if (data === undefined) {
               return;
             }
           }
-          var cb = function(single) {
+          var cb = function (single) {
             return function () {
               this.created(single[1][bucket.type]);
               return $.when(can.Model.Cacheable.resolve_deferred_bindings(this));
@@ -58,7 +58,7 @@
           };
           for (var i = 0; i < objs.length; i++) {
             var single = data[i],
-                obj = objs[i];
+              obj = objs[i];
             if (single[0] >= 200 && single[0] < 300) {
               obj._save(cb(single));
             } else {
@@ -79,7 +79,7 @@
 
     _step: function (elem) {
       this._queue.push(elem);
-      if (typeof this._timeout === "number") {
+      if (typeof this._timeout === 'number') {
         clearTimeout(this._timeout);
       }
       this._timeout = setTimeout(function () {
@@ -89,7 +89,7 @@
 
     enqueue: function (obj, args) {
       var elem = function () {
-          return obj._save.apply(obj, args);
+        return obj._save.apply(obj, args);
       };
       if (obj.isNew()) {
         var type = obj.constructor.table_singular;
@@ -112,13 +112,13 @@
         bucket.in_flight = true;
       }
       this._step(elem);
-     },
+    },
   }, {
     init: function (queue) {
       this._queue = queue;
       this._resolve();
     },
-    _resolve: function() {
+    _resolve: function () {
       if (!this._queue.length) {
         // Finished
         return;

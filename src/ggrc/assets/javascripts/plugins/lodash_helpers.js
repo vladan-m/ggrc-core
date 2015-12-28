@@ -4,13 +4,13 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function(_) {
+(function (_) {
   _.mixin({
     exists: function (obj, key) {
       if (!key) {
         return obj;
       }
-      var keys = arguments.length > 2 ? Array.prototype.slice.call(arguments).slice(1) : key.split(".");
+      var keys = arguments.length > 2 ? Array.prototype.slice.call(arguments).slice(1) : key.split('.');
       return keys.reduce(function (base, memo) {
         return (_.isUndefined(base) || _.isNull(base)) ? base : base[memo];
       }, obj);

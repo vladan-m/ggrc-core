@@ -5,46 +5,42 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-;(function(can) {
+(function (can) {
 
-can.Construct("can.Model.Mixin", {
-  extend: function(fullName, klass, proto) {
+  can.Construct('can.Model.Mixin', {
+    extend: function (fullName, klass, proto) {
     var tempname, parts, shortName;
-    if(typeof fullName === "string") {
+    if (typeof fullName === 'string') {
       // Mixins do not go into the global namespace.
       tempname = fullName;
-      fullName = "";
+      fullName = '';
     }
     var Constructor = this._super.call(this, fullName, klass, proto);
 
     //instead mixins sit under CMS.Models.Mixins
-    if(tempname) {
-      parts = tempname.split(".");
+    if (tempname) {
+      parts = tempname.split('.');
       shortName = parts.pop();
       Constructor.fullName = tempname;
     } else {
-      Constructor.fullName = shortName = "Mixin_" + Math.floor(Math.random() * Math.pow(36, 8)).toString(36);
+      Constructor.fullName = shortName = 'Mixin_' + Math.floor(Math.random() * Math.pow(36, 8)).toString(36);
       parts = [];
     }
-      can.getObject("CMS.Models.Mixins"
-                    + (parts.length ? "." + parts.join(".") : "")
-                    , window
-                    , true)[shortName] = Constructor;
+    can.getObject('CMS.Models.Mixins' +
+                    (parts.length ? '.' + parts.join('.') : ''), window, true)[shortName] = Constructor;
     return Constructor;
-  }
-  , newInstance : function() {
-    throw "Mixins cannot be directly instantiated";
-  }
-  , add_to : function(cls) {
-    if(this === can.Model.Mixin) {
-      throw "Must only add a subclass of Mixin to an object, not Mixin itself";
+  }, newInstance: function () {
+    throw 'Mixins cannot be directly instantiated';
+  }, add_to: function (cls) {
+    if (this === can.Model.Mixin) {
+      throw 'Must only add a subclass of Mixin to an object, not Mixin itself';
     }
-    var setupfns = function(obj) {
-      return function(fn, key) {
-        var blockedKeys = ["fullName", "defaults", "_super", "constructor"];
-        var aspect = ~key.indexOf(":") ? key.substr(0, key.indexOf(":")) : "after";
-        key = ~key.indexOf(":") ? key.substr(key.indexOf(":") + 1) : key;
-        if(fn !== can.Model.Mixin[key] && !~can.inArray(key, blockedKeys)) {
+    var setupfns = function (obj) {
+      return function (fn, key) {
+        var blockedKeys = ['fullName', 'defaults', '_super', 'constructor'];
+        var aspect = ~key.indexOf(':') ? key.substr(0, key.indexOf(':')) : 'after';
+        key = ~key.indexOf(':') ? key.substr(key.indexOf(':') + 1) : key;
+        if (fn !== can.Model.Mixin[key] && !~can.inArray(key, blockedKeys)) {
           var oldfn = obj[key];
           // TODO support other ways of adding functions.
           //  E.g. "override" (doesn't call super fn at all)
@@ -55,23 +51,23 @@ can.Construct("can.Model.Mixin", {
           //   Necessary for "attributes"/"serialize"/"convert"
           // Defaults will always be "after" for functions
           //  and "override" for non-function values
-          if(oldfn && typeof oldfn === "function") {
-            switch(aspect) {
-              case "before":
-              obj[key] = function() {
-                fn.apply(this, arguments);
-                return oldfn.apply(this, arguments);
-              };
-              break;
-              case "after":
-              obj[key] = function() {
-                oldfn.apply(this, arguments);
-                return fn.apply(this, arguments);
-              };
-              break;
+          if (oldfn && typeof oldfn === 'function') {
+            switch (aspect) {
+              case 'before':
+                obj[key] = function () {
+                  fn.apply(this, arguments);
+                  return oldfn.apply(this, arguments);
+                };
+                break;
+              case 'after':
+                obj[key] = function () {
+                  oldfn.apply(this, arguments);
+                  return fn.apply(this, arguments);
+                };
+                break;
             }
           } else {
-            if(aspect === "extend") {
+            if (aspect === 'extend') {
               obj[key] = $.extend(obj[key], fn);
             } else {
               obj[key] = fn;
@@ -81,7 +77,7 @@ can.Construct("can.Model.Mixin", {
       };
     };
 
-    if(!~can.inArray(this.fullName, cls._mixins)) {
+    if (!~can.inArray(this.fullName, cls._mixins)) {
       cls._mixins = cls._mixins || [];
       cls._mixins.push(this.fullName);
 
@@ -89,57 +85,55 @@ can.Construct("can.Model.Mixin", {
       can.each(this.prototype, setupfns(cls.prototype));
     }
   }
-}, {
+  }, {
 });
 
-can.Model.Mixin("ownable", {
-  "after:init": function () {
+  can.Model.Mixin('ownable', {
+    'after:init': function () {
     if (!this.owners) {
-      this.attr("owners", []);
+      this.attr('owners', []);
     }
   }
-});
+  });
 
-can.Model.Mixin("contactable", {
+  can.Model.Mixin('contactable', {
   // NB : Because the attributes object
   //  isn't automatically cloned into subclasses by CanJS (this is an intentional
   //  exception), when subclassing a class that uses this mixin, be sure to pull in the
   //  parent class's attributes using `can.extend(this.attributes, <parent_class>.attributes);`
   //  in the child class's static init function.
-  "extend:attributes" : {
-    "contact": "CMS.Models.Person.stub",
-    "secondary_contact": "CMS.Models.Person.stub"
+    'extend:attributes': {
+    'contact': 'CMS.Models.Person.stub',
+    'secondary_contact': 'CMS.Models.Person.stub'
   }
-}, {
-  before_create : function() {
+  }, {
+  before_create: function () {
     if (!this.contact) {
-      this.attr("contact", { id: GGRC.current_user.id, type : "Person" });
+      this.attr('contact', {id: GGRC.current_user.id, type: 'Person'});
     }
-  }
-  , form_preload : function(new_object_form) {
+  }, form_preload: function (new_object_form) {
     if (new_object_form && !this.contact) {
-      this.attr("contact", { id: GGRC.current_user.id, type : "Person" });
+      this.attr('contact', {id: GGRC.current_user.id, type: 'Person'});
     }
   }
 });
 
-can.Model.Mixin("unique_title", {
-  "after:init" : function() {
-    this.validate(["title", "_transient:title"], function(newVal, prop) {
-      if(prop === "title") {
-        return this.attr("_transient:title");
-      } else if(prop === "_transient:title") {
+  can.Model.Mixin('unique_title', {
+    'after:init': function () {
+    this.validate(['title', '_transient:title'], function (newVal, prop) {
+      if (prop === 'title') {
+        return this.attr('_transient:title');
+      } else if (prop === '_transient:title') {
         return newVal; //the title error is the error
       }
     });
   }
-}, {
-  save_error : function(e) {
-    if(/title values must be unique\.$/.test(e)) {
-      this.attr("_transient:title", e );
+  }, {
+  save_error: function (e) {
+    if (/title values must be unique\.$/.test(e)) {
+      this.attr('_transient:title', e);
     }
-  }
-  , after_save : function() {
+  }, after_save: function () {
     // Currently we do not have a way of searching for similarly
     //  titled objects through the search API or the declarative
     //  model layer, but it's recommended that we show users when
@@ -169,11 +163,10 @@ can.Model.Mixin("unique_title", {
     //     }
     //   });
     // }
-    this.removeAttr("_transient:title");
-  }
-  , "before:attr" : function(key, val) {
-    if(key === "title" && arguments.length > 1) {
-      this.attr("_transient:title", null);
+    this.removeAttr('_transient:title');
+  }, 'before:attr': function (key, val) {
+    if (key === 'title' && arguments.length > 1) {
+      this.attr('_transient:title', null);
     }
   }
 });

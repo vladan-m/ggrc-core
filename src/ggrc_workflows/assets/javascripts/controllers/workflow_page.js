@@ -5,56 +5,56 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-;(function(CMS, GGRC, can, $) {
+(function (CMS, GGRC, can, $) {
 
   function _generate_cycle() {
     var workflow = GGRC.page_instance(),
-        dfd = new $.Deferred(),
-        cycle;
+      dfd = new $.Deferred(),
+      cycle;
 
     GGRC.Controllers.Modals.confirm({
-      modal_title : "Confirm",
-      modal_confirm : "Proceed",
-      skip_refresh : true,
-      button_view : GGRC.mustache_path + "/workflows/confirm_start_buttons.mustache",
-      content_view : GGRC.mustache_path + "/workflows/confirm_start.mustache",
-      instance : workflow
-    }, function(params, option) {
+      modal_title: 'Confirm',
+      modal_confirm: 'Proceed',
+      skip_refresh: true,
+      button_view: GGRC.mustache_path + '/workflows/confirm_start_buttons.mustache',
+      content_view: GGRC.mustache_path + '/workflows/confirm_start.mustache',
+      instance: workflow
+    }, function (params, option) {
       var data = {};
 
-      can.each(params, function(item) {
+      can.each(params, function (item) {
         data[item.name] = item.value;
       });
 
       cycle = new CMS.Models.Cycle({
         context: workflow.context.stub(),
-        workflow: { id: workflow.id, type: "Workflow" },
+        workflow: {id: workflow.id, type: 'Workflow'},
         autogenerate: true
       });
 
-      cycle.save().then(function(cycle) {
+      cycle.save().then(function (cycle) {
         // Cycle created. Workflow started.
-        setTimeout(function() {
+        setTimeout(function () {
           dfd.resolve();
           window.location.hash = 'current_widget/cycle/' + cycle.id;
         }, 250);
       });
-    }, function() {
+    }, function () {
       dfd.reject();
     });
     return dfd;
   }
 
-  can.Control("GGRC.Controllers.WorkflowPage", {
+  can.Control('GGRC.Controllers.WorkflowPage', {
     defaults: {
     }
   }, {
     //  FIXME: This should trigger expansion of the TreeNode, without using
     //    global event listeners or routes or timeouts, but currently object
     //    creation and tree insertion is disconnected.
-    "{CMS.Models.TaskGroup} created": function(model, ev, instance) {
+    '{CMS.Models.TaskGroup} created': function (model, ev, instance) {
       if (instance instanceof CMS.Models.TaskGroup) {
-        setTimeout(function() {
+        setTimeout(function () {
           // If the TaskGroup was created as part of a Workflow, we don't want to
           //  do a redirect here
           if (instance._no_redirect) {
@@ -68,34 +68,34 @@
   });
 
   can.Component.extend({
-    tag: "workflow-start-cycle",
-    content: "<content/>",
+    tag: 'workflow-start-cycle',
+    content: '<content/>',
     events: {
       click: _generate_cycle
     }
   });
 
   can.Component.extend({
-    tag: "workflow-activate",
-    template: "<content/>",
-    init: function() {
+    tag: 'workflow-activate',
+    template: '<content/>',
+    init: function () {
       this.scope._can_activate_def();
     },
     scope: {
       waiting: true,
       can_activate: false,
-      _can_activate_def: function() {
+      _can_activate_def: function () {
         var self = this,
-            workflow = GGRC.page_instance();
+          workflow = GGRC.page_instance();
         self.attr('waiting', true);
         $.when(
           workflow.refresh_all('task_groups', 'task_group_objects'),
           workflow.refresh_all('task_groups', 'task_group_tasks')
-        ).then(function() {
+        ).then(function () {
           var task_groups = workflow.task_groups.reify(),
-              can_activate = task_groups.length;
+            can_activate = task_groups.length;
 
-          task_groups.each(function(task_group) {
+          task_groups.each(function (task_group) {
             if (!task_group.task_group_tasks.length) {
               can_activate = false;
             }
@@ -111,75 +111,74 @@
         }
       },
       _restore_button: function () {
-          this.attr('waiting', false);
+        this.attr('waiting', false);
       },
-      _activate: function() {
+      _activate: function () {
         var workflow = GGRC.page_instance(),
-            scope = this,
-            restore_button = scope._restore_button.bind(scope),
-            cycle;
+          scope = this,
+          restore_button = scope._restore_button.bind(scope),
+          cycle;
         scope.attr('waiting', true);
         if (workflow.frequency !== 'one_time') {
-          workflow.refresh().then(function() {
+          workflow.refresh().then(function () {
             workflow.attr('recurrences', true);
-            workflow.attr('status', "Active");
+            workflow.attr('status', 'Active');
             return workflow.save();
-          }, restore_button).then(function(workflow) {
-            if (moment(workflow.next_cycle_start_date).isSame(moment(), "day")) {
+          }, restore_button).then(function (workflow) {
+            if (moment(workflow.next_cycle_start_date).isSame(moment(), 'day')) {
               return new CMS.Models.Cycle({
                 context: workflow.context.stub(),
-                workflow: { id: workflow.id, type: "Workflow" },
+                workflow: {id: workflow.id, type: 'Workflow'},
                 autogenerate: true
               }).save();
             }
           }, restore_button).then(restore_button);
         } else {
-          _generate_cycle().then(function() {
+          _generate_cycle().then(function () {
             return workflow.refresh();
-          }, restore_button).then(function(workflow) {
-            return workflow.attr('status', "Active").save();
+          }, restore_button).then(function (workflow) {
+            return workflow.attr('status', 'Active').save();
           }, restore_button).then(restore_button);
         }
       }
     },
     events: {
-      "{can.Model.Cacheable} created": function(model) {
+      '{can.Model.Cacheable} created': function (model) {
         this.scope._handle_refresh(model);
       },
-      "{can.Model.Cacheable} destroyed": function(model) {
+      '{can.Model.Cacheable} destroyed': function (model) {
         this.scope._handle_refresh(model);
       },
-      "button click": function() {
+      'button click': function () {
         this.scope._activate();
       }
     }
   });
 
   can.Component.extend({
-    tag: "workflow-deactivate",
-    template: "<content/>",
+    tag: 'workflow-deactivate',
+    template: '<content/>',
     events: {
-      click: function() {
+      click: function () {
         var workflow = GGRC.page_instance();
-        workflow.refresh().then(function(workflow) {
+        workflow.refresh().then(function (workflow) {
           workflow.attr('recurrences', false).save();
         });
       }
     }
   });
 
-
-  can.Model.Cacheable("CMS.ModelHelpers.CloneWorkflow", {
-    defaults : {
+  can.Model.Cacheable('CMS.ModelHelpers.CloneWorkflow', {
+    defaults: {
       clone_people: true,
       clone_tasks: true,
       clone_objects: true
     }
   }, {
-    refresh: function() {
+    refresh: function () {
       return $.when(this);
     },
-    save: function() {
+    save: function () {
       var workflow = new CMS.Models.Workflow({
         clone: this.source_workflow.id,
         context: null,
@@ -188,7 +187,7 @@
         clone_objects: this.clone_objects
       });
 
-      return workflow.save().then(function(workflow) {
+      return workflow.save().then(function (workflow) {
         GGRC.navigate(workflow.viewLink);
         return this;
       });
@@ -197,37 +196,37 @@
   });
 
   can.Component.extend({
-    tag: "workflow-clone",
-    template: "<content/>",
+    tag: 'workflow-clone',
+    template: '<content/>',
     events: {
-      click: function(el) {
+      click: function (el) {
         var workflow, $target;
 
         $target = $('<div class="modal hide"></div>').uniqueId();
         $target.modal_form({}, el);
         $target.ggrc_controllers_modals({
-          modal_title: "Clone Workflow",
+          modal_title: 'Clone Workflow',
           model: CMS.ModelHelpers.CloneWorkflow,
-          instance: new CMS.ModelHelpers.CloneWorkflow({ source_workflow: this.scope.workflow }),
-          content_view: GGRC.mustache_path + "/workflows/clone_modal_content.mustache",
-          custom_save_button_text: "Proceed",
+          instance: new CMS.ModelHelpers.CloneWorkflow({source_workflow: this.scope.workflow}),
+          content_view: GGRC.mustache_path + '/workflows/clone_modal_content.mustache',
+          custom_save_button_text: 'Proceed',
           button_view: GGRC.Controllers.Modals.BUTTON_VIEW_SAVE_CANCEL
         });
       }
     }
   });
 
-  can.Model.Cacheable("CMS.ModelHelpers.CloneTaskGroup", {
-    defaults : {
+  can.Model.Cacheable('CMS.ModelHelpers.CloneTaskGroup', {
+    defaults: {
       clone_objects: true,
       clone_tasks: true,
       clone_people: true
     }
   }, {
-    refresh: function() {
+    refresh: function () {
       return $.when(this);
     },
-    save: function() {
+    save: function () {
       var task_group = new CMS.Models.TaskGroup({
         clone: this.source_task_group.id,
         context: null,
@@ -241,20 +240,20 @@
   });
 
   can.Component.extend({
-    tag: "task-group-clone",
-    template: "<content/>",
+    tag: 'task-group-clone',
+    template: '<content/>',
     events: {
-      click: function(el) {
+      click: function (el) {
         var $target;
 
         $target = $('<div class="modal hide"></div>').uniqueId();
         $target.modal_form({}, el);
         $target.ggrc_controllers_modals({
-          modal_title: "Clone Task Group",
+          modal_title: 'Clone Task Group',
           model: CMS.ModelHelpers.CloneTaskGroup,
-          instance: new CMS.ModelHelpers.CloneTaskGroup({ source_task_group: this.scope.taskGroup }),
-          content_view: GGRC.mustache_path + "/task_groups/clone_modal_content.mustache",
-          custom_save_button_text: "Proceed",
+          instance: new CMS.ModelHelpers.CloneTaskGroup({source_task_group: this.scope.taskGroup}),
+          content_view: GGRC.mustache_path + '/task_groups/clone_modal_content.mustache',
+          custom_save_button_text: 'Proceed',
           button_view: GGRC.Controllers.Modals.BUTTON_VIEW_SAVE_CANCEL
         });
       }
@@ -262,18 +261,18 @@
   });
 
   can.Component.extend({
-    tag: "cycle-end-cycle",
-    template: "<content/>",
+    tag: 'cycle-end-cycle',
+    template: '<content/>',
     events: {
-      click: function() {
-        this.scope.cycle.refresh().then(function(cycle) {
-          cycle.attr('is_current', false).save().then(function() {
+      click: function () {
+        this.scope.cycle.refresh().then(function (cycle) {
+          cycle.attr('is_current', false).save().then(function () {
             return GGRC.page_instance().refresh();
-          }).then(function(){
+          }).then(function () {
             // We need to update person's assigned_tasks mapping manually
             var person_id = GGRC.current_user.id,
-                person = CMS.Models.Person.cache[person_id];
-                binding = person.get_binding('assigned_tasks');
+              person = CMS.Models.Person.cache[person_id];
+            binding = person.get_binding('assigned_tasks');
 
             // FIXME: Find a better way of removing stagnant items from the list.
             binding.list.splice(0, binding.list.length);

@@ -4,7 +4,7 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function($, GGRC) {
+(function ($, GGRC) {
   GGRC.mustache_path = '/static/mustache';
 
   GGRC.hooks = GGRC.hooks || {};
@@ -16,11 +16,11 @@
     GGRC.default_widgets = [];
   }
 
-  GGRC.register_hook = function(path, hook) {
+  GGRC.register_hook = function (path, hook) {
     var h, parent_path, last;
-    parent_path = path.split(".");
+    parent_path = path.split('.');
     last = parent_path.pop();
-    parent_path = can.getObject(parent_path.join("."), GGRC.hooks, true);
+    parent_path = can.getObject(parent_path.join('.'), GGRC.hooks, true);
     if (!(h = parent_path[last])) {
       h = new can.Observe.List();
       parent_path[last] = h;
@@ -28,7 +28,7 @@
     h.push(hook);
   };
 
-  GGRC.current_url_compute = can.compute(function() {
+  GGRC.current_url_compute = can.compute(function () {
     var path = window.location.pathname,
       fragment = window.location.hash;
     return window.encodeURIComponent(path + fragment);
@@ -43,22 +43,22 @@
       return message;
     },
     notifier = new PersistentNotifier({
-      while_queue_has_elements: function() {
+      while_queue_has_elements: function () {
         window.onbeforeunload = onbeforeunload;
       },
-      when_queue_empties: function() {
+      when_queue_empties: function () {
         window.onbeforeunload = $.noop;
       },
       name: 'GGRC/window'
     });
 
   $.extend(GGRC, {
-    get_object_type_decision_tree: function() {
+    get_object_type_decision_tree: function () {
       var tree = {},
         extensions = GGRC.extensions || []
       ;
 
-      can.each(extensions, function(extension) {
+      can.each(extensions, function (extension) {
         if (extension.object_type_decision_tree) {
           if (can.isFunction(extension.object_type_decision_tree)) {
             $.extend(tree, extension.object_type_decision_tree());
@@ -71,14 +71,14 @@
       return tree;
     },
 
-    infer_object_type: function(data) {
+    infer_object_type: function (data) {
       var decision_tree = GGRC.get_object_type_decision_tree();
 
       function resolve_by_key(subtree, data) {
         var kind = data[subtree._key];
         var model;
-        can.each(subtree, function(v, k) {
-          if (k != "_key" && v.meta_kinds.indexOf(kind) >= 0) {
+        can.each(subtree, function (v, k) {
+          if (k !== '_key' && v.meta_kinds.indexOf(kind) >= 0) {
             model = v;
           }
         });
@@ -86,7 +86,7 @@
       }
 
       function resolve(subtree, data) {
-        if (typeof subtree === "undefined")
+        if (typeof subtree === 'undefined')
           return null;
         return can.isPlainObject(subtree) ?
           subtree._discriminator(data) :
@@ -101,7 +101,7 @@
         }, null);
       }
     },
-    make_model_instance: function(data) {
+    make_model_instance: function (data) {
       if (!data) {
         return null;
       } else if (!!GGRC.page_model && GGRC.page_object === data) {
@@ -111,7 +111,7 @@
       }
     },
 
-    page_instance: function() {
+    page_instance: function () {
       if (!GGRC._page_instance && GGRC.page_object) {
         GGRC._page_instance = GGRC.make_model_instance(GGRC.page_object);
       }
@@ -122,7 +122,7 @@
     eventqueueTimeout: null,
     eventqueueTimegap: 20, //ms
 
-    queue_exec_next: function() {
+    queue_exec_next: function () {
       var fn = GGRC.eventqueue.shift();
       if (fn)
         fn();
@@ -132,15 +132,15 @@
         GGRC.eventqueueTimeout = null;
     },
 
-    queue_event: function(events) {
-      if (typeof (events) === "function")
+    queue_event: function (events) {
+      if (typeof (events) === 'function')
         events = [events];
       GGRC.eventqueue.push.apply(GGRC.eventqueue, events);
       if (!GGRC.eventqueueTimeout)
         GGRC.eventqueueTimeout = setTimeout(GGRC.queue_exec_next, GGRC.eventqueueTimegap);
     },
 
-    navigate: function(url) {
+    navigate: function (url) {
       function go() {
         if (!url) {
           window.location.reload();
@@ -151,7 +151,7 @@
       notifier.on_empty(go);
     },
 
-    delay_leaving_page_until: $.proxy(notifier, "queue")
+    delay_leaving_page_until: $.proxy(notifier, 'queue')
   });
 
   /*
@@ -168,37 +168,37 @@
 
       @return the sum of the numbers represented in a and b, as a decimal notation string.
     */
-    string_add: function(a, b) {
+    string_add: function (a, b) {
       var _a, _b, i,
         _c = 0,
         ret = [],
-        adi = a.indexOf("."),
-        bdi = b.indexOf(".");
+        adi = a.indexOf('.'),
+        bdi = b.indexOf('.');
 
       if (adi < 0) {
-        a = a + ".";
+        a = a + '.';
         adi = a.length - 1;
       }
       if (bdi < 0) {
-        b = b + ".";
+        b = b + '.';
         bdi = b.length - 1;
       }
       while (adi < bdi) {
-        a = "0" + a;
+        a = '0' + a;
         adi++;
       }
       while (bdi < adi) {
-        b = "0" + b;
+        b = '0' + b;
         bdi++;
       }
 
       for (i = Math.max(a.length, b.length) - 1; i >= 0; i--) {
         _a = a[i] || 0;
         _b = b[i] || 0;
-        if (_a === "." || _b === ".") {
-          if (_a !== "." || _b !== ".")
-            throw "Decimal alignment error";
-          ret.unshift(".");
+        if (_a === '.' || _b === '.') {
+          if (_a !== '.' || _b !== '.')
+            throw 'Decimal alignment error';
+          ret.unshift('.');
         } else {
           ret.unshift((+_a) + (+_b) + _c);
           _c = Math.floor(ret[0] / 10);
@@ -208,10 +208,10 @@
       if (_c > 0) {
         ret.unshift(_c.toString(10));
       }
-      if (ret[ret.length - 1] === ".") {
+      if (ret[ret.length - 1] === '.') {
         ret.pop();
       }
-      return ret.join("");
+      return ret.join('');
     },
 
     /*
@@ -219,18 +219,18 @@
 
       @return one half of the number represented in a, as a decimal notation string.
     */
-    string_half: function(a) {
+    string_half: function (a) {
       var i, _a,
         _c = 0,
         ret = [];
 
-      if (!~a.indexOf(".")) {
-        a = a + ".";
+      if (!~a.indexOf('.')) {
+        a = a + '.';
       }
       for (i = 0; i < a.length; i++) {
         _a = a[i];
-        if (_a === ".") {
-          ret.push(".");
+        if (_a === '.') {
+          ret.push('.');
         } else {
           _a = Math.floor((+_a + _c) / 2);
           if (+a[i] % 2) {
@@ -242,15 +242,15 @@
         }
       }
       if (_c > 0) {
-        ret.push("5");
+        ret.push('5');
       }
-      if (ret[ret.length - 1] === ".") {
+      if (ret[ret.length - 1] === '.') {
         ret.pop();
       }
-      while (ret[0] === "0" && ret.length > 1) {
+      while (ret[0] === '0' && ret.length > 1) {
         ret.shift();
       }
-      return ret.join("");
+      return ret.join('');
     },
 
     /*
@@ -259,7 +259,7 @@
 
       @return the maximum of the numbers represented in a and b, as a decimal notation string.
     */
-    string_max: function(a, b) {
+    string_max: function (a, b) {
       return this.string_less_than(a, b) ? b : a;
     },
 
@@ -269,19 +269,19 @@
 
       @return true if the number represented in a is less than that in b, false otherwise
     */
-    string_less_than: function(a, b) {
+    string_less_than: function (a, b) {
       var i,
-        _a = ("" + a).replace(/^0*/, ""),
-        _b = ("" + b).replace(/^0*/, ""),
-        adi = _a.indexOf("."),
-        bdi = _b.indexOf(".");
+        _a = ('' + a).replace(/^0*/, ''),
+        _b = ('' + b).replace(/^0*/, ''),
+        adi = _a.indexOf('.'),
+        bdi = _b.indexOf('.');
 
       if (adi < 0) {
-        _a = _a + ".";
+        _a = _a + '.';
         adi = _a.length - 1;
       }
       if (bdi < 0) {
-        _b = _b + ".";
+        _b = _b + '.';
         bdi = _b.length - 1;
       }
       if (adi < bdi) {
@@ -291,7 +291,7 @@
         return false;
       }
       for (i = 0; i < _a.length - 1; i++) {
-        if (_a[i] === ".") {
+        if (_a[i] === '.') {
         // continue
         } else {
           if ((+_a[i] || 0) < (+_b[i] || 0)) {

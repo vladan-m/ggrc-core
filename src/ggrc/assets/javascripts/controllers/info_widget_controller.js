@@ -5,27 +5,26 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-(function(can, $) {
+(function (can, $) {
 
-can.Control("GGRC.Controllers.InfoWidget", {
-  defaults : {
-    model : null,
-    instance : null,
-    widget_view : GGRC.mustache_path + "/base_objects/info.mustache"
+  can.Control('GGRC.Controllers.InfoWidget', {
+  defaults: {
+    model: null,
+    instance: null,
+    widget_view: GGRC.mustache_path + '/base_objects/info.mustache'
   },
-  init : function() {
+  init: function () {
     var that = this;
-    $(function() {
+    $(function () {
       if (GGRC.page_object) {
         $.extend(that.defaults, {
-          model : GGRC.infer_object_type(GGRC.page_object)
-          , instance : GGRC.page_instance()
+          model: GGRC.infer_object_type(GGRC.page_object), instance: GGRC.page_instance()
         });
       }
     });
   }
 }, {
-  init : function() {
+  init: function () {
     var that = this;
     this.init_menu();
 
@@ -34,20 +33,20 @@ can.Control("GGRC.Controllers.InfoWidget", {
     }
 
     this.options.context = new can.Observe({
-        model : this.options.model,
-        instance : this.options.instance,
-        start_menu : this.options.start_menu,
-        object_menu : this.options.object_menu,
+      model: this.options.model,
+      instance: this.options.instance,
+      start_menu: this.options.start_menu,
+      object_menu: this.options.object_menu,
         //show_audit: false;
-        error_msg : '',
-        error : true
-      });
-    can.view(this.get_widget_view(this.element), this.options.context, function(frag) {
+      error_msg: '',
+      error: true
+    });
+    can.view(this.get_widget_view(this.element), this.options.context, function (frag) {
       that.element.html(frag);
     });
   },
 
-  get_widget_view: function(el) {
+  get_widget_view: function (el) {
     var widget_view = $(el)
           .closest('[data-widget-view]').attr('data-widget-view');
     if (widget_view && widget_view.length > 0)
@@ -56,10 +55,10 @@ can.Control("GGRC.Controllers.InfoWidget", {
       return this.options.widget_view;
   },
 
-  generate_menu_items: function(item_names, display_prefix) {
-    return _.filter(_.map(item_names, function(item_name){
-      display_prefix = display_prefix || "";
-      if (item_name in CMS.Models){
+  generate_menu_items: function (item_names, display_prefix) {
+    return _.filter(_.map(item_names, function (item_name) {
+      display_prefix = display_prefix || '';
+      if (item_name in CMS.Models) {
         return {
           model_name: CMS.Models[item_name].model_singular,
           model_lowercase: CMS.Models[item_name].table_singular,
@@ -70,16 +69,16 @@ can.Control("GGRC.Controllers.InfoWidget", {
     }));
   },
 
-  init_menu: function() {
-    if(!this.options.start_menu) {
+  init_menu: function () {
+    if (!this.options.start_menu) {
       names = [
         'Program',
         'Audit',
         'Workflow',
       ];
-      this.options.start_menu = this.generate_menu_items(names, "Start new ");
+      this.options.start_menu = this.generate_menu_items(names, 'Start new ');
     }
-    if(!this.options.object_menu) {
+    if (!this.options.object_menu) {
       names = [
         'AccessGroup',
         'Clause',

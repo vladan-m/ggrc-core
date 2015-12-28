@@ -4,14 +4,14 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function($) {
+(function ($) {
   var defaults = {
     delay: {
       show: 500,
       hide: 100
     },
     placement: 'left',
-    content: function(trigger) {
+    content: function (trigger) {
       var $trigger = $(trigger);
 
       var $el = $(new Spinner().spin().el);
@@ -27,24 +27,24 @@
   };
 
   // Listeners for initial mouseovers for stick-hover
-  $('body').on('mouseover', '[data-popover-trigger="sticky-hover"]', function(e) {
+  $('body').on('mouseover', '[data-popover-trigger="sticky-hover"]', function (e) {
     // If popover instance doesn't exist already, create it and
     // force the 'enter' event.
     if (!$(e.currentTarget).data('sticky_popover')) {
       $(e.currentTarget)
         .sticky_popover($.extend({}, defaults, {
           trigger: 'sticky-hover',
-          placement: function() {
+          placement: function () {
             var $el = this.$element,
               spaceLeft = $(document).width() - ($el.offset().left + $el.width()),
               spaceRight = $el.offset().left,
               popover_size = 620;
             // Display on right if there is enough space
-            if ($el.closest(".widget-area:first-child").length && spaceLeft > popover_size)
-              return "right";else if (spaceRight > popover_size) {
-              return "left";
+            if ($el.closest('.widget-area:first-child').length && spaceLeft > popover_size)
+              return 'right';else if (spaceRight > popover_size) {
+              return 'left';
             }
-            return "top";
+            return 'top';
           }
         }))
         .triggerHandler(e);
@@ -52,7 +52,7 @@
   });
 
   // Listeners for initial clicks for popovers
-  $('body').on('click', 'a[data-popover-trigger="click"]', function(e) {
+  $('body').on('click', 'a[data-popover-trigger="click"]', function (e) {
     e.preventDefault();
     if (!$(e.currentTarget).data('sticky_popover')) {
       $(e.currentTarget)
@@ -64,22 +64,22 @@
   });
 
   function showhide(upsel, downsel) {
-    return function(command) {
-      $(this).each(function() {
+    return function (command) {
+      $(this).each(function () {
         var $this = $(this),
           $content = $this.closest(upsel).find(downsel),
           cmd = command;
 
-        if (typeof cmd !== "string" || cmd === "toggle") {
-          cmd = $this.hasClass("active") ? "hide" : "show";
+        if (typeof cmd !== 'string' || cmd === 'toggle') {
+          cmd = $this.hasClass('active') ? 'hide' : 'show';
         }
 
-        if (cmd === "hide") {
+        if (cmd === 'hide') {
           $content.slideUp();
-          $this.removeClass("active");
-        } else if (cmd === "show") {
+          $this.removeClass('active');
+        } else if (cmd === 'show') {
           $content.slideDown();
-          $this.addClass("active");
+          $this.addClass('active');
         }
       });
 
@@ -87,42 +87,42 @@
     };
   }
 
-  $.fn.showhide = showhide(".widget", ".content, .filter");
-  $.fn.modal_showhide = showhide(".modal", ".hidden-fields-area");
-  $('body').on('click', ".expand-link a", $.fn.modal_showhide);
+  $.fn.showhide = showhide('.widget', '.content, .filter');
+  $.fn.modal_showhide = showhide('.modal', '.hidden-fields-area');
+  $('body').on('click', '.expand-link a', $.fn.modal_showhide);
 
-  $.fn.widget_showhide = showhide(".info", ".hidden-fields-area");
-  $('body').on('click', ".info-expand a", $.fn.widget_showhide);
+  $.fn.widget_showhide = showhide('.info', '.hidden-fields-area');
+  $('body').on('click', '.info-expand a', $.fn.widget_showhide);
 
-  $.fn.widget_showhide_custom = showhide(".info", ".hidden-fields-area-custom");
-  $('body').on('click', ".info-expand-custom a", $.fn.widget_showhide_custom);
+  $.fn.widget_showhide_custom = showhide('.info', '.hidden-fields-area-custom');
+  $('body').on('click', '.info-expand-custom a', $.fn.widget_showhide_custom);
 
   // Show/hide tree leaf content
   $('body').on('click', '.tree-structure .oneline, .tree-structure .description, .tree-structure .view-more', oneline);
 
   function oneline(command) {
-    $(this).each(function() {
+    $(this).each(function () {
       var $this = $(this),
-        $leaf = $this.closest('[class*=span]').parent().children("[class*=span]:first"),
+        $leaf = $this.closest('[class*=span]').parent().children('[class*=span]:first'),
         $title = $leaf.find('.oneline'),
         $description = $leaf.find('.description'),
         $view = $leaf.closest('.row-fluid').find('.view-more'),
         cmd = command
-      ;
+        ;
 
       if ($description.length > 0) {
-        if (typeof cmd !== "string") {
-          cmd = $description.hasClass("in") ? "hide" : "view";
+        if (typeof cmd !== 'string') {
+          cmd = $description.hasClass('in') ? 'hide' : 'view';
         }
 
-        if (cmd === "view") {
+        if (cmd === 'view') {
           $description.addClass('in');
           $title.find('.description-inline').addClass('out');
           if ($title.is('.description-only')) {
             $title.addClass('out');
           }
           $view.text('hide');
-        } else if (cmd === "hide") {
+        } else if (cmd === 'hide') {
           $description.removeClass('in');
           $title.find('.description-inline').removeClass('out');
           if ($title.is('.description-only')) {
@@ -139,15 +139,15 @@
   $.fn.oneline = oneline;
 
   // Close other popovers when one is shown
-  $('body').on('show.popover', function(e) {
-    $('[data-sticky_popover]').each(function() {
+  $('body').on('show.popover', function (e) {
+    $('[data-sticky_popover]').each(function () {
       var popover = $(this).data('sticky_popover');
       popover && popover.hide();
     });
   });
 
   // Close all popovers on custom event
-  $('body').on('kill-all-popovers', function(e) {
+  $('body').on('kill-all-popovers', function (e) {
     // FIXME: This may be incompatible with bootstrap popover assumptions...
     // This is when the triggering element has been removed from the DOM
     // so we have to kill the popover elements themselves.

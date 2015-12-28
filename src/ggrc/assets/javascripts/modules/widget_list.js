@@ -19,7 +19,7 @@
     See the comments for GGRC.WidgetDescriptor for details in what is necessary to define
     a widget descriptor.
   */
-  can.Construct("GGRC.WidgetList", {
+  can.Construct('GGRC.WidgetList', {
     modules: {},
     /*
       get_widget_list_for: return a keyed object of widget descriptors for the specified page type.
@@ -43,22 +43,22 @@
       var descriptors = {};
       can.each(widgets, function (widget, widget_id) {
         switch (widget.content_controller) {
-        case GGRC.Controllers.InfoWidget:
-          descriptors[widget_id] = GGRC.WidgetDescriptor.make_info_widget(
+          case GGRC.Controllers.InfoWidget:
+            descriptors[widget_id] = GGRC.WidgetDescriptor.make_info_widget(
             widget.content_controller_options && widget.content_controller_options.instance || widget.instance,
             widget.content_controller_options && widget.content_controller_options.widget_view || widget.widget_view
           );
-          break;
-        case GGRC.Controllers.TreeView:
-          descriptors[widget_id] = GGRC.WidgetDescriptor.make_tree_view(
+            break;
+          case GGRC.Controllers.TreeView:
+            descriptors[widget_id] = GGRC.WidgetDescriptor.make_tree_view(
             widget.content_controller_options && (widget.content_controller_options.instance || widget.content_controller_options.parent_instance) || widget.instance,
             widget.content_controller_options && widget.content_controller_options.model || widget.far_model || widget.model,
             widget.content_controller_options && widget.content_controller_options.mapping || widget.mapping,
             widget
           );
-          break;
-        default:
-          descriptors[widget_id] = new GGRC.WidgetDescriptor(page_type + ":" + widget_id, widget);
+            break;
+          default:
+            descriptors[widget_id] = new GGRC.WidgetDescriptor(page_type + ':' + widget_id, widget);
         }
       });
       can.each(descriptors, function (descriptor, id) {

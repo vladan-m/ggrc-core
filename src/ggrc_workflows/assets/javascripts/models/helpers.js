@@ -5,19 +5,19 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-;(function(can, $, CMS) {
+(function (can, $, CMS) {
 
-can.Observe("CMS.ModelHelpers.CycleTask", {
-  findInCacheById : function() { return null; },
-}, {
-  init : function() {
-    this.attr("owners", new CMS.Models.Person.List(this.owners));
+  can.Observe('CMS.ModelHelpers.CycleTask', {
+    findInCacheById: function () { return null; },
+  }, {
+  init: function () {
+    this.attr('owners', new CMS.Models.Person.List(this.owners));
   },
-  save : function() {
+  save: function () {
     var that = this;
     // FIXME: temporary fix for 'Could not get any raw data while
     // converting using .models'
-    this._data.owners = $.map(this._data.owners, function(owner){
+    this._data.owners = $.map(this._data.owners, function (owner) {
       return {
         id: owner.id,
         type: owner.type,
@@ -30,7 +30,7 @@ can.Observe("CMS.ModelHelpers.CycleTask", {
       sort_index: Number.MAX_SAFE_INTEGER / 2,
       contact: that.contact,
       context: that.context
-    }).save().then(function(task_group_task) {
+    }).save().then(function (task_group_task) {
       return new CMS.Models.CycleTaskGroupObjectTask({
         cycle: that.cycle,
         start_date: that.cycle.reify().start_date,
@@ -40,67 +40,67 @@ can.Observe("CMS.ModelHelpers.CycleTask", {
         sort_index: that.sort_index,
         title: that.title,
         description: that.description,
-        status: "Assigned",
+        status: 'Assigned',
         contact: that.contact,
         context: that.context
       }).save();
     });
   },
-  computed_errors: can.compute(function() {
+  computed_errors: can.compute(function () {
     var errors = null;
-    if(!this.attr("title")) {
-      errors = { title: "Must be defined" };
+    if (!this.attr('title')) {
+      errors = {title: 'Must be defined'};
     }
     return errors;
   })
 });
 
-var approval_workflow_errors_compute;
-can.Observe("CMS.ModelHelpers.ApprovalWorkflow", {
-  defaults : {
+  var approval_workflow_errors_compute;
+  can.Observe('CMS.ModelHelpers.ApprovalWorkflow', {
+    defaults: {
     original_object: null
   }
-}, {
-  save: function() {
+  }, {
+  save: function () {
     var that = this,
-        aws_dfd = this.original_object.get_binding("approval_workflows").refresh_list();
+      aws_dfd = this.original_object.get_binding('approval_workflows').refresh_list();
 
-    return aws_dfd.then(function(aws){
+    return aws_dfd.then(function (aws) {
       var ret;
       if (aws.length < 1) {
         ret = $.when(
           new CMS.Models.Workflow({
-            frequency: "one_time",
-            status: "Active",
-            title: "Object review for "
-                    + that.original_object.constructor.title_singular
-                    + ' "' + that.original_object.title + '"',
+            frequency: 'one_time',
+            status: 'Active',
+            title: 'Object review for ' +
+                    that.original_object.constructor.title_singular +
+                    ' "' + that.original_object.title + '"',
             object_approval: true,
             notify_on_change: true,
-            notify_custom_message: "<br/><br/>"
-              + GGRC.current_user.name + " (" + GGRC.current_user.email
-              + ") asked you to review newly created "
-              + that.original_object.constructor.model_singular + ' "' + that.original_object.title
-              + '" before ' + moment(that.end_date).format("MM/DD/YYYY") + ". "
-              + "Click <a href='" + window.location.href.replace(/#.*$/, "")
-              + "#workflows_widget'>here</a> to perform a review.",
+            notify_custom_message: '<br/><br/>' +
+              GGRC.current_user.name + ' (' + GGRC.current_user.email +
+              ') asked you to review newly created ' +
+              that.original_object.constructor.model_singular + ' "' + that.original_object.title +
+              '" before ' + moment(that.end_date).format('MM/DD/YYYY') + '. ' +
+              'Click <a href=\'' + window.location.href.replace(/#.*$/, '') +
+              '#workflows_widget\'>here</a> to perform a review.',
             context: that.original_object.context
           }).save()
-        ).then(function(wf) {
-            return $.when(
-              wf,
+        ).then(function (wf) {
+          return $.when(
+            wf,
               new CMS.Models.TaskGroup({
-                workflow : wf,
-                title: "Object review for "
-                        + that.original_object.constructor.title_singular
-                        + ' "' + that.original_object.title + '"',
+                workflow: wf,
+                title: 'Object review for ' +
+                        that.original_object.constructor.title_singular +
+                        ' "' + that.original_object.title + '"',
                 contact: that.contact,
                 context: wf.context
               }).save()
             );
-        }).then(function(wf, tg) {
-            return $.when(
-              wf,
+        }).then(function (wf, tg) {
+          return $.when(
+            wf,
               new CMS.Models.TaskGroupTask({
                 task_group: tg,
                 start_date: moment().format('MM/DD/YYYY'),
@@ -109,10 +109,10 @@ can.Observe("CMS.ModelHelpers.ApprovalWorkflow", {
                 sort_index: (Number.MAX_SAFE_INTEGER / 2).toString(10),
                 contact: that.contact,
                 context: wf.context,
-                task_type: "text",
-                title: "Object review for "
-                        + that.original_object.constructor.title_singular
-                        + ' "' + that.original_object.title + '"'
+                task_type: 'text',
+                title: 'Object review for ' +
+                        that.original_object.constructor.title_singular +
+                        ' "' + that.original_object.title + '"'
               }).save(),
               new CMS.Models.TaskGroupObject({
                 task_group: tg,
@@ -126,20 +126,20 @@ can.Observe("CMS.ModelHelpers.ApprovalWorkflow", {
           aws[0].instance.refresh(),
           $.when.apply(
             $,
-            can.map(aws[0].instance.task_groups.reify(), function(tg) {
+            can.map(aws[0].instance.task_groups.reify(), function (tg) {
               return tg.refresh();
             })
-          ).then(function() {
-            return $.when.apply($, can.map(can.makeArray(arguments), function(tg) {
-              return tg.attr("contact", that.contact).save().then(function(tg) {
-                return $.when.apply($, can.map(tg.task_group_tasks.reify(), function(tgt) {
-                  return tgt.refresh().then(function(tgt) {
+          ).then(function () {
+            return $.when.apply($, can.map(can.makeArray(arguments), function (tg) {
+              return tg.attr('contact', that.contact).save().then(function (tg) {
+                return $.when.apply($, can.map(tg.task_group_tasks.reify(), function (tgt) {
+                  return tgt.refresh().then(function (tgt) {
                     return tgt.attr({
                       'contact': that.contact,
                       'end_date': that.end_date,
                       'start_date': moment().format('MM/DD/YYYY'),
                       'task_type': tgt.task_type || 'text'
-                      }).save();
+                    }).save();
                   });
                 }));
               });
@@ -148,7 +148,7 @@ can.Observe("CMS.ModelHelpers.ApprovalWorkflow", {
         );
       }
 
-      return ret.then(function(wf) {
+      return ret.then(function (wf) {
         return new CMS.Models.Cycle({
           workflow: wf,
           autogenerate: true,
@@ -157,13 +157,13 @@ can.Observe("CMS.ModelHelpers.ApprovalWorkflow", {
       });
     });
   },
-  computed_errors: (approval_workflow_errors_compute = can.compute(function() {
+  computed_errors: (approval_workflow_errors_compute = can.compute(function () {
     var errors = null;
-    if(!this.attr("contact")) {
-      errors = { contact: "Must be defined" };
+    if (!this.attr('contact')) {
+      errors = {contact: 'Must be defined'};
     }
-    if(!this.attr("end_date")) {
-      errors = $.extend(errors, { end_date : "Must be defined" });
+    if (!this.attr('end_date')) {
+      errors = $.extend(errors, {end_date: 'Must be defined'});
     }
     return errors;
   })),

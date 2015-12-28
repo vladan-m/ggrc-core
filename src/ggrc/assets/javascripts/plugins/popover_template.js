@@ -4,7 +4,7 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function(root, $, GGRC) {
+(function (root, $, GGRC) {
   'use strict';
 
   function Popover(element) {
@@ -37,8 +37,8 @@
   };
   Popover.prototype.inElement = function (target, elements) {
     return $.map(elements, function (element) {
-        return target.closest(element).length || target.is(element);
-      }).some(function (val) {
+      return target.closest(element).length || target.is(element);
+    }).some(function (val) {
         return val;
       });
   };
@@ -79,7 +79,7 @@
   function Plugin(option) {
     return this.each(function () {
       var $this = $(this),
-          data = $this.data('popover-template');
+        data = $this.data('popover-template');
 
       if (!data) {
         $this.data('popover-template', new Popover(this));

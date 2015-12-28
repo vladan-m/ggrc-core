@@ -5,25 +5,23 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-(function(can, $) {
+(function (can, $) {
 /*  RefreshQueue
  *
  *  enqueue(obj, force=false) -> queue or null
  *  trigger() -> Deferred
  */
 
-can.Construct("ModelRefreshQueue", {
+  can.Construct('ModelRefreshQueue', {
 }, {
-    init: function(model) {
-      this.model = model;
-      this.ids = [];
-      this.deferred = new $.Deferred();
-      this.triggered = false;
-      this.completed = false;
-      this.updated_at = Date.now();
-    }
-
-  , enqueue: function(id) {
+  init: function (model) {
+    this.model = model;
+    this.ids = [];
+    this.deferred = new $.Deferred();
+    this.triggered = false;
+    this.completed = false;
+    this.updated_at = Date.now();
+  }, enqueue: function (id) {
       if (this.triggered) {
         return null;
       }
@@ -32,14 +30,12 @@ can.Construct("ModelRefreshQueue", {
         this.updated_at = Date.now();
       }
       return this;
-    }
-
-  , trigger: function () {
+    }, trigger: function () {
       var self = this;
       if (!this.triggered) {
         this.triggered = true;
         if (this.ids.length) {
-          this.model.findAll({ id__in: this.ids.join(",") }).then(function () {
+          this.model.findAll({id__in: this.ids.join(',')}).then(function () {
             self.completed = true;
             self.deferred.resolve();
           }, function () {
@@ -51,9 +47,7 @@ can.Construct("ModelRefreshQueue", {
         }
       }
       return this.deferred;
-    }
-
-  , trigger_with_debounce: function(delay, manager) {
+    }, trigger_with_debounce: function (delay, manager) {
       var ms_to_wait = (delay || 0) + this.updated_at - Date.now();
 
       if (!this.triggered) {
@@ -68,36 +62,28 @@ can.Construct("ModelRefreshQueue", {
     }
 });
 
-can.Construct("RefreshQueueManager", {
-    model_bases: {
-      // This won't work until Relatable/Documentable/etc mixins can handle
-      // queries with multiple `type` values.
-      //  Regulation: 'Directive'
-      //, Contract: 'Directive'
-      //, Policy: 'Directive'
-      //, Standard: 'Directive'
-      //, System: 'SystemOrProcess'
-      //, Process: 'SystemOrProcess'
-    }
+  can.Construct('RefreshQueueManager', {
+  model_bases: {
+    // This won't work until Relatable/Documentable/etc mixins can handle
+    // queries with multiple `type` values.
+    //  Regulation: 'Directive'
+    //, Contract: 'Directive'
+    //, Policy: 'Directive'
+    //, Standard: 'Directive'
+    //, System: 'SystemOrProcess'
+    //, Process: 'SystemOrProcess'
+  }
 }, {
-    init: function() {
-      this.null_queue = new ModelRefreshQueue(null);
-      this.queues = [];
-    }
-
-  , triggered_queues: function() {
-      return can.map(this.queues, function(queue) {
+  init: function () {
+    this.null_queue = new ModelRefreshQueue(null);
+    this.queues = [];
+  }, triggered_queues: function () {
+      return can.map(this.queues, function (queue) {
         if (queue.triggered)
           return queue;
       });
-    }
-
-  , enqueue: function(obj, force) {
-      var self = this
-        , model = obj.constructor
-        , model_name = model.shortName
-        , found_queue = null
-        , id = obj.id
+    }, enqueue: function (obj, force) {
+      var self = this, model = obj.constructor, model_name = model.shortName, found_queue = null, id = obj.id
         ;
 
       if (!obj.selfLink) {
@@ -117,25 +103,25 @@ can.Construct("RefreshQueueManager", {
 
       if (!force)
         // Check if the ID is already contained in another queue
-        can.each(this.queues, function(queue) {
-          if (!found_queue
-              && queue.model === model && queue.ids.indexOf(id) > -1)
+        can.each(this.queues, function (queue) {
+          if (!found_queue &&
+              queue.model === model && queue.ids.indexOf(id) > -1)
             found_queue = queue;
         });
 
       if (!found_queue) {
-        can.each(this.queues, function(queue) {
-          if (!found_queue && queue.model === model
-              && !queue.triggered && queue.ids.length < 150) {
+        can.each(this.queues, function (queue) {
+          if (!found_queue && queue.model === model &&
+              !queue.triggered && queue.ids.length < 150) {
             found_queue = queue.enqueue(id);
             return false;
           }
         });
         if (!found_queue) {
           found_queue = new ModelRefreshQueue(model);
-          this.queues.push(found_queue)
+          this.queues.push(found_queue);
           found_queue.enqueue(id);
-          found_queue.deferred.done(function() {
+          found_queue.deferred.done(function () {
             var index = self.queues.indexOf(found_queue);
             if (index > -1)
               self.queues.splice(index, 1);
@@ -147,22 +133,22 @@ can.Construct("RefreshQueueManager", {
     }
 });
 
-can.Construct("RefreshQueue", {
-    refresh_queue_manager: new RefreshQueueManager(),
-    refresh_all: function(instance, props, force) {
-      var dfd = new $.Deferred();
+  can.Construct('RefreshQueue', {
+  refresh_queue_manager: new RefreshQueueManager(),
+  refresh_all: function (instance, props, force) {
+    var dfd = new $.Deferred();
 
-      _refresh_all(instance, props, dfd);
-      return dfd;
+    _refresh_all(instance, props, dfd);
+    return dfd;
 
       // Helper function called recursively for each property
-      function _refresh_all(instance, props, dfd) {
+    function _refresh_all(instance, props, dfd) {
         var prop = props[0],
-            next_props = props.slice(1),
-            next = instance[prop],
-            refresh_queue = new RefreshQueue(),
-            dfds = [],
-            deferred;
+          next_props = props.slice(1),
+          next = instance[prop],
+          refresh_queue = new RefreshQueue(),
+          dfds = [],
+          deferred;
 
         if (next) {
           refresh_queue.enqueue(next, force);
@@ -174,18 +160,18 @@ can.Construct("RefreshQueue", {
           }
         }
         if (deferred) {
-          deferred.then(function(refreshed_items) {
+          deferred.then(function (refreshed_items) {
             if (next_props.length) {
-              can.each(refreshed_items, function(item) {
+              can.each(refreshed_items, function (item) {
                 var d = new $.Deferred();
                 _refresh_all(item, next_props, d);
                 dfds.push(d);
               });
               // Resolve the original deferred only when all list deferreds
               //   have been resolved
-              $.when.apply($, dfds).then(function(items) {
+              $.when.apply($, dfds).then(function (items) {
                 dfd.resolve(items);
-              }, function() {
+              }, function () {
                 dfd.reject.apply(this, arguments);
               });
               return;
@@ -197,26 +183,24 @@ can.Construct("RefreshQueue", {
             }
             // Last refreshed property was a single instance, return it as such
             dfd.resolve(refreshed_items[0]);
-          }, function() {
+          }, function () {
             dfd.reject.apply(this, arguments);
           });
         } else {
-          console.warn("refresh_all failed at", prop);
+          console.warn('refresh_all failed at', prop);
         }
       }
-    },
+  },
 }, {
-    init: function() {
-      this.objects = [];
-      this.queues = [];
-      this.deferred = new $.Deferred();
-      this.triggered = false;
-      this.completed = false;
+  init: function () {
+    this.objects = [];
+    this.queues = [];
+    this.deferred = new $.Deferred();
+    this.triggered = false;
+    this.completed = false;
 
-      return this;
-    }
-
-  , enqueue: function (obj, force) {
+    return this;
+  }, enqueue: function (obj, force) {
       if (!obj) {
         return;
       }
@@ -237,11 +221,8 @@ can.Construct("RefreshQueue", {
           this.queues.push(queue);
       }
       return this;
-    }
-
-  , trigger: function (delay) {
-      var self = this
-        , deferreds = []
+    }, trigger: function (delay) {
+      var self = this, deferreds = []
         ;
 
       if (!delay) {
@@ -249,7 +230,7 @@ can.Construct("RefreshQueue", {
       }
 
       this.triggered = true;
-      can.each(this.queues, function(queue) {
+      can.each(this.queues, function (queue) {
         deferreds.push(queue.trigger_with_debounce(delay, self.constructor.refresh_queue_manager));
       });
 
@@ -268,6 +249,5 @@ can.Construct("RefreshQueue", {
       return this.deferred;
     }
 });
-
 
 })(window.can, window.can.$);

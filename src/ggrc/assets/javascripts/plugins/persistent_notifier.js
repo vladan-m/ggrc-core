@@ -4,37 +4,37 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function(can) {
-  can.Construct("PersistentNotifier", {
+(function (can) {
+  can.Construct('PersistentNotifier', {
     defaults: {
       one_time_cbs: true,
-      while_queue_has_elements: function() {},
-      when_queue_empties: function() {}
+      while_queue_has_elements: function () {},
+      when_queue_empties: function () {}
     }
   }, {
-    init: function(options) {
+    init: function (options) {
       var that = this;
       this.dfds = [];
       this.list_empty_cbs = [];
-      can.each(this.constructor.defaults, function(val, key) {
+      can.each(this.constructor.defaults, function (val, key) {
         that[key] = val;
       });
-      can.each(options, function(val, key) {
+      can.each(options, function (val, key) {
         that[key] = val;
       });
     },
-    queue: function(dfd) {
+    queue: function (dfd) {
       var idx,
         oldlen = this.list_empty_cbs.length,
         that = this;
       if (!dfd || !dfd.then) {
-        throw "ERROR: attempted to queue something other than a Deferred or Promise";
+        throw 'ERROR: attempted to queue something other than a Deferred or Promise';
       }
       idx = this.dfds.indexOf(dfd);
 
       if (!~idx) { //enforce uniqueness
         this.dfds.push(dfd);
-        dfd.always(function() {
+        dfd.always(function () {
           var i = that.dfds.indexOf(dfd);
           ~i && that.dfds.splice(i, 1);
           if (that.dfds.length < 1) {
@@ -50,7 +50,7 @@
         that.while_queue_has_elements();
       }
     },
-    on_empty: function(fn) {
+    on_empty: function (fn) {
       if (!this.one_time_cbs || this.dfds.length < 1) {
         fn();
       }
@@ -58,7 +58,7 @@
         this.list_empty_cbs.push(fn);
       }
     },
-    off_empty: function(fn) {
+    off_empty: function (fn) {
       var idx;
       if (~(idx = this.list_empty_cbs.indexOf(fn)))
         this.list_empty_cbs.splice(idx, 1);
