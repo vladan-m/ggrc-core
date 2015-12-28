@@ -29,14 +29,25 @@
   },
 
   "rules": {
+    "id-length": [1, {
+      "min": 2,
+      "max": 16,
+      "properties": "never",
+      // x, y, z - Point coordinates
+      // i, j, k - Loop indexes
+      // k, v - Key, Value
+      // e - exception
+      "exceptions": ["x", "y", "z", "i", "j", "k", "v", "e"]
+    }],
     "require-jsdoc": 0,
     "space-before-function-paren": [
       2, {"anonymous": "always", "named": "never"}
     ],
-    "max-len": [2, 80, 4, {
+    "max-len": [1, 80, 2, {
       "ignoreComments": true,
       "ignoreUrls": true
     }],
+    "no-implicit-coercion": [2, {"boolean": true}],
     "no-inline-comments": 0,
     "no-negated-condition": 0,
     "no-unused-vars": [2, {
