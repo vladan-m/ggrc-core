@@ -16,10 +16,16 @@
     "Mustache": false,
     "MutationObserver": false,
     "Permission": false,
-    "resolve_computed": false,
     "RefreshQueue": false,
     "RefreshQueueManager": false,
     "ZeroClipboard": false,
+
+    // TODO: Check why these vars are global
+    "process_gapi_query": false,
+    "resolve_computed": false,
+    "gapi": false,
+    "oauth_dfd": false,
+    "google": false
   },
 
   "rules": {
@@ -31,6 +37,8 @@
       "ignoreComments": true,
       "ignoreUrls": true
     }],
+    "no-inline-comments": 0,
+    "no-negated-condition": 0,
     "no-unused-vars": [2, {
       "args": "none",
       "vars": "all"
