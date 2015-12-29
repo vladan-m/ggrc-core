@@ -5,6 +5,8 @@
     Maintained By: ivan@reciprocitylabs.com
 */
 
+/* eslint camelcase: 0 */
+
 (function (can, $) {
   can.Component.extend({
     tag: 'relevant-filter',
@@ -13,15 +15,16 @@
       relevant_menu_item: '@',
       show_all: '@',
       menu: can.compute(function () {
-        var type = this.attr('type'),
-          showAll = /true/i.test(this.attr('show_all')),
-          isAll = type === 'AllObject',
-          mappings;
+        var type = this.attr('type');
+        var showAll = /true/i.test(this.attr('show_all'));
+        var isAll = type === 'AllObject';
+        var mappings;
 
         if (showAll) {
-          return _.sortBy(_.compact(_.map(GGRC.tree_view.base_widgets_by_type[type], function (mapping) {
-            return CMS.Models[mapping];
-          })), 'model_singular');
+          return _.sortBy(_.compact(_.map(
+            GGRC.tree_view.base_widgets_by_type[type], function (mapping) {
+              return CMS.Models[mapping];
+            })), 'model_singular');
         }
         if (this.attr('search_only') && isAll) {
           mappings = GGRC.tree_view.base_widgets_by_type;
@@ -37,11 +40,11 @@
     },
     events: {
       '.add-filter-rule click': function (el, ev) {
-        ev.preventDefault();
         var menu = this.scope.attr('menu');
+        ev.preventDefault();
 
         if (this.scope.attr('relevant_menu_item') === 'parent' &&
-            +this.scope.attr('panel_number') !== 0 &&
+            Number(this.scope.attr('panel_number')) !== 0 &&
             !this.scope.attr('has_parent')) {
           menu.unshift({
             title_singular: 'Previous objects',
@@ -57,8 +60,8 @@
         });
       },
       '.ui-autocomplete-input autocomplete:select': function (el, ev, data) {
-        var index = el.data('index'),
-          panel = this.scope.attr('relevant')[index];
+        var index = el.data('index');
+        var panel = this.scope.attr('relevant')[index];
 
         panel.attr('filter', data.item);
         panel.attr('value', true);
@@ -67,7 +70,9 @@
         this.scope.attr('relevant').splice(el.data('index'), 1);
       },
       '{scope.relevant} change': function (list, item, which, type, val, oldVal) {
-        this.scope.attr('has_parent', _.findWhere(this.scope.attr('relevant'), {model_name: '__previous__'}));
+        this.scope.attr('has_parent', _.findWhere(this.scope.attr('relevant'), {
+          model_name: '__previous__'}
+        ));
         if (!/model_name/gi.test(which)) {
           return;
         }

@@ -25,13 +25,15 @@
       'a click': function (el, evnt) {
         evnt.preventDefault();
       },
-      'inserted': function (el, evnt) {
+      inserted: function (el, evnt) {
         var timeout = this.scope.attr('timeout') || 10000;
         this._clip = new Clipboard(el.find('a'));
 
         this._clip.on('aftercopy', function () {
           if (this.scope.attr('notify')) {
-            $('body').trigger('ajax:flash', {'success': this.scope.attr('notifyText')});
+            $('body').trigger('ajax:flash', {
+              success: this.scope.attr('notifyText')
+            });
           }
           this.scope.attr('isActive', true);
           setTimeout(function () {
@@ -41,5 +43,4 @@
       }
     }
   });
-
 })(window.can, window.can.$, window.ZeroClipboard);

@@ -5,28 +5,31 @@
     Maintained By: miha@reciprocitylabs.com
 */
 
-(function (can, $) {
+/* eslint camelcase: 0 */
 
+(function (can, $) {
   can.Component.extend({
     tag: 'csv-import',
     template: '<content></content>',
     requestData: null,
     scope: {
       importUrl: '/_service/import_csv',
-      import: null,
+      'import': null,
       filename: '',
       isLoading: false,
       state: 'select',
       states: function () {
-        var state = this.attr('state') || 'select',
-          states = {
-              select: {class: 'btn-success', text: 'Choose CSV file to import'},
-              analysing: {class: 'btn-draft', text: 'Analysing', isDisabled: true},
-              import: {class: 'btn-primary', text: 'Import data'},
-              importing: {class: 'btn-draft', text: 'Importing', isDisabled: true},
-              success: {class: 'btn-success', text: '<i class="grcicon-check-white"></i> Import successful'}
-            };
-
+        var state = this.attr('state') || 'select';
+        var states = {
+          select: {'class': 'btn-success', text: 'Choose CSV file to import'},
+          analysing: {'class': 'btn-draft', text: 'Analysing',
+            isDisabled: true},
+          'import': {'class': 'btn-primary', text: 'Import data'},
+          importing: {'class': 'btn-draft', text: 'Importing',
+            isDisabled: true},
+          success: {'class': 'btn-success',
+            text: '<i class="grcicon-check-white"></i> Import successful'}
+        };
         return _.extend(states[state], {state: state});
       }
     },
@@ -36,7 +39,7 @@
         this.scope.attr({
           state: 'select',
           filename: '',
-          import: null
+          'import': null
         });
         this.element.find('.csv-upload').val('');
       },
@@ -53,8 +56,8 @@
         .done(function (data) {
           var result_count = data.reduce(function (prev, curr) {
             _.each(Object.keys(prev), function (key) {
-                  prev[key] += curr[key] || 0;
-                });
+              prev[key] += curr[key] || 0;
+            });
             return prev;
           }, {created: 0, updated: 0, deleted: 0, ignored: 0});
 
@@ -63,15 +66,17 @@
         }.bind(this))
         .fail(function (data) {
           this.scope.attr('state', 'select');
-          $('body').trigger('ajax:flash', {'error': data.responseText.split('\n')[3]});
+          $('body').trigger('ajax:flash', {
+            error: data.responseText.split('\n')[3]
+          });
         }.bind(this))
         .always(function () {
           this.scope.attr('isLoading', false);
         }.bind(this));
       },
       '.csv-upload change': function (el, ev) {
-        var file = el[0].files[0],
-          formData = new FormData();
+        var file = el[0].files[0];
+        var formData = new FormData();
 
         this.scope.attr('state', 'analysing');
         this.scope.attr('isLoading', true);
@@ -113,7 +118,9 @@
         }.bind(this))
         .fail(function (data) {
           this.scope.attr('state', 'select');
-          $('body').trigger('ajax:flash', {'error': data.responseText.split('\n')[3]});
+          $('body').trigger('ajax:flash', {
+            error: data.responseText.split('\n')[3]
+          });
         }.bind(this))
         .always(function () {
           this.scope.attr('isLoading', false);
