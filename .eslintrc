@@ -31,7 +31,7 @@
   "rules": {
     "id-length": [1, {
       "min": 2,
-      "max": 16,
+      "max": 25,
       "properties": "never",
       // x, y, z - Point coordinates
       // i, j, k - Loop indexes
@@ -61,7 +61,8 @@
     "vars-on-top": 2,
 
     // CanJS uses a lot of these exceptions
-    "new-cap": 0,
+    "camelcase": 0,
+    "no-new": 0,
     "no-new": 0,
   }
 }
