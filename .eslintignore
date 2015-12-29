@@ -1,5 +1,5 @@
 bower_components/*
 third_party/*
 
-src/static/**/*.js
+src/ggrc/static/**/*.js
 src/parser/parser_template.js
