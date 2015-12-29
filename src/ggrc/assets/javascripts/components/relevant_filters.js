@@ -5,8 +5,6 @@
     Maintained By: ivan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $) {
   can.Component.extend({
     tag: 'relevant-filter',

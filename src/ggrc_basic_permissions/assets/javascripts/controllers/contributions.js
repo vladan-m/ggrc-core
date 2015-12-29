@@ -5,8 +5,6 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $) {
   /* Auditor Assignment Modal
   */

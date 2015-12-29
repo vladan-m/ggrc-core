@@ -5,8 +5,6 @@
  * Maintained By: silas@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0, no-new: 0 */
-
 (function ($, CMS, GGRC) {
   var RisksExtension = {};
   // Insert risk mappings to all gov/business object types

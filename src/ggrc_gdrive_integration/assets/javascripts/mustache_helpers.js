@@ -5,8 +5,6 @@
  * Maintained By: ivan@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0 */
-
 // Returns an observable object in the current context
 // This allows the helper to inject asynchronous additional content
 function get_binding_observe(name, options) {

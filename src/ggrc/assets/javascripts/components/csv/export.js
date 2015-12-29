@@ -5,8 +5,6 @@
   Maintained By: ivan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $) {
   var url = can.route.deparam(window.location.search.substr(1));
   var filterModel = can.Map({

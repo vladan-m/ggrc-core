@@ -5,8 +5,6 @@
  * Maintained By: brad@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0 */
-
 (function (can, $) {
   var allops = [];
   var permissionsByType;

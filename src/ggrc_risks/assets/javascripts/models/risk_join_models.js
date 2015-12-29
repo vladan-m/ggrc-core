@@ -5,8 +5,6 @@
  * Maintained By: anze@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0 */
-
 (function (can) {
   can.Model.Join('CMS.Models.RiskObject', {
     root_object: 'risk_object',

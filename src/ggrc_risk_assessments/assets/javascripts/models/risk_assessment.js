@@ -5,8 +5,6 @@
  * Maintained By: ivan@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0 */
-
 (function (can) {
   var mustachePath = GGRC.mustache_path + '/risk_assessments';
   can.Model.Cacheable('CMS.Models.RiskAssessment', {

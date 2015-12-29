@@ -5,8 +5,6 @@
  * Maintained By: anze@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0 */
-
 (function (can) {
   can.Model.Cacheable('CMS.Models.Threat', {
     root_object: 'threat',

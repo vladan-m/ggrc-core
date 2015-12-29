@@ -5,8 +5,6 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $, CMS, GGRC) {
   var scopes = new can.Observe.List(
     ['https://www.googleapis.com/auth/userinfo.email']);

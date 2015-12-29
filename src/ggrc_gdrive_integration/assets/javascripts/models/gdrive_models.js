@@ -5,8 +5,6 @@
  * Maintained By: brad@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0, no-new: 0 */
-
 (function (can) {
   var scopes = ['https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/apps.groups.settings'];

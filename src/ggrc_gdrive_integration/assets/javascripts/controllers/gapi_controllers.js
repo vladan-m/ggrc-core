@@ -5,8 +5,6 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (CMS, GGRC, can, $) {
   window.oauth_dfd = $.Deferred();
 

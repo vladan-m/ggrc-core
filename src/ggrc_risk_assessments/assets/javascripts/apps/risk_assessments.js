@@ -5,8 +5,6 @@
  * Maintained By: dan@reciprocitylabs.com
  */
 
-/* eslint camelcase: 0, new-cap: 0, no-new: 0*/
-
 (function ($, CMS, GGRC) {
   var RiskAssessmentsExtension = {};
   var riskAssessmentsObjectTypes = ['Program'];
