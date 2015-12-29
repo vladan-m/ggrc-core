@@ -5,29 +5,25 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-//= require can.jquery-all
-//= require controllers/quick_search_controller
+/* eslint no-caller: 0 */
 (function (namespace, $) {
-
-  $(function () {
   $('#lhn').cms_controllers_lhn();
-
   $(document.body).on('click', 'a[data-toggle=unmap]', function (ev) {
-    var $el = $(this)
-      ;
-    //  Prevent toggling `openclose` state in trees
+    var $el = $(this);
+
+    // Prevent toggling `openclose` state in trees
     ev.stopPropagation();
     $el.fadeTo('fast', 0.25);
     $el.children('.result').each(function (i, result_el) {
-      var $result_el = $(result_el), result = $result_el.data('result'), mappings = result && result.get_mappings(), i
-        ;
+      var $result_el = $(result_el);
+      var result = $result_el.data('result');
+      var mappings = result && result.get_mappings();
 
       function notify(instance) {
-        $(document.body).trigger(
-            'ajax:flash', {'success': 'Unmap successful.'}
-          );
+        $(document.body).trigger('ajax:flash', {
+          success: 'Unmap successful.'
+        });
       }
-
       can.each(mappings, function (mapping) {
         mapping.refresh().done(function () {
           if (mapping instanceof CMS.Models.Control) {
@@ -42,12 +38,20 @@
   });
 
   $(document.body).on('click', '.map-to-page-object', function (ev) {
+    var i;
+    var v;
+    var join_context;
+    var join_object;
+    var $target = $(ev.currentTarget);
+    var follow = $target.data('follow');
+    var inst = Mustache.resolve($target.data('instance'));
+    var page_model = GGRC.infer_object_type(GGRC.page_object);
+    var page_instance = GGRC.page_instance();
+    var link = page_model.links_to[inst.constructor.model_singular];
+    var mappings = Mustache.resolve($target.data('existing_mappings'));
+
     //  Prevent toggling `openclose` state in trees
     ev.stopPropagation();
-
-    var i, v, $target = $(ev.currentTarget), follow = $target.data('follow'), inst = Mustache.resolve($target.data('instance')), page_model = GGRC.infer_object_type(GGRC.page_object), page_instance = GGRC.page_instance()
-    //, link = page_model.links_to[inst.constructor.model_singular]
-    , params = {}, mappings = Mustache.resolve($target.data('existing_mappings'));
 
     if (can.isArray(inst) || inst instanceof can.List) {
       if (mappings) {
@@ -72,19 +76,31 @@
     }
 
     function triggerFlash(type) {
-      $target.trigger(
-        'ajax:flash', type === 'error' ?
-          {
-            error: [
-              'Failed to map', inst.constructor.title_singular, '<strong>', inst.title, '</strong> to', page_model.title_singular, '<strong>', page_instance.title, '</strong>'
-            ].join(' ')
-          }
-          : {
-            success: [
-              'Mapped', inst.constructor.title_singular, '<strong>', inst.title, '</strong> to', page_model.title_singular, '<strong>', page_instance.title, '</strong>'
-            ].join(' ')
-          }
-      );
+      $target.trigger('ajax:flash',
+        type === 'error' ? {
+          error: ['Failed to map',
+            inst.constructor.title_singular,
+            '<strong>',
+            inst.title,
+            '</strong> to',
+            page_model.title_singular,
+            '<strong>',
+            page_instance.title,
+            '</strong>'
+          ].join(' ')
+        } : {
+          success: [
+            'Mapped',
+            inst.constructor.title_singular,
+            '<strong>',
+            inst.title,
+            '</strong> to',
+            page_model.title_singular,
+            '<strong>',
+            page_instance.title,
+            '</strong>'
+          ].join(' ')
+        });
 
       // Switch the active widget view if 'data-follow' was specified
       if (follow && type !== 'error') {
@@ -93,7 +109,6 @@
       }
     }
 
-    var join_context;
     if (inst instanceof CMS.Models.Program && inst.context) {
       join_context = {id: inst.context.id};
     } else {
@@ -111,18 +126,10 @@
           var message = 'That object is already mapped';
           $(document.body).trigger('ajax:flash', {error: message});
         });
-    }
-    // Otherwise throw a warning
-    else {
+    } else { // Otherwise throw a warning
       triggerFlash('error');
     }
-
   });
 
-});
-
-  $(function () {
   $(document.body).ggrc_controllers_recently_viewed();
-});
-
 })(this, jQuery);

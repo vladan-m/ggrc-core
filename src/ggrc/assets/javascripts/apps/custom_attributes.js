@@ -6,7 +6,6 @@
 */
 
 (function (can, $) {
-
   can.Component.extend({
     tag: 'custom-attributes',
     scope: {
@@ -20,8 +19,9 @@
     events: {
     },
     init: function () {
-      var instance = this.scope.instance,
-        scope = this.scope;
+      var instance = this.scope.instance;
+      var scope = this.scope;
+
       if (!instance.class.is_custom_attributable) {
         return;
       }
@@ -51,5 +51,4 @@
       }
     }
   });
-
 })(window.can, window.can.$);
