@@ -5,8 +5,6 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (CMS, GGRC, can, $) {
   function _generate_cycle() {
     var workflow = GGRC.page_instance();

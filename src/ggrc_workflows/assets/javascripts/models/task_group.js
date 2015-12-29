@@ -5,8 +5,6 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can) {
   can.Model.Cacheable('CMS.Models.TaskGroup', {
     root_object: 'task_group',

@@ -5,8 +5,6 @@
     Maintained By: anze@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (CMS, GGRC, can, $) {
   can.Component.extend({
     tag: 'dashboard-widgets',

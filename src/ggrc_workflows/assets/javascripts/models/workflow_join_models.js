@@ -5,8 +5,6 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can) {
   can.Model.Join('CMS.Models.TaskGroupObject', {
     root_object: 'task_group_object',

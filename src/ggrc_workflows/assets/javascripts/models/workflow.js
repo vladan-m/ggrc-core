@@ -5,8 +5,6 @@
     Maintained By: dan@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can) {
   can.Model.Cacheable('CMS.Models.Workflow', {
     root_object: 'workflow',
@@ -187,7 +185,7 @@
       }
 
       // Check each task in the workflow:
-      this.refresh_all('task_groups', 'task_group_tasks').then(function (s) {
+      this.refresh_all('task_groups', 'task_group_tasks').then(function () {
         var tasks = new can.List();
         self.task_groups.each(function (taskGroup) {
           taskGroup.reify().task_group_tasks.each(function (task) {

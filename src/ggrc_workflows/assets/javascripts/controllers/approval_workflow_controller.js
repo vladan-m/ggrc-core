@@ -5,8 +5,6 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $, GGRC, CMS) {
   GGRC.Controllers.Modals('GGRC.Controllers.ApprovalWorkflow', {
     defaults: {

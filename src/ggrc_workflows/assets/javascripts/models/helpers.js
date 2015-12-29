@@ -5,10 +5,8 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-/* eslint camelcase: 0 */
-
 (function (can, $, CMS) {
-  var approval_workflow_errors_compute = can.compute(function () {
+  var approvalWfErrorsCompute = can.compute(function () {
     var errors = null;
     if (!this.attr('contact')) {
       errors = {contact: 'Must be defined'};
@@ -76,11 +74,11 @@
   }, {
     save: function () {
       var that = this;
-      var aws_dfd = this.original_object
+      var awsDfd = this.original_object
         .get_binding('approval_workflows')
         .refresh_list();
 
-      return aws_dfd.then(function (aws) {
+      return awsDfd.then(function (aws) {
         var ret;
         var instRefreshDfd;
         var allSavedDfd;
@@ -192,8 +190,8 @@
       });
     },
 
-    computed_errors: approval_workflow_errors_compute,
+    computed_errors: approvalWfErrorsCompute,
 
-    computed_unsuppressed_errors: approval_workflow_errors_compute
+    computed_unsuppressed_errors: approvalWfErrorsCompute
   });
 })(this.can, this.can.$, this.CMS);
