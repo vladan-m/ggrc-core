@@ -31,6 +31,8 @@
     */
     get_widget_list_for: function (page_type) {
       var widgets = {};
+      var descriptors = {};
+
       can.each(this.modules, function (module) {
         can.each(module[page_type], function (descriptor, id) {
           if (!widgets[id]) {
@@ -40,25 +42,33 @@
           }
         });
       });
-      var descriptors = {};
       can.each(widgets, function (widget, widget_id) {
         switch (widget.content_controller) {
           case GGRC.Controllers.InfoWidget:
             descriptors[widget_id] = GGRC.WidgetDescriptor.make_info_widget(
-            widget.content_controller_options && widget.content_controller_options.instance || widget.instance,
-            widget.content_controller_options && widget.content_controller_options.widget_view || widget.widget_view
+            widget.content_controller_options &&
+              widget.content_controller_options.instance || widget.instance,
+            widget.content_controller_options &&
+              widget.content_controller_options.widget_view || widget.widget_view
           );
             break;
           case GGRC.Controllers.TreeView:
             descriptors[widget_id] = GGRC.WidgetDescriptor.make_tree_view(
-            widget.content_controller_options && (widget.content_controller_options.instance || widget.content_controller_options.parent_instance) || widget.instance,
-            widget.content_controller_options && widget.content_controller_options.model || widget.far_model || widget.model,
-            widget.content_controller_options && widget.content_controller_options.mapping || widget.mapping,
+            widget.content_controller_options &&
+              (widget.content_controller_options.instance ||
+              widget.content_controller_options.parent_instance) ||
+              widget.instance,
+            widget.content_controller_options &&
+              widget.content_controller_options.model ||
+              widget.far_model || widget.model,
+            widget.content_controller_options &&
+              widget.content_controller_options.mapping || widget.mapping,
             widget
           );
             break;
           default:
-            descriptors[widget_id] = new GGRC.WidgetDescriptor(page_type + ':' + widget_id, widget);
+            descriptors[widget_id] = new GGRC.WidgetDescriptor(page_type + ':' +
+             widget_id, widget);
         }
       });
       can.each(descriptors, function (descriptor, id) {
@@ -72,11 +82,12 @@
       returns a keyed object of widget descriptors that represents the current page.
     */
     get_current_page_widgets: function () {
-      return this.get_widget_list_for(GGRC.page_instance().constructor.shortName);
+      return this.get_widget_list_for(
+        GGRC.page_instance().constructor.shortName);
     },
     get_default_widget_sort: function () {
       return this.sort;
-    },
+    }
   }, {
     init: function (name, opts, sort) {
       this.constructor.modules[name] = this;

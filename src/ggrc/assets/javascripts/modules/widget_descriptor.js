@@ -6,7 +6,7 @@
 */
 
 (function ($, CMS, GGRC) {
-  //A widget descriptor has the minimum five properties:
+  // A widget descriptor has the minimum five properties:
   // widget_id:  the unique ID string for the widget
   // widget_name: the display title for the widget in the UI
   // widget_icon: the CSS class for the widget in the UI
@@ -22,15 +22,17 @@
       widget_view [optional] - a template for rendering the info.
     */
     make_info_widget: function (instance, widget_view) {
-      var default_info_widget_view = GGRC.mustache_path + '/base_objects/info.mustache';
+      var default_info_widget_view = GGRC.mustache_path +
+        '/base_objects/info.mustache';
+
       return new this(
         instance.constructor.shortName + ':info', {
           widget_id: 'info',
           widget_name: function () {
-            if (instance.constructor.title_singular === 'Person')
+            if (instance.constructor.title_singular === 'Person') {
               return 'Info';
-            else
-              return instance.constructor.title_singular + ' Info';
+            }
+            return instance.constructor.title_singular + ' Info';
           },
           widget_icon: 'grcicon-info',
           content_controller: GGRC.Controllers.InfoWidget,
@@ -56,24 +58,25 @@
         widget_initial_content: '<ul class="tree-structure new-tree"></ul>',
         widget_id: far_model.table_singular,
         widget_guard: function () {
-          if (far_model.title_plural === 'Audits' && instance instanceof CMS.Models.Program) {
+          if (far_model.title_plural === 'Audits' &&
+              instance instanceof CMS.Models.Program) {
             return 'context' in instance && !!(instance.context.id);
           }
           return true;
         },
         widget_name: function () {
           var $objectArea = $('.object-area');
-          if ($objectArea.hasClass('dashboard-area') || instance.constructor.title_singular === 'Person') {
+          if ($objectArea.hasClass('dashboard-area') ||
+            instance.constructor.title_singular === 'Person') {
             if (/dashboard/.test(window.location)) {
               return 'My ' + far_model.title_plural;
-            } else {
-              return far_model.title_plural;
             }
+            return far_model.title_plural;
           } else if (far_model.title_plural === 'Audits') {
             return 'Mapped Audits';
-          } else {
-            return (far_model.title_plural === 'References' ? 'Linked ' : 'Mapped ') + far_model.title_plural;
           }
+          return (far_model.title_plural === 'References' ? 'Linked ' :
+            'Mapped ') + far_model.title_plural;
         },
         widget_icon: far_model.table_singular,
         object_category: far_model.category || 'default',
@@ -91,7 +94,8 @@
 
       $.extend.apply($, [true, descriptor].concat(extenders || []));
 
-      return new this(instance.constructor.shortName + ':' + far_model.table_singular, descriptor);
+      return new this(instance.constructor.shortName + ':' +
+        far_model.table_singular, descriptor);
     },
     newInstance: function (id, opts) {
       var ret;
@@ -109,12 +113,11 @@
           GGRC.widget_descriptors[id] = ret;
         }
         return GGRC.widget_descriptors[id];
-      } else {
-        ret = this._super.apply(this, arguments);
-        $.extend(ret, opts);
-        GGRC.widget_descriptors[id] = ret;
-        return ret;
       }
+      ret = this._super.apply(this, arguments);
+      $.extend(ret, opts);
+      GGRC.widget_descriptors[id] = ret;
+      return ret;
     }
   }, {});
 })(this.can.$, this.CMS, this.GGRC);
