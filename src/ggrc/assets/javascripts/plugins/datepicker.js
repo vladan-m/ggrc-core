@@ -6,12 +6,12 @@
 */
 (function ($, moment) {
   // On-demand creation of datepicker() objects
-  var $body = $('body'),
-    format = {
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'mm/dd/yy'
-      };
+  var $body = $('body');
+  var format = {
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: 'mm/dd/yy'
+  };
 
   $body.on('focus', '[data-toggle="datepicker"]', function (ev) {
     var $this = $(this);
@@ -28,8 +28,8 @@
 
   // On-demand creation of datepicker() objects, initial date today or later
   $body.on('focus', '[data-toggle="datepicker_today_or_later"]', function (ev) {
-    var $this = $(this),
-      start_date = moment().format('MM/DD/YY');
+    var $this = $(this);
+    var start_date = moment().format('MM/DD/YY');
 
     if ($this.data('datepicker')) {
       return;

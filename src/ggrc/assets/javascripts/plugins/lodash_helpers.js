@@ -7,10 +7,13 @@
 (function (_) {
   _.mixin({
     exists: function (obj, key) {
+      var keys;
+
       if (!key) {
         return obj;
       }
-      var keys = arguments.length > 2 ? Array.prototype.slice.call(arguments).slice(1) : key.split('.');
+      keys = arguments.length > 2 ?
+        Array.prototype.slice.call(arguments).slice(1) : key.split('.');
       return keys.reduce(function (base, memo) {
         return (_.isUndefined(base) || _.isNull(base)) ? base : base[memo];
       }, obj);

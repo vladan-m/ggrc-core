@@ -8,10 +8,10 @@
 describe('GGRC utils allowed_to_map() method', function () {
   'use strict';
 
-  var allowed_to_map,  // the method under test
-    fakeOptions,
-    fakeProgram,
-    fakeAudit;
+  var allowed_to_map;  // the method under test
+  var fakeOptions;
+  var fakeProgram;
+  var fakeAudit;
 
   beforeAll(function () {
     allowed_to_map = GGRC.Utils.allowed_to_map;
@@ -40,5 +40,4 @@ describe('GGRC utils allowed_to_map() method', function () {
       expect(result).toBe(false);
     });
   });
-
 });

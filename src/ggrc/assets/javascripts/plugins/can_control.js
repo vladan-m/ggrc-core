@@ -14,16 +14,16 @@
       var that = this;
       return function () {
         if (!that.element) {
-          return;
+          return undefined;
         }
         return fn.apply(this, arguments);
       };
     },
-
-    //make buttons non-clickable when saving
+    // make buttons non-clickable when saving
     bindXHRToButton: function (xhr, el, newtext, disable) {
       // binding of an ajax to a click is something we do manually
-      var $el = $(el), oldtext = $el.text();
+      var $el = $(el);
+      var oldtext = $el.text();
 
       if (newtext) {
         $el[0].innerHTML = newtext;
@@ -35,7 +35,8 @@
       xhr.always(function () {
         // If .text(str) is used instead of innerHTML, the click event may not fire depending on timing
         if ($el.length) {
-          $el.removeAttr('disabled').removeClass('disabled pending-ajax')[0].innerHTML = oldtext;
+          $el.removeAttr('disabled')
+            .removeClass('disabled pending-ajax')[0].innerHTML = oldtext;
         }
       });
     }

@@ -4,7 +4,7 @@
     Created By: ivan@reciprocitylabs.com
     Maintained By: ivan@reciprocitylabs.com
 */
-(function ($) {
+(function (root, $) {
   var defaults = {
     delay: {
       show: 500,
@@ -12,44 +12,47 @@
     },
     placement: 'left',
     content: function (trigger) {
-      var $trigger = $(trigger);
-
       var $el = $(new Spinner().spin().el);
       $el.css({
         width: '100px',
         height: '100px',
         left: '50px',
         top: '50px',
-        zIndex: calculate_spinner_z_index
+        zIndex: root.calculate_spinner_z_index
       });
       return $el[0];
     }
   };
 
   // Listeners for initial mouseovers for stick-hover
-  $('body').on('mouseover', '[data-popover-trigger="sticky-hover"]', function (e) {
-    // If popover instance doesn't exist already, create it and
-    // force the 'enter' event.
-    if (!$(e.currentTarget).data('sticky_popover')) {
+  $('body').on('mouseover', '[data-popover-trigger="sticky-hover"]',
+    function (e) {
+      // If popover instance doesn't exist already, create it and
+      // force the 'enter' event.
+      if (!$(e.currentTarget).data('sticky_popover')) {
+        return undefined;
+      }
       $(e.currentTarget)
         .sticky_popover($.extend({}, defaults, {
           trigger: 'sticky-hover',
           placement: function () {
-            var $el = this.$element,
-              spaceLeft = $(document).width() - ($el.offset().left + $el.width()),
-              spaceRight = $el.offset().left,
-              popover_size = 620;
+            var $el = this.$element;
+            var spaceLeft = $(document).width() -
+              ($el.offset().left + $el.width());
+            var spaceRight = $el.offset().left;
+            var popover_size = 620;
             // Display on right if there is enough space
-            if ($el.closest('.widget-area:first-child').length && spaceLeft > popover_size)
-              return 'right';else if (spaceRight > popover_size) {
+            if ($el.closest('.widget-area:first-child').length &&
+              spaceLeft > popover_size) {
+              return 'right';
+            } else if (spaceRight > popover_size) {
               return 'left';
             }
             return 'top';
           }
         }))
         .triggerHandler(e);
-    }
-  });
+    });
 
   // Listeners for initial clicks for popovers
   $('body').on('click', 'a[data-popover-trigger="click"]', function (e) {
@@ -66,9 +69,9 @@
   function showhide(upsel, downsel) {
     return function (command) {
       $(this).each(function () {
-        var $this = $(this),
-          $content = $this.closest(upsel).find(downsel),
-          cmd = command;
+        var $this = $(this);
+        var $content = $this.closest(upsel).find(downsel);
+        var cmd = command;
 
         if (typeof cmd !== 'string' || cmd === 'toggle') {
           cmd = $this.hasClass('active') ? 'hide' : 'show';
@@ -102,13 +105,13 @@
 
   function oneline(command) {
     $(this).each(function () {
-      var $this = $(this),
-        $leaf = $this.closest('[class*=span]').parent().children('[class*=span]:first'),
-        $title = $leaf.find('.oneline'),
-        $description = $leaf.find('.description'),
-        $view = $leaf.closest('.row-fluid').find('.view-more'),
-        cmd = command
-        ;
+      var $this = $(this);
+      var $leaf = $this.closest('[class*=span]').parent()
+        .children('[class*=span]:first');
+      var $title = $leaf.find('.oneline');
+      var $description = $leaf.find('.description');
+      var $view = $leaf.closest('.row-fluid').find('.view-more');
+      var cmd = command;
 
       if ($description.length > 0) {
         if (typeof cmd !== 'string') {
@@ -135,14 +138,15 @@
 
     return this;
   }
-
   $.fn.oneline = oneline;
 
   // Close other popovers when one is shown
   $('body').on('show.popover', function (e) {
     $('[data-sticky_popover]').each(function () {
       var popover = $(this).data('sticky_popover');
-      popover && popover.hide();
+      if (popover) {
+        popover.hide();
+      }
     });
   });
 
@@ -153,4 +157,4 @@
     // so we have to kill the popover elements themselves.
     $('.popover').remove();
   });
-})(jQuery);
+})(this, jQuery);

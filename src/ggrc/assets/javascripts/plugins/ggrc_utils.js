@@ -24,7 +24,8 @@
     },
     download: function (filename, text) {
       var element = document.createElement('a');
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+        encodeURIComponent(text));
       element.setAttribute('download', filename);
       element.style.display = 'none';
       document.body.appendChild(element);
@@ -45,8 +46,9 @@
       });
     },
     is_mapped: function (target, destination) {
-      var table_plural = CMS.Models[destination.type].table_plural,
-        bindings = target.get_binding((target.has_binding(table_plural) ? '' : 'related_') + table_plural);
+      var table_plural = CMS.Models[destination.type].table_plural;
+      var bindings = target.get_binding(
+        (target.has_binding(table_plural) ? '' : 'related_') + table_plural);
 
       if (bindings && bindings.list && bindings.list.length) {
         return _.find(bindings.list, function (item) {
@@ -74,18 +76,18 @@
      * @return {Boolean} - true if mapping is allowed, false otherwise
      */
     allowed_to_map: function (source, target, options) {
-      var can_map = false,
-        types,
-        target_type,
-        source_type,
-        target_context,
-        source_context,
-        create_contexts,
-        canonical,
-        has_widget;
+      var can_map = false;
+      var types;
+      var target_type;
+      var source_type;
+      var target_context;
+      var source_context;
+      var create_contexts;
+      var canonical;
+      var has_widget;
 
-      target_type = target instanceof can.Model ? target.constructor.shortName
-                                                : (target.type || target);
+      target_type = target instanceof can.Model ? target.constructor.shortName :
+        (target.type || target);
       source_type = source.constructor.shortName || source;
 
       // special case check: mapping an Audit to a Program (and vice versa) is

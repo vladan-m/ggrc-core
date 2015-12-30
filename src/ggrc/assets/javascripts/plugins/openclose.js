@@ -6,19 +6,18 @@
 */
 (function ($) {
   function openclose(command) {
-    var $that = $(this),
-      use_slide = $that.length < 100;
+    var $that = $(this);
+    var use_slide = $that.length < 100;
 
     $that.each(function () {
-      var $this = $(this),
-        $main = $this.closest('.item-main'),
-        $li = $main.closest('li'),
-        $content = $li.children('.item-content'),
-        $icon = $main.find('.openclose'),
-        $parentTree = $this.closest('ul.new-tree'),
-        cmd = command,
-        callback
-        ;
+      var $this = $(this);
+      var $main = $this.closest('.item-main');
+      var $li = $main.closest('li');
+      var $content = $li.children('.item-content');
+      var $icon = $main.find('.openclose');
+      var $parentTree = $this.closest('ul.new-tree');
+      var cmd = command;
+      var callback;
 
       callback = function () {
         //  Trigger update for sticky headers and footers
@@ -39,7 +38,9 @@
         $icon.removeClass('active');
         $li.removeClass('item-open');
         // Only remove tree open if there are no open siblings
-        !$li.siblings('.item-open').length && $parentTree.removeClass('tree-open');
+        if (!$li.siblings('.item-open').length) {
+          $parentTree.removeClass('tree-open');
+        }
         $content.removeClass('content-open');
       } else if (cmd === 'open') {
         if (use_slide) {

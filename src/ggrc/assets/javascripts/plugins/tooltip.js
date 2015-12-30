@@ -9,12 +9,15 @@
   // Possibly remove this when upgrade to Bootstrap 2.3.0 (which has edge detection)
   var _tooltip_show = $.fn.tooltip.Constructor.prototype.show;
   $.fn.tooltip.Constructor.prototype.show = function () {
-    var margin = 10,
-      container_width = document.width,
-      tip_pos, $arrow, offset, return_value;
+    var margin = 10;
+    var container_width = document.width;
+    var tip_pos;
+    var $arrow;
+    var offset;
+    var return_value;
 
     if (!this.hasContent() || !this.enabled) {
-      return; // because _tooltip_show will do this too
+      return undefined; // because _tooltip_show will do this too
     }
 
     _tooltip_show.apply(this);
@@ -34,14 +37,14 @@
         left: tip_pos.left - offset
       });
       $arrow.css({
-        left: parseInt($arrow.css('left')) + offset
+        left: parseInt($arrow.css('left'), 10) + offset
       });
     } else if (tip_pos.left < margin) {
       this.$tip.css({
         left: margin
       });
       $arrow.css({
-        left: parseInt($arrow.css('left')) + tip_pos.left - margin
+        left: parseInt($arrow.css('left'), 10) + tip_pos.left - margin
       });
     }
 
@@ -57,55 +60,51 @@
   // * $currentTarget.data('tooltip-monitor') is a flag to ensure only one
   //   monitor per element
   function monitorTooltip($currentTarget) {
-    var monitorFn,
-      monitorPeriod = 500,
-      monitorTimeoutId = null,
-      $currentTip,
-      dataTooltip;
+    var monitorPeriod = 500;
+    var $currentTip;
+    var dataTooltip;
+    var monitorFn = function () {
+      dataTooltip = dataTooltip || $currentTarget.data('tooltip');
+      $currentTip = $currentTip || (dataTooltip && dataTooltip.$tip);
+
+      if (!$currentTarget.is(':visible')) {
+        if ($currentTip) {
+          $currentTip.remove();
+        }
+        $currentTarget.data('tooltip-monitor', false);
+      } else if ($currentTip && $currentTip.is(':visible')) {
+        setTimeout(monitorFn, monitorPeriod);
+      } else {
+        $currentTarget.data('tooltip-monitor', false);
+      }
+    };
 
     if (!$currentTarget.data('tooltip-monitor')) {
       dataTooltip = $currentTarget.data('tooltip');
       $currentTip = dataTooltip && dataTooltip.$tip;
-
-      monitorFn = function () {
-        dataTooltip = dataTooltip || $currentTarget.data('tooltip');
-        $currentTip = $currentTip || (dataTooltip && dataTooltip.$tip);
-
-        if (!$currentTarget.is(':visible')) {
-          $currentTip && $currentTip.remove();
-          $currentTarget.data('tooltip-monitor', false);
-        } else if ($currentTip && $currentTip.is(':visible')) {
-          monitorTimeoutId = setTimeout(monitorFn, monitorPeriod);
-        } else {
-          $currentTarget.data('tooltip-monitor', false);
-        }
-      };
-
-      monitorTimeoutId = setTimeout(monitorFn, monitorPeriod);
+      setTimeout(monitorFn, monitorPeriod);
       $currentTarget.data('tooltip-monitor', true);
     }
   }
-  
 
   $('body').on('shown', '.modal', function () {
     $('.tooltip').hide();
   });
-
   // Listeners for initial tooltip mouseovers
-  $('body').on('mouseover', '[data-toggle="tooltip"], [rel=tooltip]', function (e) {
-    var $currentTarget = $(e.currentTarget);
+  $('body').on('mouseover', '[data-toggle="tooltip"], [rel=tooltip]',
+    function (e) {
+      var $currentTarget = $(e.currentTarget);
+      if (!$currentTarget.data('tooltip')) {
+        $currentTarget
+          .tooltip({
+            delay: {
+              show: 500,
+              hide: 0
+            }
+          })
+          .triggerHandler(e);
+      }
 
-    if (!$currentTarget.data('tooltip')) {
-      $currentTarget
-        .tooltip({
-          delay: {
-            show: 500,
-            hide: 0
-          }
-        })
-        .triggerHandler(e);
-    }
-
-    monitorTooltip($currentTarget);
-  });
+      monitorTooltip($currentTarget);
+    });
 })(jQuery);

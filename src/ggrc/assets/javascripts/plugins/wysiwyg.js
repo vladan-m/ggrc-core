@@ -7,7 +7,7 @@
 (function ($) {
   $.fn.cms_wysihtml5 = function () {
     if ($(this).data('_wysihtml5_initialized')) {
-      return;
+      return undefined;
     }
 
     $(this).data('_wysihtml5_initialized', true);
@@ -19,9 +19,11 @@
       parserRules: wysihtml5ParserRules
     });
     this.each(function () {
-      var $that = $(this),
-        editor = $that.data('wysihtml5').editor,
-        $textarea = $(editor.textarea.element);
+      var $that = $(this);
+      var $wysiarea;
+      var $sandbox;
+      var editor = $that.data('wysihtml5').editor;
+      var $textarea = $(editor.textarea.element);
 
       if ($that.data('cms_events_bound')) {
         return;
@@ -30,26 +32,27 @@
         $that.val(this.getValue()).trigger('change');
       });
 
-      var $wysiarea = $that.closest('.wysiwyg-area').resizable({
+      $wysiarea = $that.closest('.wysiwyg-area').resizable({
         handles: 's',
         minHeight: 100,
-        alsoResize: '#' + $that.uniqueId().attr('id') + ', #' + $that.closest('.wysiwyg-area').uniqueId().attr('id') + ' iframe',
+        alsoResize: '#' + $that.uniqueId().attr('id') + ', #' +
+          $that.closest('.wysiwyg-area').uniqueId().attr('id') + ' iframe',
         autoHide: false
       }).bind('resizestop', function (ev) {
         ev.stopPropagation();
         $that.css({
-          'display': 'block',
-          'height': $that.height() + 20
-        }); //10px offset between reported height and styled height.
+          display: 'block',
+          height: $that.height() + 20
+        }); // 10px offset between reported height and styled height.
         $textarea.css('width', $textarea.width() + 20);
         editor.composer.style(); // re-copy new size of textarea to composer
         editor.fire('change_view', editor.currentView.name);
       });
-      var $sandbox = $wysiarea.find('.wysihtml5-sandbox');
+      $sandbox = $wysiarea.find('.wysihtml5-sandbox');
 
       $($sandbox.prop('contentWindow'))
         .bind('mouseover mousemove mouseup', function (ev) {
-          var e = new $.Event(ev.type === 'mouseup' ? 'mouseup' : 'mousemove'); //jQUI resize listens on this.
+          var e = new $.Event(ev.type === 'mouseup' ? 'mouseup' : 'mousemove'); // jQUI resize listens on this.
           e.pageX = $sandbox.offset().left + ev.pageX;
           e.pageY = $sandbox.offset().top + ev.pageY;
           $sandbox.trigger(e);

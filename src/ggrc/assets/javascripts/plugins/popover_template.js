@@ -39,8 +39,8 @@
     return $.map(elements, function (element) {
       return target.closest(element).length || target.is(element);
     }).some(function (val) {
-        return val;
-      });
+      return val;
+    });
   };
   Popover.prototype.clickOutside = function (evnt) {
     var $target = $(evnt.target);
@@ -66,7 +66,7 @@
       placement: function (el, src) {
         $(el).addClass('popover-help-wrap');
         return 'bottom';
-      }.bind(this),
+      },
       title: function () {
         return this.template.find('.popup__title').text();
       }.bind(this),
@@ -78,8 +78,8 @@
 
   function Plugin(option) {
     return this.each(function () {
-      var $this = $(this),
-        data = $this.data('popover-template');
+      var $this = $(this);
+      var data = $this.data('popover-template');
 
       if (!data) {
         $this.data('popover-template', new Popover(this));
@@ -88,8 +88,8 @@
   }
   $.fn.popover_template = Plugin;
   $.fn.popover_template.Constructor = Popover;
-
-  $('body').on('mouseover.popover-template', '.popover-template', function (evnt) {
-    $(evnt.currentTarget).popover_template();
-  });
+  $('body').on('mouseover.popover-template', '.popover-template',
+    function (evnt) {
+      $(evnt.currentTarget).popover_template();
+    });
 })(window, jQuery, GGRC);
