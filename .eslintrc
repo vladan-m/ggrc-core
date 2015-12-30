@@ -18,6 +18,7 @@
     "Permission": false,
     "RefreshQueue": false,
     "RefreshQueueManager": false,
+    "Spinner": false,
     "ZeroClipboard": false,
 
     // TODO: Check why these vars are global
@@ -25,7 +26,9 @@
     "resolve_computed": false,
     "gapi": false,
     "oauth_dfd": false,
-    "google": false
+    "google": false,
+    "calculate_spinner_z_index": false,
+    "wysihtml5ParserRules": false,
   },
 
   "rules": {
