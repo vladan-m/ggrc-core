@@ -5,11 +5,27 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-! function ($) {
-  'use strict'; // jshint ;_;
+(function ($) {
+  'use strict';
 
   // Insert http:// before links
-  var createLink = wysihtml5.commands.createLink, old_exec = createLink.exec;
+  var createLink = wysihtml5.commands.createLink;
+  var old_exec = createLink.exec;
+  var originalObserve = wysihtml5.views.Composer.prototype.observe;
+  var browser = wysihtml5.browser;
+  var handleUserInteraction = function (event) {
+    this.parent.fire('beforeinteraction').fire('beforeinteraction:composer');
+    setTimeout((function () {
+      this.parent.fire('interaction').fire('interaction:composer');
+    }).bind(this), 0);
+  };
+  var addListeners = function (target, events, callback) {
+    var i = 0;
+    var max = events.length;
+    for (; i < max; i++) {
+      target.addEventListener(events[i], callback, false);
+    }
+  };
   createLink.exec = function (composer, command, value) {
     var url = typeof (value) === 'object' ? value.href : value;
 
@@ -18,13 +34,15 @@
 
     // If there are multiple prefixes, remove the first http://
     // This can occur if the user pastes a URL without deleting the default "http://"
-    if (url.match(/^http:\/\/.+?\/\//))
+    if (url.match(/^http:\/\/.+?\/\//)) {
       url = url.replace(/^http:\/\//, '');
+    }
 
-    if (typeof (value) === 'object')
+    if (typeof (value) === 'object') {
       value.href = url;
-    else
+    } else {
       value = url;
+    }
     return old_exec.call(this, composer, command, value);
   };
 
@@ -41,11 +59,10 @@
           // Add the iframe to the DOM
           rangy.dom.getBody(document).appendChild(iframeEl);
           return rangy.dom.getIframeDocument(iframeEl, true);
-        } else {
-          throw new Error('getIframeWindow: No Document object found for iframe element');
         }
+        throw new Error(
+          'getIframeWindow: No Document object found for iframe element');
       };
-
       rangy.dom.getIframeWindow = function (iframeEl, no_recurse) {
         if (typeof iframeEl.contentWindow) {
           return iframeEl.contentWindow;
@@ -55,35 +72,22 @@
           // Add the iframe to the DOM
           rangy.dom.getBody(document).appendChild(iframeEl);
           return rangy.dom.getIframeWindow(iframeEl, true);
-        } else {
-          throw new Error('getIframeWindow: No Window object found for iframe element');
         }
+        throw new Error(
+          'getIframeWindow: No Window object found for iframe element');
       };
     });
   }
 
   // We took the implementation from https://github.com/Voog/wysihtml
   // We trigger events in fake textarea
-  var originalObserve = wysihtml5.views.Composer.prototype.observe,
-    dom = wysihtml5.dom,
-    browser = wysihtml5.browser,
-    handleUserInteraction = function (event) {
-      this.parent.fire('beforeinteraction').fire('beforeinteraction:composer');
-      setTimeout((function () {
-        this.parent.fire('interaction').fire('interaction:composer');
-      }).bind(this), 0);
-    },
-    addListeners = function (target, events, callback) {
-      for (var i = 0, max = events.length; i < max; i++) {
-        target.addEventListener(events[i], callback, false);
-      }
-    };
   wysihtml5.views.Composer.prototype.observe = function () {
-    var element = this.element,
-      focusBlurElement = browser.supportsEventsInIframeCorrectly() ? element : this.sandbox.getWindow();
+    var element = this.element;
+    var focusBlurElement = browser.supportsEventsInIframeCorrectly() ?
+      element : this.sandbox.getWindow();
 
-    addListeners(focusBlurElement, ['focus', 'keyup'], handleUserInteraction.bind(this));
+    addListeners(focusBlurElement, ['focus', 'keyup'],
+      handleUserInteraction.bind(this));
     return originalObserve.apply(this, arguments);
   };
-
-}(window.jQuery);
+})(window.jQuery);
