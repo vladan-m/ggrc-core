@@ -29,3 +29,8 @@ def init_mockup_views():
   @login_required
   def mockup_workflow():
     return render_template("mockups/workflow.haml")
+
+  @app.route("/mockups/reporting-dashboard")
+  @login_required
+  def mockup_reporting_dashboard():
+    return render_template("mockups/reporting-dashboard.haml")

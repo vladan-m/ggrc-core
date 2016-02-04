@@ -416,6 +416,9 @@ mockup-js-files:
   - workflow/pages/workflow.js
   - workflow/pages/info.js
 
+  # Reporting Dashboard
+  - reporting-dashboard/pages/info.js
+
   # Bootstrap files shouold be above
   - javascript/add_comment.js
   - javascript/attachment_list.js
@@ -425,6 +428,7 @@ mockup-js-files:
   - assessor/main.js
   - request/main.js
   - workflow/main.js
+  - reporting-dashboard/main.js
 
 mockup-js-template-files:
   # Request
@@ -437,6 +441,9 @@ mockup-js-template-files:
   # Workflow
   - workflow/info.mustache
   - workflow/workflow.mustache
+
+  # Reporting Dashboard
+  - reporting-dashboard/info.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache

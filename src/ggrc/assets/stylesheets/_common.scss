@@ -132,6 +132,9 @@ select {
   &.btn-small {
     @include btn-size(12px, 18px, 4px 14px);
   }
+  &.btn-large {
+    @include btn-size(15px, 18px, 15px 30px);
+  }
   &.btn-mini {
     @include btn-size(11px, 16px, 2px 12px);
   }
