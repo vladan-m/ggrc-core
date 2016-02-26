@@ -705,6 +705,10 @@
       }),
       people: AttrFilter("related_objects", "AssigneeType", null, "Person"),
     },
+    AssessmentTemplate: {
+      _mixins: ['related_object'],
+      audit: TypeFilter('related_objects', 'Audit')
+    },
     Issue: {
       _mixins: [
         "related_object", "personable", "ownable"
