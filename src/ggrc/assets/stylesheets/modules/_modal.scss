@@ -511,7 +511,11 @@
     }
     .checkbox-wrap {
       input[type="checkbox"] {
-        margin-bottom: 0;
+        display: block;
+        margin: 0 auto 12px;
+        &:first-child {
+          margin-top: 6px;
+        }
       }
     }
     .objective-selector {
@@ -1119,7 +1123,7 @@ p.modal-value {
   }
 }
 
-#AssessmentDefineTemplate {
+.define-attr {
   .hidden-fields-area {
     padding-left: 0;
   }
