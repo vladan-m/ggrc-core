@@ -430,6 +430,9 @@ mockup-js-files:
   - quick-workflow/pages/info.js
   - quick-workflow/pages/controls.js
 
+  # Quick Workflow V2.1
+  - quick-workflow-v2.1/pages/info.js
+
   # Bootstrap files shouold be above
   - javascript/add_comment.js
   - javascript/attachment_list.js
@@ -440,6 +443,7 @@ mockup-js-files:
   - request/main.js
   - workflow/main.js
   - quick-workflow/main.js
+  - quick-workflow-v2.1/main.js
 
 mockup-js-template-files:
   # Request
@@ -458,6 +462,10 @@ mockup-js-template-files:
   # Quick Workflow
   - quick-workflow/info.mustache
   - quick-workflow/workflow_modal.mustache
+
+  # Quick Workflow V2.1
+  - quick-workflow-v2.1/info.mustache
+  - quick-workflow-v2.1/workflow_modal.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache

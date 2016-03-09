@@ -1,0 +1,103 @@
+-# Copyright (C) 2013 Google Inc., authors, and contributors <see AUTHORS file>
+-# Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+-# Created By: silas@reciprocitylabs.com
+-# Maintained By: brad@reciprocitylabs.com
+
+%h1.entities
+  -if current_user.system_wide_role.lower() != 'no access'
+    %button{ 'class': 'lhn-trigger', 'href': 'javascript://'}
+      %span.icon-bar
+      %span.icon-bar
+      %span.icon-bar
+
+  %span.title-content
+    -if request.path.startswith('/admin')
+      %i.fa.fa-tachometer
+      Admin Dashboard
+
+%ul.menu
+  %li
+    %a{ 'href': 'javascript://', 'data-toggle': 'unified-search', 'data-join-object-type': 'MultitypeSearch', 'data-original-title': 'search items' }
+      %i.fa.fa-search
+      %span
+        Search
+  %li.dropdown
+    %a.dropdown-toggle{ 'href': '#', 'data-toggle': 'dropdown', 'role': 'button' }
+      %i.fa.fa-plus-circle
+      %span
+        Create new...
+    %ul.dropdown-menu{'aria-labelledby': 'drop2', 'role': "menu"}
+      %li
+        %a{'href': "#QuickWorkflowCreate", 'data-toggle': 'modal'}
+          %i.fa.fa-calendar-check-o
+          New task
+      %li
+        %a{'href': "/import"}
+          %i.fa.fa-audit
+          New audit
+      %li
+        %a{'href': "/export"}
+          %i.fa.fa-program
+          New program
+      %li
+        %a{'href': '={ url_for("logout") }', 'tabindex': "-1"}
+          %i.fa.fa-files-o
+          New object
+  %li
+    %a#page-help{ 'href': "/dashboard#task_widget" }
+      %i.fa.fa-calendar-check-o
+      %span
+        My Tasks
+        %span.task-count
+  %li
+    %a{ 'href': '/objectBrowser' }
+      %i.fa.fa-search
+      %span
+        All Objects
+
+  %li.user.dropdown
+    %a.dropdown-toggle{ 'href': "#", 'data-toggle': "dropdown", 'role': "button" }
+      %i.fa.fa-user
+      %span
+        =current_user.email
+      %i.fa.fa-caret-down
+    %ul.dropdown-menu{'aria-labelledby': 'drop1', 'role': "menu"}
+      %li.full-opacity
+        %a{'href': "/dashboard"}
+          %i.fa.fa-home.orange
+          My Work ({{current_user.system_wide_role}})
+
+      -if permissions.is_allowed_read('/admin', None, 1)
+        %li
+          %a{'href': "/admin#people_list_widget"}
+            %i.fa.fa-tachometer
+            Admin Dashboard
+      %li.notify-wrap
+        %span
+          %i.fa.fa-clock-o
+          Notifications
+        %div.inner-list
+          %label
+            %input{
+              'type': 'checkbox',
+              'name': 'notifications',
+              'value': 'Email_Digest'
+            }
+            Daily email digest
+      %li
+        %a{'href': "/import"}
+          Data import
+      %li
+        %a{'href': "/export"}
+          Data export
+      %li
+        %a{'href': '={ url_for("logout") }', 'tabindex': "-1"}
+          %i.fa.fa-power-off
+          Logout
+
+  -if self.page_help
+    %li
+      %a#page-help{ 'href': "javascript://", 'data-toggle': 'modal-ajax-helpform', 'data-help-slug' : '{{ self.page_help()|trim }}'}
+        %i.fa.fa-question-circle
+          %span
+            Help
