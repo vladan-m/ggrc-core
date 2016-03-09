@@ -505,6 +505,10 @@ mockup-js-template-files:
   - mockup_base_templates/object_setup/repeating_block_control.mustache
   - mockup_base_templates/object_setup/template_master_controls.mustache
 
+  # Quick task
+  - mockup_base_templates/quick-task/add_task.mustache
+  - mockup_base_templates/quick-task/task_item.mustache
+
   # Other base templates files
   - mockup_base_templates/request_panel.mustache
   - mockup_base_templates/assessment_panel.mustache

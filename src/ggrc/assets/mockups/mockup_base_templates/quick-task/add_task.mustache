@@ -1,0 +1,29 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+<li class="row-fluid add-field">
+  <div class="span6">
+    <input class="input-block-level" type="text" placeholder="Enter title">
+  </div>
+  <div class="span2">
+    {{#using contact=instance.contact}}
+      <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person" placeholder="Enter email address" type="text" value="{{firstexist contact.email ''}}">
+    {{/using}}
+  </div>
+  <div class="span2">
+    <div class="input-group">
+      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+      <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
+      data-after="start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date end_date}}">
+    </div>
+  </div>
+  <div class="span2">
+    <div class="pull-right">
+      <a class="btn btn-small btn-info" href="#">Add Task</a>
+    </div>
+  </div>
+</li>
