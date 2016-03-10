@@ -5,25 +5,125 @@
   Maintained By: vladan@reciprocitylabs.com
 }}
 
-<li class="row-fluid add-field">
-  <div class="span6">
-    <input class="input-block-level" type="text" placeholder="Enter title">
-  </div>
-  <div class="span2">
-    {{#using contact=instance.contact}}
-      <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person" placeholder="Enter email address" type="text" value="{{firstexist contact.email ''}}">
-    {{/using}}
-  </div>
-  <div class="span2">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-      <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
-      data-after="start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date end_date}}">
+<li class="add-field">
+  <div class="row-fluid wrap-row">
+    <div class="span6">
+      <input class="input-block-level" type="text" placeholder="Enter title">
+    </div>
+    <div class="span2">
+      {{#using contact=instance.contact}}
+        <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person" placeholder="Enter email address" type="text" value="{{firstexist contact.email ''}}">
+      {{/using}}
+    </div>
+    <div class="span2">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
+        data-after="start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date end_date}}">
+      </div>
+    </div>
+    <div class="span2">
+      <div class="pull-right">
+        <a class="btn btn-small btn-info" href="#">Add Task</a>
+      </div>
     </div>
   </div>
-  <div class="span2">
-    <div class="pull-right">
-      <a class="btn btn-small btn-info" href="#">Add Task</a>
+
+  <div class="row-fluid additional-wrap">
+    <div class="span2">
+      <a class="btn btn-mini btn-draft add-trigger" data-trigger="input-trigger-desc" href="#">Add description</a>
+    </div>
+    <div class="span2">
+      <a class="btn btn-mini btn-draft add-trigger" data-trigger="input-trigger-dropdown" href="#">Add dropdown</a>
+    </div>
+    <div class="span2">
+      <a class="btn btn-mini btn-draft add-trigger" data-trigger="input-trigger-checkbox" href="#">Add checkboxes</a>
+    </div>
+  </div>
+
+  <div class="input-fields-wrap">
+    <div class="row-fluid">
+      <div class="span2">
+        <a data-field="input-trigger-desc" class="input-trigger" href="#">Task description</a>
+      </div>
+      <div class="span2">
+        <a data-field="input-trigger-dropdown" class="input-trigger" href="#">Dropdown</a>
+      </div>
+      <div class="span2">
+        <a data-field="input-trigger-checkbox" class="input-trigger" href="#">Checkbox</a>
+      </div>
+    </div>
+
+    <div class="fields-panel">
+      <div class="row-fluid panel" data-panel="input-trigger-desc">
+        <div class="span6">
+          <div class="text-wrap">
+            <textarea class="span12 triple wysihtml5"></textarea>
+          </div>
+          <a href="javascript://" class="close-panel-trigger">
+            <i class="fa fa-times"></i> remove
+          </a>
+        </div>
+      </div>
+
+      <div class="row-fluid panel" data-panel="input-trigger-dropdown">
+        <div class="span6">
+          <div class="text-wrap">
+            <textarea class="span12 triple wysihtml5" placeholder="example, example 2, example 3"></textarea>
+          </div>
+          <a href="javascript://" class="close-panel-trigger">
+            <i class="fa fa-times"></i> remove
+          </a>
+        </div>
+        <div class="span2">
+          <p class="centered">
+            <span class="wide-icon">
+              <i class="fa fa-long-arrow-right"></i>
+            </span>
+            Preview
+          </p>
+        </div>
+        <div class="span4">
+          <select class="input-block-level">
+            <option>example</option>
+            <option>example 2</option>
+            <option>example 3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row-fluid panel" data-panel="input-trigger-checkbox">
+        <div class="span6">
+          <div class="text-wrap">
+            <textarea class="span12 triple wysihtml5" placeholder="example, example 2, example 3"></textarea>
+          </div>
+          <a href="javascript://" class="close-panel-trigger">
+            <i class="fa fa-times"></i> remove
+          </a>
+        </div>
+        <div class="span2">
+          <p class="centered">
+            <span class="wide-icon">
+              <i class="fa fa-long-arrow-right"></i>
+            </span>
+            Preview
+          </p>
+        </div>
+        <div class="span4">
+          <label class="checkbox-inline">
+            <input type="checkbox">
+            example
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox">
+            example 2
+          </label>
+          <label class="checkbox-inline">
+            <input type="checkbox">
+            example 3
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </li>

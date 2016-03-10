@@ -18,9 +18,9 @@
     // Object:
     object: {
       icon: "program",
-      title: "China market",
+      title: "SOX",
     },
     // Views:
-    views: _.values(GGRC.Bootstrap.Mockups.QWorkflow)
+    views: _.values(GGRC.Bootstrap.Mockups.QTask)
   });
 })(this.can, this.can.$);

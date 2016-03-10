@@ -1,10 +1,10 @@
 (function (GGRC, Generator) {
   GGRC.Bootstrap.Mockups = GGRC.Bootstrap.Mockups || {};
-  GGRC.Bootstrap.Mockups.QWorkflow = GGRC.Bootstrap.Mockups.QWorkflow || {};
+  GGRC.Bootstrap.Mockups.QTask = GGRC.Bootstrap.Mockups.QTask || {};
 
-  GGRC.Bootstrap.Mockups.QWorkflow.Info = {
+  GGRC.Bootstrap.Mockups.QTask.Info = {
     title: "Program Info",
-    info_title: "China market",
+    info_title: "SOX",
     icon: "info-circle",
     template: "/quick-workflow-v2.1/info.mustache",
     description: Generator.paragraph(8),

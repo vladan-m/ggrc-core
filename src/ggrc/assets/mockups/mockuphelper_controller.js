@@ -267,7 +267,31 @@
       ev.preventDefault();
 
       this.element.find('.object-check-single').prop('checked', true);
+    },
+    '.additional-wrap a click': function (el, ev) {
+      el.closest('.additional-wrap').hide();
+      el.closest('.add-field').find('.input-fields-wrap').show();
+    },
+    '.add-trigger click': function (el, ev) {
+      var triggerValue = el.attr('data-trigger');
+
+      el.closest('.add-field').find('[data-field="' + triggerValue + '"]')
+      .addClass('active');
+      el.closest('.add-field').find('[data-panel="' + triggerValue + '"]')
+      .addClass('active');
+    },
+    '.input-trigger click': function (el, ev) {
+      var triggerValue = el.attr('data-field');
+      var $panel = el.closest('.add-field').find('.panel');
+
+      if (el.hasClass('active')) {
+        el.removeClass('active');
+        $panel.removeClass('active');
+      } else {
+        el.addClass('active');
+        el.closest('.add-field').find('[data-panel="' + triggerValue + '"]')
+        .addClass('active');
+      }
     }
   });
-
 })(this.can, this.can.$, GGRC.Mockup.Generator);
