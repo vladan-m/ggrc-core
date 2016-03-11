@@ -20,9 +20,21 @@
     ul {
       @extend %reset-list;
     }
+    h6 {
+      i {
+        @include opacity(0.2);
+        cursor: pointer;
+        &:hover {
+          @include opacity(0.7);
+        }
+      }
+    }
   }
   .new-attr-list {
-    @extend .attr-titles;
+    @extend %clearfix;
+    ul {
+      @extend %reset-list;
+    }
     li {
       padding: 6px 0 4px;
       line-height: 24px;
