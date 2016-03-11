@@ -5,16 +5,22 @@
   Maintained By: vladan@reciprocitylabs.com
 }}
 
-<li class="row-fluid">
+<li class="row-fluid task-item-wrap">
   <div class="span6">
-    Do something
+    {{#title}}
+      {{value}}
+    {{/title}}
   </div>
   <div class="span2">
-    Predrag Kanazir
+    {{#assignee}}
+      {{value}}
+    {{/assignee}}
   </div>
   <div class="span2">
     <i class="fa fa-calendar"></i>
-    12/23/2016
+    {{#end_date}}
+      {{value}}
+    {{/end_date}}
   </div>
   <div class="span2">
     <ul class="controls-list pull-right">
@@ -22,7 +28,7 @@
         <a href="#"><i class="fa fa-pencil-square-o"></i></a>
       </li>
       <li>
-        <a href="#"><i class="fa fa-trash"></i></a>
+        <a href="#" class="remove-task-trigger"><i class="fa fa-trash"></i></a>
       </li>
     </ul>
   </div>

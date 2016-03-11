@@ -465,7 +465,8 @@ mockup-js-template-files:
 
   # Quick Workflow V2.1
   - quick-workflow-v2.1/info.mustache
-  - quick-workflow-v2.1/workflow_modal.mustache
+  - quick-workflow-v2.1/workflow_setup_modal.mustache
+  - quick-workflow-v2.1/workflow_modal_content.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache

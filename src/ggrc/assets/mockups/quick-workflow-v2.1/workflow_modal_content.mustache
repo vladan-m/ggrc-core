@@ -1,0 +1,80 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+<div class="modal-header">
+  <a class="modal-dismiss pull-right" href="javascript://" data-dismiss="modal">
+    <i class="fa fa-times black"></i>
+  </a>
+  <h2>Create new tasks</h2>
+</div>
+<div class="modal-body">
+
+  <div class="row-fluid wrap-row">
+    <div class="span12">
+      <label>
+        Map to object
+        <i class="fa fa-question-circle" rel="tooltip" title="Map to object"></i>
+      </label>
+      <p>SOX</p>
+    </div>
+  </div>
+
+  <div class="define-attr">
+    <div class="row-fluid wrap-row">
+      <div class="task-add-list span12">
+
+        <div class="attr-titles">
+          <ul>
+            <li class="row-fluid">
+              <div class="span6">
+                <h6>
+                  Task summary <span class="required">*</span>
+                </h6>
+              </div>
+              <div class="span2">
+                <h6>
+                  Assignee
+                  <i class="fa fa-question-circle" rel="tooltip" title="Point of contact for this object"></i>
+                </h6>
+              </div>
+              <div class="span2">
+                <h6>
+                  Due on
+                </h6>
+              </div>
+              <div class="span2">&nbsp;</div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="new-attr-list">
+          <ul>
+            {{#tasks}}
+              {{> /static/mustache/mockup_base_templates/quick-task/task_item.mustache}}
+            {{/tasks}}
+
+            {{> /static/mustache/mockup_base_templates/quick-task/add_task.mustache}}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- define-attr end -->
+</div>
+
+<div class="modal-footer">
+  <div class="row-fluid">
+    <div class="span6"></div>
+    <div class="span6">
+      <div class="confirm-buttons">
+        <a class="modal-dismiss btn btn-small btn-info" href="javascript://" data-dismiss="modal">
+          Create and assign tasks
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

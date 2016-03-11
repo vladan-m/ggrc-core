@@ -275,23 +275,52 @@
     '.add-trigger click': function (el, ev) {
       var triggerValue = el.attr('data-trigger');
 
-      el.closest('.add-field').find('[data-field="' + triggerValue + '"]')
-      .addClass('active');
-      el.closest('.add-field').find('[data-panel="' + triggerValue + '"]')
-      .addClass('active');
+      el
+        .closest('.add-field')
+        .find('[data-panel-trigger="' + triggerValue + '"]')
+        .addClass('active');
+      el
+        .closest('.add-field')
+        .find('[data-panel="' + triggerValue + '"]')
+        .addClass('active');
     },
     '.input-trigger click': function (el, ev) {
-      var triggerValue = el.attr('data-field');
+      var triggerValue = el.attr('data-panel-trigger');
+      var $allTriggers = el.closest('.add-field').find('.input-trigger');
       var $panel = el.closest('.add-field').find('.panel');
+      var $activePanel = el.closest('.add-field')
+        .find('[data-panel="' + triggerValue + '"]');
 
-      if (el.hasClass('active')) {
-        el.removeClass('active');
-        $panel.removeClass('active');
-      } else {
-        el.addClass('active');
-        el.closest('.add-field').find('[data-panel="' + triggerValue + '"]')
-        .addClass('active');
-      }
+      $allTriggers.removeClass('active');
+      el.addClass('active');
+
+      $panel.removeClass('active');
+      $activePanel.addClass('active');
+    },
+    '.close-panel-trigger click': function (el, ev) {
+      var $panel = el.closest('.add-field').find('.panel');
+      var $panelTrigger = el.closest('.add-field').find('.input-trigger');
+
+      $panel.removeClass('active');
+      $panelTrigger.removeClass('active');
+      $('.input-fields-wrap').hide();
+      $('.additional-wrap').show();
+    },
+    '.modal .add-quick-task-trigger click': function (el, ev) {
+      this.options.instance.tasks.push({
+        title: {
+          value: 'Another SOX task'
+        },
+        assignee: {
+          value: 'Predrag Kanazir'
+        },
+        end_date: {
+          value: moment().format('MM/DD/YY')
+        }
+      });
+    },
+    '.remove-task-trigger click': function (el, ev) {
+      el.closest('.task-item-wrap').remove();
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);
