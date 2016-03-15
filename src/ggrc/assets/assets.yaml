@@ -432,6 +432,7 @@ mockup-js-files:
 
   # Quick Workflow V2.1
   - quick-workflow-v2.1/pages/info.js
+  - quick-workflow-v2.1/pages/controls.js
 
   # Bootstrap files shouold be above
   - javascript/add_comment.js
@@ -467,6 +468,7 @@ mockup-js-template-files:
   - quick-workflow-v2.1/info.mustache
   - quick-workflow-v2.1/workflow_setup_modal.mustache
   - quick-workflow-v2.1/workflow_modal_content.mustache
+  - quick-workflow-v2.1/widget.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache
@@ -475,6 +477,7 @@ mockup-js-template-files:
   - mockup_base_templates/info_panel/base.mustache
   - mockup_base_templates/info_panel/pin_actions.mustache
   - mockup_base_templates/info_panel/header.mustache
+  - mockup_base_templates/info_panel/common_header.mustache
   - mockup_base_templates/info_panel/info_panel_utility.mustache
   - mockup_base_templates/info_panel/description.mustache
   - mockup_base_templates/info_panel/mapped_objects.mustache
@@ -494,6 +497,8 @@ mockup-js-template-files:
   - mockup_base_templates/info_panel/test.mustache
   - mockup_base_templates/info_panel/notes.mustache
   - mockup_base_templates/info_panel/request_type.mustache
+  - mockup_base_templates/info_panel/owner.mustache
+  - mockup_base_templates/info_panel/primary_contact.mustache
 
   # Workflow setup
   - mockup_base_templates/object_setup/object_input.mustache
@@ -514,11 +519,14 @@ mockup-js-template-files:
   - mockup_base_templates/request_panel.mustache
   - mockup_base_templates/assessment_panel.mustache
   - mockup_base_templates/task_panel.mustache
+  - mockup_base_templates/control_panel.mustache
   - mockup_base_templates/tree.mustache
   - mockup_base_templates/tree-assessor.mustache
   - mockup_base_templates/tree-cycle.mustache
+  - mockup_base_templates/tree-control.mustache
   - mockup_base_templates/tree_item.mustache
   - mockup_base_templates/tree_item_task.mustache
+  - mockup_base_templates/tree_item_control.mustache
   - mockup_base_templates/info_panel.mustache
   - mockup_base_templates/filter.mustache
   - mockup_base_templates/nav_item.mustache

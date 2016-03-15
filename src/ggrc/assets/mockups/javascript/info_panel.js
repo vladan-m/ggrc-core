@@ -112,6 +112,7 @@
       comment_attachments: new can.List(),
       templates: {
         assessment: '/static/mustache/mockup_base_templates/assessment_panel.mustache',
+        control: '/static/mustache/mockup_base_templates/control_panel.mustache',
         task: '/static/mustache/mockup_base_templates/task_panel.mustache',
         'default': '/static/mustache/mockup_base_templates/request_panel.mustache'
       }
