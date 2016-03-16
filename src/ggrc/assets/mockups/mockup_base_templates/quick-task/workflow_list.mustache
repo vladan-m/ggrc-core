@@ -1,0 +1,25 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+<h6>
+  Workflow
+  <span class="required">*</span>
+</h6>
+{{#mapped_workflow}}
+  <ul class="attachment-list objects-list">
+    {{#each mapped_workflow}}
+      <li>
+        <i class="fa fa-{{icon}} color"></i>
+        {{title}}
+      </li>
+    {{/each}}
+  </ul>
+{{/mapped_workflow}}
+<a class="btn btn-draft btn-small" href="javascript://">
+  Map workflow
+</a>
+

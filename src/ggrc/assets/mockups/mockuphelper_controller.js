@@ -268,27 +268,23 @@
 
       this.element.find('.object-check-single').prop('checked', true);
     },
-    '.additional-wrap a click': function (el, ev) {
-      el.closest('.additional-wrap').hide();
-      el.closest('.add-field').find('.input-fields-wrap').show();
-    },
     '.add-trigger click': function (el, ev) {
       var triggerValue = el.attr('data-trigger');
 
       el
-        .closest('.add-field')
+        .closest('.modal-body')
         .find('[data-panel-trigger="' + triggerValue + '"]')
         .addClass('active');
       el
-        .closest('.add-field')
+        .closest('.modal-body')
         .find('[data-panel="' + triggerValue + '"]')
         .addClass('active');
     },
     '.input-trigger click': function (el, ev) {
       var triggerValue = el.attr('data-panel-trigger');
-      var $allTriggers = el.closest('.add-field').find('.input-trigger');
-      var $panel = el.closest('.add-field').find('.panel');
-      var $activePanel = el.closest('.add-field')
+      var $allTriggers = el.closest('.modal-body').find('.input-trigger');
+      var $panel = el.closest('.modal-body').find('.panel');
+      var $activePanel = el.closest('.modal-body')
         .find('[data-panel="' + triggerValue + '"]');
 
       $allTriggers.removeClass('active');
@@ -298,13 +294,11 @@
       $activePanel.addClass('active');
     },
     '.close-panel-trigger click': function (el, ev) {
-      var $panel = el.closest('.add-field').find('.panel');
-      var $panelTrigger = el.closest('.add-field').find('.input-trigger');
+      var $panel = el.closest('.modal-body').find('.panel');
+      var $panelTrigger = el.closest('.modal-body').find('.input-trigger');
 
       $panel.removeClass('active');
       $panelTrigger.removeClass('active');
-      $('.input-fields-wrap').hide();
-      $('.additional-wrap').show();
     },
     '.modal .add-quick-task-trigger click': function (el, ev) {
       this.options.instance.tasks.push({

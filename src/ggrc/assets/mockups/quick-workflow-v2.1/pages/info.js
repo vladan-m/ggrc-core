@@ -12,17 +12,13 @@
     prime_contact: 'andraz@reciprocitylabs.com',
     sec_contact: 'None',
     tasks: Generator.create({
-      title: {
-        value: 'Task for SOX'
-      },
-      assignee: {
-        value: 'Predrag Kanazir'
-      },
-      end_date: {
-        value: '22/03/18'
-      }
+      type: 'task'
     }),
     url: 'None',
-    ref_url: 'None'
+    ref_url: 'None',
+    mapped_objects: [{
+      icon: 'control',
+      title: 'AC01'
+    }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

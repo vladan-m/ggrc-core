@@ -5,70 +5,6 @@
  * Maintained By: vladan@reciprocitylabs.com
  */
 
-.task-add-list {
-  select {
-    width: 100px;
-    &.input-block-level {
-      width: 100%;
-    }
-  }
-  .centered {
-    text-align: center;
-  }
-  .attr-titles {
-    @extend %clearfix;
-    ul {
-      @extend %reset-list;
-    }
-    h6 {
-      i {
-        @include opacity(0.2);
-        cursor: pointer;
-        &:hover {
-          @include opacity(0.7);
-        }
-      }
-    }
-  }
-  .new-attr-list {
-    @extend %clearfix;
-    ul {
-      @extend %reset-list;
-    }
-    li {
-      padding: 6px 0 4px;
-      line-height: 24px;
-      border-top: 1px solid $tabBorder;
-      .input-group-addon {
-        line-height: 16px;
-      }
-      .controls-list {
-        @extend %reset-list;
-        li {
-          float: left;
-          margin-left: 20px;
-          border-top: none;
-          padding: 0;
-          margin-top: 2px;
-          &:first-child {
-            margin-left: 0;
-          }
-        }
-      }
-    }
-    .add-field {
-      input,
-      select {
-        margin-bottom: 0;
-      }
-    }
-  }
-}
-
-.wide-icon {
-  display: block;
-}
-
 .fields-panel {
   .panel {
     display: none;
@@ -76,26 +12,14 @@
       display: block;
     }
   }
-  textarea {
-    height: 80px;
-  }
-  select {
-    margin-top: 26px;
-  }
-  p {
-    padding-top: 0 !important;
-    margin-top: 16px;
-  }
 }
 
 .input-fields-wrap {
-  display: none;
   a {
     border-bottom: 2px solid transparent;
     color: $text;
     text-decoration: none;
     &.active {
-      border-bottom: 2px solid $text;
       font-weight: bold;
     }
     &:hover {

@@ -438,6 +438,9 @@
     .wysiwyg-area {
       position:relative;
       margin-bottom: 46px;
+      &.bottom-no-margin {
+        margin-bottom: 0;
+      }
       ul.wysihtml5-toolbar {
         @include opacity(0);
         @include transition(opacity 0.3s ease);
@@ -456,7 +459,7 @@
       }
       .triple {
         @extend %input-block-level;
-        height: 120px;
+        height: 110px;
       }
       .quadruple {
         @extend %input-block-level;
