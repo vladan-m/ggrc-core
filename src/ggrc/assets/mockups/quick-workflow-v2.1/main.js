@@ -17,8 +17,8 @@
   var mockup = new CMS.Controllers.MockupHelper($("body"), {
     // Object:
     object: {
-      icon: "program",
-      title: "SOX",
+      icon: "control",
+      title: "AC01",
     },
     // Views:
     views: _.values(GGRC.Bootstrap.Mockups.QTask)

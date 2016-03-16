@@ -3,14 +3,13 @@
   GGRC.Bootstrap.Mockups.QTask = GGRC.Bootstrap.Mockups.QTask || {};
 
   GGRC.Bootstrap.Mockups.QTask.Info = {
-    title: 'Program Info',
-    info_title: 'SOX',
+    title: 'Control Info',
+    info_title: 'AC01',
     icon: 'info-circle',
     template: '/quick-workflow-v2.1/info.mustache',
-    description: Generator.paragraph(8),
-    notes: Generator.paragraph(5),
-    manager: 'predrag@reciprocitylabs.com',
-    prime_contact: 'predrag@reciprocitylabs.com',
+    description: 'Managers approve user requests for new and/or modified system access based on job responsibility, prior to granting access to the in-scope systems. Access approval is documented via a formal access request.',
+    owner: 'andraz@reciprocitylabs.com',
+    prime_contact: 'andraz@reciprocitylabs.com',
     sec_contact: 'None',
     tasks: Generator.create({
       title: {
@@ -23,7 +22,7 @@
         value: '22/03/18'
       }
     }),
-    url: 'a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program',
-    ref_url: 'a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private program a private progra'
+    url: 'None',
+    ref_url: 'None'
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

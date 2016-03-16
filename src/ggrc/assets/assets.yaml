@@ -432,7 +432,7 @@ mockup-js-files:
 
   # Quick Workflow V2.1
   - quick-workflow-v2.1/pages/info.js
-  - quick-workflow-v2.1/pages/controls.js
+  - quick-workflow-v2.1/pages/systems.js
 
   # Bootstrap files shouold be above
   - javascript/add_comment.js
@@ -519,14 +519,14 @@ mockup-js-template-files:
   - mockup_base_templates/request_panel.mustache
   - mockup_base_templates/assessment_panel.mustache
   - mockup_base_templates/task_panel.mustache
-  - mockup_base_templates/control_panel.mustache
+  - mockup_base_templates/system_panel.mustache
   - mockup_base_templates/tree.mustache
   - mockup_base_templates/tree-assessor.mustache
   - mockup_base_templates/tree-cycle.mustache
-  - mockup_base_templates/tree-control.mustache
+  - mockup_base_templates/tree-system.mustache
   - mockup_base_templates/tree_item.mustache
   - mockup_base_templates/tree_item_task.mustache
-  - mockup_base_templates/tree_item_control.mustache
+  - mockup_base_templates/tree_item_system.mustache
   - mockup_base_templates/info_panel.mustache
   - mockup_base_templates/filter.mustache
   - mockup_base_templates/nav_item.mustache

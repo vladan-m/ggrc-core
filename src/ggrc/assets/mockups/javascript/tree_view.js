@@ -96,7 +96,7 @@
     defaults: {
       templates: {
         task: '/static/mustache/mockup_base_templates/tree_item_task.mustache',
-        control: '/static/mustache/mockup_base_templates/tree_item_control.mustache',
+        system: '/static/mustache/mockup_base_templates/tree_item_system.mustache',
         task_group: '/static/mustache/mockup_base_templates/tree_item_task.mustache',
         workflow: '/static/mustache/mockup_base_templates/tree_item_task.mustache',
         'default': '/static/mustache/mockup_base_templates/tree_item.mustache'
