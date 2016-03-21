@@ -25,11 +25,12 @@ from ggrc.models.reflection import PublishOnly
 from ggrc.models.relationship import Relatable
 from ggrc.models.track_object_state import HasObjectState
 from ggrc.models.track_object_state import track_state_for_class
+from ggrc.models.comment import Commentable
 
 
 class Assessment(AutoStatusChangable, Assignable, HasObjectState, TestPlanned,
-                 CustomAttributable, Documentable, Personable, Timeboxed,
-                 Ownable, Relatable, FinishedDate, VerifiedDate,
+                 CustomAttributable, Documentable, Commentable, Personable,
+                 Timeboxed, Ownable, Relatable, FinishedDate, VerifiedDate,
                  BusinessObject, db.Model):
   """Class representing Assessment.
 
