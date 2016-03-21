@@ -15,9 +15,7 @@ from sqlalchemy import and_
 
 from ggrc import db
 from ggrc.services.common import Resource
-from ggrc.models import request
-from ggrc.models import assessment
-from ggrc.models import notification
+from ggrc import models
 
 
 def _add_notification(obj, notif_type, when=None):
@@ -33,7 +31,7 @@ def _add_notification(obj, notif_type, when=None):
     return
   if not when:
     when = datetime.now()
-  db.session.add(notification.Notification(
+  db.session.add(models.Notification(
       object_id=obj.id,
       object_type=obj.type,
       send_on=when,
@@ -53,12 +51,12 @@ def _has_unsent_notifications(notif_type, obj):
     True if there are any unsent notifications of notif_type for the given
     object, and False otherwise.
   """
-  return db.session.query(notification.Notification).join(
-      notification.NotificationType).filter(and_(
-          notification.NotificationType.id == notif_type.id,
-          notification.Notification.object_id == obj.id,
-          notification.Notification.object_type == obj.type,
-          notification.Notification.sent_at.is_(None),
+  return db.session.query(models.Notification).join(
+      models.NotificationType).filter(and_(
+          models.NotificationType.id == notif_type.id,
+          models.Notification.object_id == obj.id,
+          models.Notification.object_type == obj.type,
+          models.Notification.sent_at.is_(None),
       )).count() > 0
 
 
@@ -70,7 +68,7 @@ def _add_assignable_declined_notif(obj):
       notifications.
   """
   name = "{}_declined".format(obj._inflector.table_singular)
-  notif_type = notification.NotificationType.query.filter_by(name=name).first()
+  notif_type = models.NotificationType.query.filter_by(name=name).first()
 
   if not _has_unsent_notifications(notif_type, obj):
     _add_notification(obj, notif_type)
@@ -87,35 +85,52 @@ def handle_assignable_modified(obj):
 
 def handle_assignable_created(obj):
   name = "{}_open".format(obj._inflector.table_singular)
-  notif_type = notification.NotificationType.query.filter_by(name=name).first()
+  notif_type = models.NotificationType.query.filter_by(name=name).first()
   _add_notification(obj, notif_type)
 
 
 def handle_assignable_deleted(obj):
-  notification.Notification.query.filter_by(
+  models.Notification.query.filter_by(
       object_id=obj.id,
       object_type=obj.type,
   ).delete()
 
 
+def handle_comment_created(obj, src):
+  """Add notification etries for new comments.
+
+  Args:
+    obj (Comment): New comment.
+    src (dict): Dictionary containing the coment post request data.
+  """
+  if src.get("send_notification"):
+    notif_type = models.NotificationType.query.filter_by(
+        name="comment_created").first()
+    _add_notification(obj, notif_type)
+
+
 def register_handlers():
-  """Register listeners for notification handlers"""
+  """Register listeners for notification handlers."""
 
   # Variables are used as listeners, and arguments are needed for callback
   # functions.
   # pylint: disable=unused-argument,unused-variable
 
-  @Resource.model_deleted.connect_via(request.Request)
-  @Resource.model_deleted.connect_via(assessment.Assessment)
+  @Resource.model_deleted.connect_via(models.Request)
+  @Resource.model_deleted.connect_via(models.Assessment)
   def assignable_deleted_listener(sender, obj=None, src=None, service=None):
     handle_assignable_deleted(obj)
 
-  @Resource.model_put.connect_via(request.Request)
-  @Resource.model_put.connect_via(assessment.Assessment)
+  @Resource.model_put.connect_via(models.Request)
+  @Resource.model_put.connect_via(models.Assessment)
   def assignable_modified_listener(sender, obj=None, src=None, service=None):
     handle_assignable_modified(obj)
 
-  @Resource.model_posted_after_commit.connect_via(request.Request)
-  @Resource.model_posted_after_commit.connect_via(assessment.Assessment)
+  @Resource.model_posted_after_commit.connect_via(models.Request)
+  @Resource.model_posted_after_commit.connect_via(models.Assessment)
   def assignable_created_listener(sender, obj=None, src=None, service=None):
     handle_assignable_created(obj)
+
+  @Resource.model_posted_after_commit.connect_via(models.Comment)
+  def comment_created_listener(sender, obj=None, src=None, service=None):
+    handle_comment_created(obj, src)
