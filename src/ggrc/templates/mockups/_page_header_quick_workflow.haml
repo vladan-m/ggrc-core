@@ -21,30 +21,8 @@
       %i.fa.fa-search
       %span
         Search
-  %li.dropdown
-    %a.dropdown-toggle{ 'href': '#', 'data-toggle': 'dropdown', 'role': 'button' }
-      %i.fa.fa-plus-circle
-      %span
-        Create new...
-    %ul.dropdown-menu{'aria-labelledby': 'drop2', 'role': "menu"}
-      %li
-        %a{'href': "#QuickWorkflowCreate", 'data-toggle': 'modal'}
-          %i.fa.fa-calendar-check-o
-          New task
-      %li
-        %a{'href': "/import"}
-          %i.fa.fa-audit
-          New audit
-      %li
-        %a{'href': "/export"}
-          %i.fa.fa-program
-          New program
-      %li
-        %a{'href': '={ url_for("logout") }', 'tabindex': "-1"}
-          %i.fa.fa-files-o
-          New object
   %li
-    %a#page-help{ 'href': "/dashboard#task_widget" }
+    %a#page-help{ 'href': "/mockups/quick-workflow-v2.1-dashboard" }
       %i.fa.fa-calendar-check-o
       %span
         My Tasks
