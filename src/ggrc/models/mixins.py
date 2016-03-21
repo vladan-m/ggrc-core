@@ -8,6 +8,7 @@ from uuid import uuid1
 from flask import current_app
 from sqlalchemy import and_
 from sqlalchemy import event
+from sqlalchemy import orm
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import foreign
 from sqlalchemy.orm import relationship
@@ -48,7 +49,7 @@ def deferred(column, classname):
 class Identifiable(object):
 
   """A model with an ``id`` property that is the primary key."""
-  id = db.Column(db.Integer, primary_key=True)
+  id = db.Column(db.Integer, primary_key=True)  # noqa
 
   # REST properties
   _publish_attrs = ['id', 'type']
@@ -71,7 +72,6 @@ class Identifiable(object):
 
   @classmethod
   def eager_inclusions(cls, query, include_links):
-    from sqlalchemy import orm
     options = []
     for include_link in include_links:
       inclusion_class = getattr(cls, include_link).property.mapper.class_
@@ -275,8 +275,6 @@ class Hierarchical(object):
 
   @classmethod
   def eager_query(cls):
-    from sqlalchemy import orm
-
     query = super(Hierarchical, cls).eager_query()
     return query.options(
         orm.subqueryload('children'),
@@ -556,9 +554,16 @@ class Revisionable(object):
         viewonly=True,
         foreign_keys="Revision.resource_type, Revision.resource_id")
 
+  @classmethod
+  def eager_query(cls):
+    query = super(Revisionable, cls).eager_query()
+    return query.options(
+        orm.subqueryload('revisions')
+    )
+
 
 class BusinessObject(Stateful, Noted, Described, Hyperlinked, WithContact,
-                     Titled, Slugged, Revisionable):
+                     Titled, Revisionable, Slugged):
   VALID_STATES = (
       'Draft',
       'Final',
@@ -659,6 +664,13 @@ class CustomAttributable(object):
         CustomAttributeDefinition.definition_type ==
         underscore_from_camelcase(cls.__name__)).all()
 
+  @classmethod
+  def eager_query(cls):
+    query = super(CustomAttributable, cls).eager_query()
+    return query.options(
+        orm.subqueryload('custom_attribute_values')
+    )
+
 
 class TestPlanned(object):
 
@@ -671,48 +683,3 @@ class TestPlanned(object):
   _fulltext_attrs = ['test_plan']
   _sanitize_html = ['test_plan']
   _aliases = {"test_plan": "Test Plan"}
-
-
-class Assignable(object):
-
-  ASSIGNEE_TYPES = set(["Assignee"])
-
-  @property
-  def assignees(self):
-    assignees = [(r.source, tuple(r.attrs["AssigneeType"].split(",")))
-                 for r in self.related_sources
-                 if "AssigneeType" in r.attrs]
-    assignees += [(r.destination, tuple(r.attrs["AssigneeType"].split(",")))
-                  for r in self.related_destinations
-                  if "AssigneeType" in r.attrs]
-    return set(assignees)
-
-  @staticmethod
-  def _validate_relationship_attr(cls, source, dest, existing, name, value):
-    """Validator that allows Assignable relationship attributes
-
-    Allow relationship attribute of name "AssigneeType" with value that is a
-    comma separated list of valid roles (as defined in target class).
-
-    Args:
-        cls (class): target class of this mixin. Think of this like a class
-                     method.
-        source (model instance): relevant relationship source
-        dest (model instance): relevant relationship destinations
-        existing (dict): current attributes on the relationship
-        name (string): attribute name
-        value (any): attribute value. Should be string for the right attribute
-
-    Returns:
-        New attribute value (merge with existing roles) or None if the
-        attribute is not valid.
-    """
-    if not set([source.type, dest.type]) == set([cls.__name__, "Person"]):
-      return None
-    if not name == "AssigneeType":
-      return None
-    new_roles = value.split(",")
-    if not all(role in cls.ASSIGNEE_TYPES for role in new_roles):
-      return None
-    roles = set(existing.get(name, "").split(",")) | set(new_roles)
-    return ",".join(role for role in roles if role)
