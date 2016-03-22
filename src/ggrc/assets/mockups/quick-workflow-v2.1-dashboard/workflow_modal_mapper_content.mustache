@@ -206,8 +206,7 @@
                   <div class="span1">
                     <div class="object-check" align="left">
                       <label>
-                        <input type="checkbox" class="object-check-single" can-value="checkbox"
-                        {{#is_disabled}}disabled="disabled"{{/is_disabled}}>
+                        <input type="checkbox" class="object-check-single" can-value="checkbox" disabled>
                       </label>
                     </div>
                   </div>
@@ -260,8 +259,7 @@
                   <div class="span1">
                     <div class="object-check" align="left">
                       <label>
-                        <input type="checkbox" class="object-check-single" can-value="checkbox"
-                        {{#is_disabled}}disabled="disabled"{{/is_disabled}}>
+                        <input type="checkbox" class="object-check-single" can-value="checkbox" disabled>
                       </label>
                     </div>
                   </div>
@@ -314,8 +312,7 @@
                   <div class="span1">
                     <div class="object-check" align="left">
                       <label>
-                        <input type="checkbox" class="object-check-single" can-value="checkbox"
-                        {{#is_disabled}}disabled="disabled"{{/is_disabled}}>
+                        <input type="checkbox" class="object-check-single" can-value="checkbox" disabled>
                       </label>
                     </div>
                   </div>
@@ -368,8 +365,7 @@
                   <div class="span1">
                     <div class="object-check" align="left">
                       <label>
-                        <input type="checkbox" class="object-check-single" can-value="checkbox"
-                        {{#is_disabled}}disabled="disabled"{{/is_disabled}}>
+                        <input type="checkbox" class="object-check-single" can-value="checkbox" disabled>
                       </label>
                     </div>
                   </div>
@@ -421,14 +417,7 @@
     </div>
     <div class="span6">
       <div class="confirm-buttons">
-        <a class="
-            {{#if_helpers '\
-              ^if' mapper.selected.length '\
-              or #if' mapper.is_loading '\
-              or #if' mapper.is_saving}}
-              disabled
-            {{/if_helpers}}
-            btn-map btn btn-small btn-success preventdoubleclick" href="#">
+        <a class="btn-map btn btn-small btn-success preventdoubleclick" href="#">
           {{#if mapper.is_saving}}
             Saving, please wait...
           {{else}}

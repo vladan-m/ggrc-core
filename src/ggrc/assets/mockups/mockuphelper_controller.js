@@ -263,10 +263,24 @@
         targetValue.addClass('hidden');
       }
     },
-    ".object-check-all click": function (el, ev) {
+    '.object-check-all click': function (el, ev) {
       ev.preventDefault();
 
       this.element.find('.object-check-single').prop('checked', true);
+    },
+    '.object-check-single click': function (el, ev) {
+      var $allItems = el.closest('.results-wrap')
+      .find('.object-check-single');
+      var currentItem = el.attr('disabled');
+      // var disabled = el.attr('disabled', true);
+
+      if (currentItem) {
+        el.attr('checked', false);
+        $allItems.attr('disabled', false);
+      } else {
+        el.attr('checked', true);
+        $allItems.attr('disabled', true);
+      }
     },
     '.add-trigger click': function (el, ev) {
       var triggerValue = el.attr('data-trigger');
