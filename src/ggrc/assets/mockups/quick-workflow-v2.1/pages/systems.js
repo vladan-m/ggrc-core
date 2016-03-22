@@ -6,6 +6,9 @@
     title: 'Systems',
     icon: 'system',
     template: '/quick-workflow-v2.1/widget.mustache',
+    tasks: Generator.create({
+      type: 'task'
+    }),
     children: [{
       title: 'SOX 1',
       info_title: 'SOX 1',

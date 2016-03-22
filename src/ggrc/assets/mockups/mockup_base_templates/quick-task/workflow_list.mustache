@@ -13,13 +13,12 @@
   <ul class="attachment-list objects-list">
     {{#each mapped_workflow}}
       <li>
-        <i class="fa fa-{{icon}} color"></i>
+        <i class="fa fa-{{icon}}"></i>
         {{title}}
+        <a class="edit-attachment-item" href="javascript://">
+          <i class="fa fa-pencil-square-o"></i>
+        </a>
       </li>
     {{/each}}
   </ul>
 {{/mapped_workflow}}
-<a class="btn btn-draft btn-small" href="javascript://">
-  Map workflow
-</a>
-
