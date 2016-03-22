@@ -9,7 +9,7 @@ This module contains all function needed for handling notification objects
 needed by ggrc notifications.
 """
 
-from datetime import datetime
+from datetime import date
 from sqlalchemy import inspect
 from sqlalchemy import and_
 
@@ -30,7 +30,7 @@ def _add_notification(obj, notif_type, when=None):
   if not notif_type:
     return
   if not when:
-    when = datetime.now()
+    when = date.today()
   db.session.add(models.Notification(
       object_id=obj.id,
       object_type=obj.type,
