@@ -11,8 +11,19 @@
     }),
     mapped_workflow: [{
       icon: 'workflow',
-      title: 'Backlog'
+      title: 'Backlog (One time)'
     }],
+    // workflow_results: [{
+    //   workflow_title: 'Backlog (One time)'
+    // }, {
+    //   workflow_title: 'Backlog (Weekly)'
+    // }, {
+    //   workflow_title: 'Backlog (Monthly)'
+    // }, {
+    //   workflow_title: 'Backlog (Quarterly)'
+    // }, {
+    //   workflow_title: 'Backlog (Annually)'
+    // }],
     children: [{
       title: Generator.title(1),
       description: Generator.paragraph(7),
