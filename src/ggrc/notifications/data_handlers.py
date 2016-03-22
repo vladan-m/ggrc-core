@@ -150,7 +150,7 @@ def get_assignable_data(notif):
     notif (Notification): notification with an Assignable object_type.
 
   Returns:
-    Dict with all data fro the assignable notification or an empty dict if the
+    Dict with all data for the assignable notification or an empty dict if the
     notification is not for a valid assignable object.
   """
   if notif.object_type not in {"Request", "Assessment"}:
@@ -160,3 +160,20 @@ def get_assignable_data(notif):
   elif notif.notification_type.name.endswith("_declined"):
     return assignable_declined_data(notif)
   return {}
+
+def get_comment_data(notif):
+  """Return data for comment notifications.
+
+  This functions checks who should receive the notification and who not, with
+  the Commentable mixin that must be added on the object which has the current
+  comment. If the object on which the comment was made is not Commentable, the
+  function will return an empty dict.
+
+  Args:
+    notif (Notification): notification with an Comment object_type.
+
+  Returns:
+    Dict with all data needed for sending comment notifications.
+  """
+  return {}
+
