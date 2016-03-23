@@ -441,6 +441,7 @@ mockup-js-files:
   # Quick Workflow V2.1
   - quick-workflow-v2.1/pages/info.js
   - quick-workflow-v2.1/pages/systems.js
+  - quick-workflow-v2.1/pages/tasks.js
   - quick-workflow-v2.1-dashboard/pages/info.js
   - quick-workflow-v2.1-dashboard/pages/systems.js
   - quick-workflow-v2.1-dashboard/pages/issues.js

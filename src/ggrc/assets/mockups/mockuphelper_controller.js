@@ -329,6 +329,19 @@
     },
     '.remove-task-trigger click': function (el, ev) {
       el.closest('.task-item-wrap').remove();
+    },
+    '.modal-dismiss click': function (el, ev) {
+      el.closest('.modal').modal('hide');
+    },
+    '.summary-trigger change': function (el, ev) {
+      var value = el.val();
+      var disableButtons = $('.modal').find('.confirm-buttons a');
+
+      if (value.length === 0) {
+        disableButtons.addClass('disabled');
+      } else {
+        disableButtons.removeClass('disabled');
+      }
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);
