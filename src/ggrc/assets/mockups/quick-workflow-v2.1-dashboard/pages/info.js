@@ -8,6 +8,10 @@
     template: '/quick-workflow-v2.1-dashboard/info.mustache',
     tasks: Generator.create({
       type: 'task'
-    })
+    }),
+    mapped_workflow: [{
+      icon: 'workflow',
+      title: 'Backlog (One time)'
+    }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

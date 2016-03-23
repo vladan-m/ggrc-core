@@ -18,7 +18,7 @@
     ref_url: 'None',
     mapped_workflow: [{
       icon: 'workflow',
-      title: 'Backlog'
+      title: 'Backlog (One time)'
     }],
     mapped_objects: [{
       icon: 'control',
