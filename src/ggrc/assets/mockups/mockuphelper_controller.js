@@ -342,6 +342,9 @@
       } else {
         disableButtons.removeClass('disabled');
       }
+    },
+    '.show-task-trigger click': function (el, ev) {
+      $('.top-inner-nav').removeClass('hide-last');
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);

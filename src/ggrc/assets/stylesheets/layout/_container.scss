@@ -23,3 +23,9 @@
     width: 3.19149%;
   }
 }
+
+.hide-last {
+  li:last-child {
+    display: none;
+  }
+}
