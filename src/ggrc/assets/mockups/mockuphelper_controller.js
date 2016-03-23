@@ -268,18 +268,18 @@
 
       this.element.find('.object-check-single').prop('checked', true);
     },
-    '.object-check-single click': function (el, ev) {
-      var $allItems = el.closest('.results-wrap')
-      .find('.object-check-single');
-      var currentItem = el.attr('disabled');
-      // var disabled = el.attr('disabled', true);
+    '.object-check-single change': function (el, ev) {
+      var $allItems = el.closest('.results-wrap').find('.object-check-single');
+      var isChecked = el.is(':checked');
+      var notChecked = $allItems.not(':checked');
+      var $triggerButton = $('.workflow-frequency-trigger');
 
-      if (currentItem) {
-        el.attr('checked', false);
-        $allItems.attr('disabled', false);
+      if (!isChecked) {
+        $allItems.prop('disabled', false);
+        $triggerButton.addClass('disabled');
       } else {
-        el.attr('checked', true);
-        $allItems.attr('disabled', true);
+        notChecked.prop('disabled', true);
+        $triggerButton.removeClass('disabled');
       }
     },
     '.add-trigger click': function (el, ev) {
@@ -345,6 +345,11 @@
     },
     '.show-task-trigger click': function (el, ev) {
       $('.top-inner-nav').removeClass('hide-last');
+    },
+    '.workflow-frequency-trigger click': function (el, ev) {
+      el.closest('modal').modal('hide');
+      $('.editable-date').hide();
+      $('.read-only-date').show();
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);
