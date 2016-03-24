@@ -1,0 +1,23 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+{{#instance}}
+<div class="workflow-utility-wrap">
+  <div class="row-fluid">
+    <div class="span6">
+      <select class="input-xlarge">
+        {{#sprints}}
+          <option>{{value}}</option>
+        {{/sprints}}
+      </select>
+    </div>
+    <div class="span6">
+      <a href="javascript://" class="btn btn-draft btn-small pull-right">End sprint</a>
+    </div>
+  </div>
+</div>
+{{/instance}}

@@ -436,6 +436,11 @@ mockup-js-files:
   - workflow/pages/people.js
   - workflow/pages/info.js
 
+  #Workflow 2.2
+  - workflow-v2.2/pages/info.js
+  - workflow-v2.2/pages/sprints.js
+  - workflow-v2.2/pages/template.js
+
   # Quick Workflow
   - quick-workflow/pages/info.js
   - quick-workflow/pages/controls.js
@@ -463,6 +468,7 @@ mockup-js-files:
   - quick-workflow/main.js
   - quick-workflow-v2.1/main.js
   - quick-workflow-v2.1-dashboard/main.js
+  - workflow-v2.2/main.js
 
 mockup-js-template-files:
   # Request
@@ -477,6 +483,11 @@ mockup-js-template-files:
   - workflow/cycle.mustache
   - workflow/workflow_setup_modal.mustache
   - workflow/workflow_modal_content.mustache
+
+  # Workflow 2.2
+  - workflow-v2.2/info.mustache
+  - workflow-v2.2/sprints.mustache
+  - workflow-v2.2/template.mustache
 
   # Quick Workflow
   - quick-workflow/info.mustache
@@ -565,6 +576,7 @@ mockup-js-template-files:
   - mockup_base_templates/tree-cycle.mustache
   - mockup_base_templates/tree-system.mustache
   - mockup_base_templates/tree-my-task.mustache
+  - mockup_base_templates/tree-my-task-sprint.mustache
   - mockup_base_templates/tree_item.mustache
   - mockup_base_templates/tree_item_task.mustache
   - mockup_base_templates/tree_item_my_task.mustache
@@ -574,3 +586,4 @@ mockup-js-template-files:
   - mockup_base_templates/nav_item.mustache
   - mockup_base_templates/attachment_list.mustache
   - mockup_base_templates/add_comment.mustache
+  - mockup_base_templates/workflow_utility.mustache
