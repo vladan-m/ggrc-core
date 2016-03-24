@@ -1,0 +1,76 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+{{#workflows}}
+<div class="modal-header">
+  <a class="modal-dismiss pull-right" href="javascript://" data-dismiss="modal">
+    <i class="fa fa-times black"></i>
+  </a>
+  <h2>Create new {{type}}</h2>
+</div>
+<div class="modal-body">
+
+  <div class="row-fluid wrap-row">
+    <div class="span12">
+      {{> /static/mustache/mockup_base_templates/quick-workflow/title.mustache}}
+    </div>
+  </div>
+
+  <div class="row-fluid wrap-row">
+    <div class="span8">
+      {{> /static/mustache/mockup_base_templates/quick-workflow/description.mustache}}
+    </div>
+    <div class="span4">
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          {{> /static/mustache/mockup_base_templates/quick-workflow/manager.mustache}}
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12">
+          {{> /static/mustache/mockup_base_templates/quick-workflow/frequency.mustache }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-fluid wrap-row">
+    <div class="span8">
+      {{> /static/mustache/mockup_base_templates/quick-workflow/folder.mustache }}
+    </div>
+    <div class="span4">
+      {{> /static/mustache/mockup_base_templates/quick-workflow/email_updates.mustache }}
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span3">
+       {{> /static/mustache/mockup_base_templates/quick-workflow/code.mustache }}
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="row-fluid">
+    <div class="span6"></div>
+    <div class="span6">
+      <div class="confirm-buttons">
+        <a tabindex="24" class="btn btn-small btn-info preventdoubleclick disabled" data-toggle="modal-submit-addmore"
+        href="javascript://">
+          Save &amp; Add Another
+        </a>
+        <a tabindex="25" class="modal-dismiss btn btn-small btn-success preventdoubleclick disabled" data-toggle="modal-submit"
+        href="javascript://" data-dismiss="modal">
+          Save &amp; Close
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{{/workflows}}
+
+{{> /static/mustache/quick-workflow-v2.1-dashboard/task_setup_mapper.mustache }}

@@ -493,6 +493,8 @@ mockup-js-template-files:
   - quick-workflow-v2.1-dashboard/task_setup_mapper.mustache
   - quick-workflow-v2.1-dashboard/task_modal_content.mustache
   - quick-workflow-v2.1-dashboard/task_modal_mapper_content.mustache
+  - quick-workflow-v2.1-dashboard/workflow_modal_content.mustache
+  - quick-workflow-v2.1-dashboard/workflow_setup_modal.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache
@@ -543,6 +545,15 @@ mockup-js-template-files:
   - mockup_base_templates/quick-task/objects_list.mustache
   - mockup_base_templates/quick-task/workflow_list.mustache
   - mockup_base_templates/quick-task/additional_fields.mustache
+
+  # Quick workflow partials
+  - mockup_base_templates/quick-workflow/title.mustache
+  - mockup_base_templates/quick-workflow/description.mustache
+  - mockup_base_templates/quick-workflow/manager.mustache
+  - mockup_base_templates/quick-workflow/email_updates.mustache
+  - mockup_base_templates/quick-workflow/folder.mustache
+  - mockup_base_templates/quick-workflow/frequency.mustache
+  - mockup_base_templates/quick-workflow/code.mustache
 
   # Other base templates files
   - mockup_base_templates/request_panel.mustache

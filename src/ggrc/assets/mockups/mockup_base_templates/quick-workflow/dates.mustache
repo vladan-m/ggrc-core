@@ -1,0 +1,30 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+<div class="span5">
+  <h6>Starts on</h6>
+  <div class="input-group editable-date">
+    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+    <input tabindex="10" class="input-block-level date" name="start_date" data-toggle="datepicker"
+    data-before="end_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date start_date}}">
+  </div>
+  <div class="read-only-date">
+    <p>1st of the month</p>
+  </div>
+</div>
+<div class="span2"></div>
+<div class="span5">
+  <h6>Due on</h6>
+  <div class="input-group editable-date">
+    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+    <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
+    data-after="start_date" placeholder="MM/DD/YYYY" type="text" value="{{localize_date end_date}}">
+  </div>
+  <div class="read-only-date">
+    <p>24th of the month</p>
+  </div>
+</div>
