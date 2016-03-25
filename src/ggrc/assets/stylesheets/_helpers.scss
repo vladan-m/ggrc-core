@@ -120,6 +120,10 @@ small {
   text-transform: capitalize;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 strong.capitalize {
   @extend .capitalize;
 }

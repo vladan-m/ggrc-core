@@ -1,0 +1,20 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+{{#instance}}
+  {{#template_info}}
+  <div class="template-info">
+    <h3>{{title}} {{start_date}}</h3>
+    <p>{{text}}</p>
+    <ol>
+      {{#list_item}}
+      <li>{{item}}</li>
+      {{/list_item}}
+    </ol>
+  </div>
+  {{/template_info}}
+{{/instance}}

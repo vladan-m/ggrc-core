@@ -9,6 +9,19 @@
   margin: 0 0 10px 70px;
 }
 
+.template-info {
+  margin: 0 0 15px 70px;
+  h3 {
+    margin-bottom: 10px;
+  }
+  p {
+    margin: 0;
+  }
+  ol {
+    margin: 0 0 0 16px;
+  }
+}
+
 .new-tree {
   .tree-item-add {
     .add-single-object {

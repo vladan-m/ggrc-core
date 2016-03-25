@@ -3,24 +3,49 @@
   GGRC.Bootstrap.Mockups.Workflow2 = GGRC.Bootstrap.Mockups.Workflow2 || {};
 
   GGRC.Bootstrap.Mockups.Workflow2.Template = {
-    title: "Template",
-    icon: "cycle",
-    template: "/workflow-v2.2/template.mustache",
-    sprints: [{
-      value: 'Monthly Sprint 1 - ENDS ON 03/31/2016'
+    title: 'Template',
+    icon: 'cycle',
+    template: '/workflow-v2.2/template.mustache',
+    children: [{
+      title: Generator.title(1),
+      description: Generator.paragraph(7),
+      state: 'Draft',
+      state_color: 'draft',
+      type: 'my_task_readonly',
+      workflow_title: Generator.title(1),
+      obj_title: Generator.title(1),
+      status: 'Draft',
+      id: '1'
+    }, {
+      title: Generator.title(1),
+      description: Generator.paragraph(7),
+      state: 'Draft',
+      state_color: 'draft',
+      type: 'my_task_readonly',
+      workflow_title: Generator.title(1),
+      obj_title: Generator.title(1),
+      status: 'Draft',
+      id: '2'
+    }, {
+      title: Generator.title(1),
+      description: Generator.paragraph(7),
+      state: 'Draft',
+      state_color: 'draft',
+      type: 'my_task_readonly',
+      workflow_title: Generator.title(1),
+      obj_title: Generator.title(1),
+      status: 'Draft',
+      id: '3'
     }],
-    children: Generator.create({
-      title: "%title",
-      type: "workflow",
-      due_on: '12/31/2017',
-      id: "%id",
-      children: Generator.create({
-        title: "Task Group",
-        type: "task_group",
-        icon: "task_group",
-        id: "%id",
-        children: Generator.get("task")
-      })
-    })
+    template_info: [{
+      title: 'Next sprint template: STARTS ON',
+      start_date: '04/01/2016',
+      text: 'All tasks will be cloned in the current sprint when either:',
+      list_item: [{
+        item: 'the current sprint is ended, or'
+      }, {
+        item: 'on the date of when the next sprint starts.'
+      }]
+    }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);
