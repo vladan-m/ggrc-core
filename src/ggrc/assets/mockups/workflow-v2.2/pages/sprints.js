@@ -7,7 +7,17 @@
     icon: 'history',
     template: '/workflow-v2.2/sprints.mustache',
     sprints: [{
-      value: 'Monthly Sprint 1 - ENDS ON 03/31/2016'
+      value: 'Monthly Sprint 1 - ENDS ON 03/31/2016',
+      archive: false
+    }, {
+      value: 'Monthly Sprint 2 - ENDS ON 02/31/2016',
+      archive: true
+    }, {
+      value: 'Monthly Sprint 3 - ENDS ON 03/31/2015',
+      archive: true
+    }, {
+      value: 'Monthly Sprint 4 - ENDS ON 03/31/2015',
+      archive: true
     }],
     tasks: Generator.create({
       type: 'task'

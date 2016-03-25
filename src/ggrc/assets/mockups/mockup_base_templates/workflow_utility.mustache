@@ -11,7 +11,7 @@
     <div class="span6">
       <select class="input-xlarge">
         {{#sprints}}
-          <option>{{value}}</option>
+          <option>{{value}} {{#archive}}ARCHIVED{{/archive}}</option>
         {{/sprints}}
       </select>
     </div>
