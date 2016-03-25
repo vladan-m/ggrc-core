@@ -1,0 +1,108 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+<div class="modal-header">
+  <a class="modal-dismiss pull-right" href="javascript://" data-dismiss="modal">
+    <i class="fa fa-times black"></i>
+  </a>
+  <h2>Edit Task</h2>
+</div>
+<div class="modal-body">
+
+  <div class="row-fluid wrap-row">
+    <div class="span12">
+      <h6>
+        Task summary
+        <span class="required">*</span>
+      </h6>
+      <input class="input-block-level summary-trigger" type="text" value="Update contacts for SOX controls">
+    </div>
+  </div>
+
+  <div class="row-fluid wrap-row">
+    <div class="span8">
+      <div class="row-fluid">
+        <div class="span12">
+          <h6>Task description</h6>
+          <div class="wysiwyg-area bottom-no-margin">
+            <textarea tabindex="3" class="span12 triple wysihtml5" name="description" placeholder="Enter Description">Verify if all SOX controls have accurate control primary and secondary contact</textarea>
+          </div>
+
+          {{> /static/mustache/mockup_base_templates/quick-task/additional_fields.mustache}}
+        </div>
+      </div>
+    </div>
+    <div class="span4">
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          <h6>Assignee</h6>
+          <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person"
+              placeholder="Enter email address" type="text" value="Predrag Kanazir">
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12">
+          <h6>
+            Workflow
+            <span class="required">*</span>
+          </h6>
+          <ul class="attachment-list objects-list">
+            <li>
+              <i class="fa fa-workflow"></i>
+              SOX issues resolving
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span8">
+      {{> /static/mustache/mockup_base_templates/quick-task/objects_list.mustache}}
+    </div>
+    <div class="span4">
+      <div class="row-fluid">
+        <div class="span5">
+          <h6>Starts on</h6>
+          <div class="input-group editable-date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            <input tabindex="10" class="input-block-level date" name="start_date" data-toggle="datepicker"
+            data-before="end_date" placeholder="MM/DD/YYYY" type="text" value="1st">
+          </div>
+        </div>
+        <div class="span2"></div>
+        <div class="span5">
+          <h6>Due on</h6>
+          <div class="input-group editable-date">
+            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
+            data-after="start_date" placeholder="MM/DD/YYYY" type="text" value="20th">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class="row-fluid">
+    <div class="span6"></div>
+    <div class="span6">
+      <div class="confirm-buttons">
+        <a tabindex="24" class="btn btn-small btn-info preventdoubleclick" data-toggle="modal-submit-addmore"
+        href="javascript://">
+          Save &amp; Add Another
+        </a>
+        <a tabindex="25" class="modal-dismiss show-task-trigger btn btn-small btn-success preventdoubleclick" data-toggle="modal-submit"
+        href="/mockups/quick-workflow-v2.1#Tasks">
+          Save &amp; Close
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

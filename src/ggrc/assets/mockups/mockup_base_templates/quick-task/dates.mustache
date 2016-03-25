@@ -7,6 +7,7 @@
 
 <div class="span5">
   <h6>Starts on</h6>
+  {{^if_equals type 'my_task_readonly'}}
   <div class="input-group editable-date">
     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
     <input tabindex="10" class="input-block-level date" name="start_date" data-toggle="datepicker"
@@ -15,10 +16,15 @@
   <div class="read-only-date">
     <p>1st of the month</p>
   </div>
+  {{/if_equals}}
+  {{#if_equals type 'my_task_readonly'}}
+    <p>1st of the month</p>
+  {{/if_equals}}
 </div>
 <div class="span2"></div>
 <div class="span5">
   <h6>Due on</h6>
+  {{^if_equals type 'my_task_readonly'}}
   <div class="input-group editable-date">
     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
     <input tabindex="11" class="input-block-level date" name="end_date" data-toggle="datepicker"
@@ -27,4 +33,8 @@
   <div class="read-only-date">
     <p>24th of the month</p>
   </div>
+  {{/if_equals}}
+  {{#if_equals type 'my_task_readonly'}}
+    <p>24th of the month</p>
+  {{/if_equals}}
 </div>

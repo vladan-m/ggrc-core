@@ -488,6 +488,8 @@ mockup-js-template-files:
   - workflow-v2.2/info.mustache
   - workflow-v2.2/sprints.mustache
   - workflow-v2.2/template.mustache
+  - workflow-v2.2/task_setup_modal.mustache
+  - workflow-v2.2/task_modal_content.mustache
 
   # Quick Workflow
   - quick-workflow/info.mustache
@@ -514,6 +516,8 @@ mockup-js-template-files:
   - mockup_base_templates/info_panel/base.mustache
   - mockup_base_templates/info_panel/pin_actions.mustache
   - mockup_base_templates/info_panel/header.mustache
+  - mockup_base_templates/info_panel/my_task_header.mustache
+  - mockup_base_templates/info_panel/task_objects.mustache
   - mockup_base_templates/info_panel/common_header.mustache
   - mockup_base_templates/info_panel/info_panel_utility.mustache
   - mockup_base_templates/info_panel/description.mustache
@@ -570,6 +574,7 @@ mockup-js-template-files:
   - mockup_base_templates/request_panel.mustache
   - mockup_base_templates/assessment_panel.mustache
   - mockup_base_templates/task_panel.mustache
+  - mockup_base_templates/my_task_panel.mustache
   - mockup_base_templates/system_panel.mustache
   - mockup_base_templates/tree.mustache
   - mockup_base_templates/tree-assessor.mustache

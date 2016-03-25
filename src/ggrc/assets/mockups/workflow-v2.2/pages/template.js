@@ -6,9 +6,10 @@
     title: 'Template',
     icon: 'cycle',
     template: '/workflow-v2.2/template.mustache',
+    type: 'my_task_readonly',
     children: [{
-      title: Generator.title(1),
-      description: Generator.paragraph(7),
+      title: 'Update contacts for SOX controls',
+      description: 'Verify if all SOX controls have accurate control primary and secondary contact',
       state: 'Draft',
       state_color: 'draft',
       type: 'my_task_readonly',

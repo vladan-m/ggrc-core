@@ -1,0 +1,35 @@
+{{!
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
+}}
+
+{{> /static/mustache/mockup_base_templates/info_panel/my_task_header.mustache}}
+<div class="row-fluid">
+  <div class="span8">
+    <div class="row-fluid wrap-row">
+      <div class="span12">
+        {{> /static/mustache/mockup_base_templates/info_panel/description.mustache}}
+      </div>
+    </div>
+
+    <div class="row-fluid wrap-row">
+      <div class="span6">
+        {{> /static/mustache/mockup_base_templates/info_panel/task_objects.mustache}}
+      </div>
+    </div>
+  </div>
+
+  <div class="span4">
+    <div class="row-fluid wrap-row">
+      <div class="span12">
+        {{> /static/mustache/mockup_base_templates/quick-task/assignee.mustache}}
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      {{> /static/mustache/mockup_base_templates/quick-task/dates.mustache}}
+    </div>
+  </div>
+</div>

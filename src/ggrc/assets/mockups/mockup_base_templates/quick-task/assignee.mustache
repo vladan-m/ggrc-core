@@ -6,7 +6,12 @@
 }}
 
 <h6>Assignee</h6>
-{{#using contact=instance.contact}}
-  <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person"
-  placeholder="Enter email address" type="text" value="Predrag Kanazir">
-{{/using}}
+{{^if_equals type 'my_task_readonly'}}
+  {{#using contact=instance.contact}}
+    <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person"
+    placeholder="Enter email address" type="text" value="Predrag Kanazir">
+  {{/using}}
+{{/if_equals}}
+{{#if_equals type 'my_task_readonly'}}
+  <p>Predrag Kanazir</p>
+{{/if_equals}}
