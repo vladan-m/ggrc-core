@@ -1,119 +1,114 @@
 {{!
-    Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
-    Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
-    Created By: vladan@reciprocitylabs.com
-    Maintained By: vladan@reciprocitylabs.com
+  Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+  Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+  Created By: vladan@reciprocitylabs.com
+  Maintained By: vladan@reciprocitylabs.com
 }}
 
 {{#instance}}
-  <section class="content">
-    <div class="hideable-holder">
-      <div class="basic-info">
-        <div class="info">
+  <section class="info{{#is_info_pin}} sticky-info-panel{{/is_info_pin}}">
+    {{#is_info_pin}}
+      <div class="details-wrap pin">
+        <ul class="pin-action">
+          <li>
+            <a href="javascript://" data-size="deselect" class="close-pane"><i class="fa fa-times black" rel="tooltip" data-placement="left" title="Close info pane"></i></a>
+          </li>
+          <li>
+            <a href="javascript://" data-size="max" class="max"><i class="grcicon-maximize" rel="tooltip" data-placement="left" title="Maximize height"></i></a>
+          </li>
+          <li>
+            <a href="javascript://" data-size="normal" class="normal"><i class="grcicon-default" style="opacity:1.0" rel="tooltip" data-placement="left" title="Default height"></i></a>
+          </li>
+          <li>
+            <a href="javascript://" data-size="min" class="min"><i class="grcicon-minimize" rel="tooltip" data-placement="left" title="Minimize height"></i></a>
+          </li>
+        </ul><!-- pin-action end -->
+      </div><!-- details-wrap pin end -->
+    {{/is_info_pin}}
 
-          <div class="row-fluid wrap-row">
-            <div class="span12">
-              <div class="pull-right reset-form">
-                {{> /static/mustache/mockup_base_templates/object_setup/fields_visibility_control.mustache}}
-                {{> /static/mustache/mockup_base_templates/info_panel/info_panel_utility.mustache}}
-              </div>
-            </div>
-          </div>
+    <div class="pane-header">
+      <div class="row-fluid wrap-row">
+        <div class="span9">
+          <h6>Title</h6>
+          <h3>{{info_title}}</h3>
+          {{#state}}
+            <span class="state-value state-{{state_color}}">{{state}}</span>
+          {{/state}}
+        </div>
+        <div class="span3">
+          <div class="info-pane-utility">
 
-          <div class="choose-object-wrap">
-            <div class="row-fluid">
-              <div class="span8">
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>Workflow title</h6>
-                    <p>Tribe Also Relationship</p>
-                  </div>
-                </div>
-                <div class="row-fluid wrap-row">
-                  <div class="span12 hidable" data-value="workflow_description">
-                    <h6>Description</h6>
-                    <p>Actions internet shareholders customers has given right was reinforcing people interaction investigating decisions deals include. Both legal. Best like environment. By make concept. Etc corporate authority called. Mission governance given. Itself problems mission held.</p>
-                  </div>
-                </div>
-                <div class="row-fluid">
-                  <div class="span12 hidable hidden" data-value="workflow_custom">
-                    <h6>Custom "Start Workflow" email message</h6>
-                    <p>Way independent norms articulated whom mediated often organizations. Risks non-governmental. One incorporated research. Governance governing interaction. Inter- was respect information. With governance distinguish. Unlike older articulated players.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="span4">
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>People</h6>
-                    <div class="side-content">
-                      <ul class="label-list">
-                        <li>
-                          <label>
-                            <span class="file-controls">
-                              <a href="javascript://">
-                                <i class="fa fa-plus-circle"></i>
-                              </a>
-                            </span>
-                            <span class="person-label manager"></span>
-                            Manager
-                          </label>
-                          <ul>
-                            <li>
-                              <span class="file-controls">
-                                <a href="javascript://"><i class="fa fa-trash"></i></a>
-                              </span>
-                              <a href="javascript://">William Thompson</a>
-                            </li>
-                            <li>
-                              <span class="file-controls">
-                                <a href="javascript://"><i class="fa fa-trash"></i></a>
-                              </span>
-                              <a href="javascript://">Sandra Turner</a>
-                            </li>
-                            <li>
-                              <span class="file-controls">
-                                <a href="javascript://"><i class="fa fa-trash"></i></a>
-                              </span>
-                              <a href="javascript://">Helen Hernandez</a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div class="row-fluid wrap-row">
-                  <div class="span12">
-                    <h6>Frequency</h6>
-                    <div class="side-content">
-                      <p>One time</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="row-fluid">
-                  <div class="span6">
-                    <h6>Code</h6>
-                    <div class="side-content">
-                      <p>WORKFLOW-2</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="details-wrap">
+              <a class="btn btn-draft dropdown-toggle" href="#" data-toggle="dropdown">
+                <span class="bubble"></span>
+                <span class="bubble"></span>
+                <span class="bubble"></span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
+                {{#is_allowed 'update' instance context='for'}}
+                  {{> /static/mustache/base_objects/edit_object_link.mustache}}
+                {{/is_allowed}}
+                <li>
+                  <clipboard-link title="Get permalink" notify="true" text="{{get_permalink_url}}" />
+                </li>
+                {{#is_allowed 'delete' instance}}
+                  <li>
+                    <a data-toggle="modal-ajax-deleteform" data-object-plural="{{model.table_plural}}" data-object-singular="{{model.model_singular}}" data-modal-reset="reset" data-modal-class="modal" data-object-id="{{instance.id}}" href="javascript://">
+                      <i class="fa fa-trash"></i>
+                      Delete
+                    </a>
+                  </li>
+                {{/is_allowed}}
+              </ul>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="relevant-filter-group">
-        <div class="relevant-block-wrap">
-          {{#tasks}}
-            {{> /static/mustache/mockup_base_templates/object_setup/repeating_block.mustache}}
-          {{/tasks}}
-        </div>
-      </div>
-
     </div>
+
+    <div class="tier-content">
+
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          <h6>Description</h6>
+          <div class="rtf-block">
+            {{description}}
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid wrap-row">
+        <div class="span6">
+          <h6>Manager</h6>
+          <p class="oneline">
+            <a href="#">{{manager}}</a>
+          </p>
+        </div>
+        <div class="span6">
+          <h6>Frequency</h6>
+          <p class="oneline">
+            {{frequency}}
+          </p>
+        </div>
+      </div>
+
+      <div class="row-fluid wrap-row">
+        <div class="span12">
+          <h6>Workflow folder</h6>
+          <span class="error">
+            None assigned
+          </span>
+          <a href="javascript://" tabindex="" class="entry-attachment tree-item-add" data-toggle="gdrive-picker"
+            data-model="Workflow" data-type="folders" data-id="">
+            <i class="fa fa-paperclip attach-blue"></i> Assign folder
+          </a>
+        </div>
+      </div>
+
+    </div><!-- tier-content end -->
+
+  {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
+
   </section>
 
   <div class="info-widget-footer">
@@ -128,5 +123,3 @@
     </p>
   </div>
 {{/instance}}
-
-{{> /static/mustache/workflow/workflow_setup_modal.mustache }}
