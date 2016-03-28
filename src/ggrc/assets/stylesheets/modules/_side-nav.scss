@@ -261,6 +261,11 @@ h4.search-title {
           }
         }
       }
+      &.tasks {
+        a {
+          color: $programs;
+        }
+      }
     }
   }
 

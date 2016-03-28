@@ -594,3 +594,4 @@ mockup-js-template-files:
   - mockup_base_templates/add_comment.mustache
   - mockup_base_templates/workflow_utility.mustache
   - mockup_base_templates/template_info.mustache
+  - mockup_base_templates/lhn.mustache
