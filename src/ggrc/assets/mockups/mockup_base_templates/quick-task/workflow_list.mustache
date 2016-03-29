@@ -15,10 +15,12 @@
       <li>
         <i class="fa fa-{{icon}}"></i>
         {{title}}
-        <a class="edit-attachment-item" href="#WorkflowMapper" rel="tooltip" data-placement="left" data-toggle="modal"
-          data-original-title="Map Workflow">
-          <i class="fa fa-pencil-square-o"></i>
-        </a>
+        {{^if_equals type 'my_task_readonly'}}
+          <a class="edit-attachment-item" href="#WorkflowMapper" rel="tooltip" data-placement="left" data-toggle="modal"
+            data-original-title="Map Workflow">
+            <i class="fa fa-pencil-square-o"></i>
+          </a>
+        {{/if_equals}}
       </li>
     {{/each}}
   </ul>

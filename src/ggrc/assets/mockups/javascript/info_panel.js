@@ -114,6 +114,7 @@
         assessment: '/static/mustache/mockup_base_templates/assessment_panel.mustache',
         system: '/static/mustache/mockup_base_templates/system_panel.mustache',
         task: '/static/mustache/mockup_base_templates/task_panel.mustache',
+        my_task: '/static/mustache/mockup_base_templates/my_task_panel.mustache',
         my_task_readonly: '/static/mustache/mockup_base_templates/my_task_panel.mustache',
         'default': '/static/mustache/mockup_base_templates/request_panel.mustache'
       }
