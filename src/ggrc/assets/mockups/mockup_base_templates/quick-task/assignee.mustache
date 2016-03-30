@@ -6,12 +6,12 @@
 }}
 
 <h6>Assignee</h6>
-{{^if_equals type 'my_task_readonly'}}
+{{^read_only}}
   {{#using contact=instance.contact}}
     <input data-id="contact_txtbx" tabindex="5" class="input-block-level" name="contact.email" data-lookup="Person"
     placeholder="Enter email address" type="text" value="Predrag Kanazir">
   {{/using}}
-{{/if_equals}}
-{{#if_equals type 'my_task_readonly'}}
+{{/read_only}}
+{{#read_only}}
   <p><a href="javascript://">Predrag Kanazir</a></p>
-{{/if_equals}}
+{{/read_only}}

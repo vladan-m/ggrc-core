@@ -52,11 +52,11 @@
 
   <div class="tab-content">
     <div class="tab-pane fade in active" id="tab1">
-      {{^if_equals type 'my_task_readonly'}}
+      {{#show_comments}}
         <div class="tree-item-add">
           <add-comment data="comments"></add-comment>
         </div>
-      {{/if_equals}}
+      {{/show_comments}}
       {{> /static/mustache/mockup_base_templates/info_panel/comment_list.mustache}}
     </div>
 
