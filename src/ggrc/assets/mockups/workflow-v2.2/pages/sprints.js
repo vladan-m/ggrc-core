@@ -20,13 +20,15 @@
       archive: true
     }],
     tasks: Generator.create({
-      type: 'task'
+      type: 'task',
+      zero_state: true
     }),
     mapped_workflow: [{
       icon: 'workflow',
       title: 'SOX issues resolving'
     }],
     children: [{
+      zero_state: true,
       title: Generator.title(1),
       description: Generator.paragraph(7),
       state: 'Draft',

@@ -5,7 +5,7 @@
   Maintained By: vladan@reciprocitylabs.com
 }}
 
-<div class="item-main {{#if active}}active{{/if}}" data-model="true">
+<div class="item-main {{#if active}}active{{/if}} {{#zero_state}}hidden{{/zero_state}}" data-model="true">
   <div class="item-wrap">
     <div class="openclose">
       {{^tree_view_read_only}}
@@ -86,6 +86,14 @@
     </div><!-- select end -->
   </div><!-- item-wrap end -->
 </div><!-- item-main end -->
+
+{{#zero_state}}
+  <div class="zero-state">
+    <h2>
+      <a href="#QuickTaskCreate" data-toggle="modal">Add first task</a>
+    </h2>
+  </div>
+{{/zero_state}}
 
 {{#if children}}
   <div class="tier-2-info item-content">

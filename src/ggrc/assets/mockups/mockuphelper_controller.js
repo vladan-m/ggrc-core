@@ -350,6 +350,10 @@
       el.closest('modal').modal('hide');
       $('.editable-date').hide();
       $('.read-only-date').show();
+    },
+    '.show-first-task-trigger click': function (el, ev) {
+      $('.zero-state').remove();
+      $('.item-main').removeClass('hidden');
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);

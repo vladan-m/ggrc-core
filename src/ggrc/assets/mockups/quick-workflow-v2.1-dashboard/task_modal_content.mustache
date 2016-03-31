@@ -65,10 +65,18 @@
         href="javascript://">
           Save &amp; Add Another
         </a>
+        {{^zero_state}}
         <a tabindex="25" class="modal-dismiss btn btn-small btn-success preventdoubleclick disabled" data-toggle="modal-submit"
         href="javascript://" data-dismiss="modal">
           Save &amp; Close
         </a>
+        {{/zero_state}}
+        {{#zero_state}}
+        <a tabindex="25" class="modal-dismiss show-first-task-trigger btn btn-small btn-success preventdoubleclick disabled" data-toggle="modal-submit"
+        href="/mockups/workflow-v2.2#Sprints/my_task-1">
+          Save &amp; Close
+        </a>
+        {{/zero_state}}
       </div>
     </div>
   </div>
