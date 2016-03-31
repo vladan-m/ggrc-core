@@ -354,6 +354,7 @@
     '.show-first-task-trigger click': function (el, ev) {
       $('.zero-state').remove();
       $('.item-main').removeClass('hidden');
+      // GGRC.Bootstrap.Mockups.Workflow2.Sprints.children[0].zero_state = false;
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);
