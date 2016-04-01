@@ -36,6 +36,7 @@
       type: 'my_task',
       read_only: true,
       show_comments: true,
+      info_pane_button: true,
       workflow_title: Generator.title(1),
       obj_title: Generator.title(1),
       status: 'Draft',
