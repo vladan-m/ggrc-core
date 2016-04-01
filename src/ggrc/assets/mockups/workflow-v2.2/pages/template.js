@@ -6,6 +6,7 @@
     title: 'Template',
     icon: 'cycle',
     template: '/workflow-v2.2/template.mustache',
+    task_group: true,
     children: [{
       title: 'Update contacts for SOX controls',
       description: 'Verify if all SOX controls have accurate control primary and secondary contact',
@@ -16,6 +17,10 @@
       read_only: true,
       show_comments: false,
       info_pane_button: false,
+      task_group: [{
+        visible: true,
+        value: 'Task Group 007'
+      }],
       workflow_title: Generator.title(1),
       obj_title: Generator.title(1),
       status: 'Draft',
@@ -92,6 +97,10 @@
       show_comments: false,
       info_pane_button: false,
       tree_view_read_only: true,
+      task_group: [{
+        visible: true,
+        value: Generator.title(1)
+      }],
       workflow_title: Generator.title(1),
       obj_title: Generator.title(1),
       status: 'Draft',
@@ -106,6 +115,10 @@
       show_comments: false,
       info_pane_button: false,
       tree_view_read_only: true,
+      task_group: [{
+        visible: true,
+        value: Generator.title(1)
+      }],
       workflow_title: Generator.title(1),
       obj_title: Generator.title(1),
       status: 'Draft',

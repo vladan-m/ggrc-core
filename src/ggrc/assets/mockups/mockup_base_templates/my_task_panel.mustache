@@ -25,6 +25,14 @@
         {{> /static/mustache/mockup_base_templates/quick-task/workflow_list.mustache}}
       </div>
     </div>
+
+    {{#task_group}}
+      <div class="row-fluid wrap-row">
+        <div class="span6">
+          {{> /static/mustache/mockup_base_templates/quick-task/task_group.mustache}}
+        </div>
+      </div>
+    {{/task_group}}
   </div>
 
   <div class="span4">

@@ -34,7 +34,7 @@
             </div>
           </div>
 
-          <div class="span2">
+          <div class="{{#if task_group}}span1{{else}}span2{{/if}}">
             <div class="row-fluid">
               <div class="span12">
                 <div class="owner tree-title-area">
@@ -43,6 +43,18 @@
               </div>
             </div>
           </div>
+
+          {{#task_group}}
+            <div class="span1">
+              <div class="row-fluid">
+                <div class="span12">
+                  <div class="owner tree-title-area">
+                    {{value}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/task_group}}
 
           <div class="span4">
             <ul class="tree-action-list tasks-action">

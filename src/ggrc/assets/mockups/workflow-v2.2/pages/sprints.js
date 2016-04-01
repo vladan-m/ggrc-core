@@ -21,7 +21,8 @@
     }],
     tasks: Generator.create({
       type: 'task',
-      zero_state: true
+      zero_state: true,
+      task_group: true
     }),
     mapped_workflow: [{
       icon: 'workflow',
@@ -37,6 +38,10 @@
       type: 'my_task',
       read_only: true,
       show_comments: true,
+      task_group: [{
+        visible: true,
+        value: Generator.title(1)
+      }],
       info_pane_button: true,
       workflow_title: Generator.title(1),
       obj_title: Generator.title(1),
