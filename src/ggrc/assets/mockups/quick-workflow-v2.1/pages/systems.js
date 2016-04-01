@@ -9,6 +9,11 @@
     tasks: Generator.create({
       type: 'task'
     }),
+    mapped_workflow: [{
+      icon: 'workflow',
+      title: 'Backlog (One time)',
+      read_only: false
+    }],
     children: [{
       title: 'SOX 1',
       info_title: 'SOX 1',

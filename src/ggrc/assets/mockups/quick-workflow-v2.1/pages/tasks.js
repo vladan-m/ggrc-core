@@ -11,7 +11,8 @@
     }),
     mapped_workflow: [{
       icon: 'workflow',
-      title: 'Backlog (One time)'
+      title: 'Backlog (One time)',
+      read_only: false
     }],
     children: [{
       title: Generator.title(1),

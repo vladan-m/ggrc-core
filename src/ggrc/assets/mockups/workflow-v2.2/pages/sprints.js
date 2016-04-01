@@ -25,7 +25,8 @@
     }),
     mapped_workflow: [{
       icon: 'workflow',
-      title: 'SOX issues resolving'
+      title: 'SOX issues resolving',
+      read_only: true
     }],
     children: [{
       zero_state: true,

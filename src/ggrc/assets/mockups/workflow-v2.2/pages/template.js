@@ -22,7 +22,8 @@
       id: '1',
       mapped_workflow: [{
         icon: 'workflow',
-        title: 'SOX issues resolving'
+        title: 'SOX issues resolving',
+        read_only: true
       }],
       comments: Generator.get('comment', 3, {sort: 'date'}),
       logs: Generator.create({
