@@ -40,6 +40,7 @@
   </div>
 </div>
 
+{{#show_comments}}
 <div class="tabs-wrap">
   <ul class="nav nav-tabs">
     <li class="active"><a href="#tab1" data-toggle="tab">
@@ -52,11 +53,9 @@
 
   <div class="tab-content">
     <div class="tab-pane fade in active" id="tab1">
-      {{#show_comments}}
-        <div class="tree-item-add">
-          <add-comment data="comments"></add-comment>
-        </div>
-      {{/show_comments}}
+      <div class="tree-item-add">
+        <add-comment data="comments"></add-comment>
+      </div>
       {{> /static/mustache/mockup_base_templates/info_panel/comment_list.mustache}}
     </div>
 
@@ -65,3 +64,4 @@
     </div>
   </div>
 </div>
+{{/show_comments}}
