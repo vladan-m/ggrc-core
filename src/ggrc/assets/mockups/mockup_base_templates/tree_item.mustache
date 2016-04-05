@@ -32,25 +32,23 @@
               {{title}}
             </div>
           </div>
-          {{#if_helpers '\
-            #if_equals' type 'assessment' '\
-            or ^if_equals' type 'task'}}
-            {{^if_equals type "control"}}
-            <div class="span2">
-              <div class="row-fluid">
-                <div class="span12">
-                  <div class="owner tree-title-area">
-                    {{due_on}}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {{/if_equals}}
-          {{/if_helpers}}
           {{^if_equals type "task"}}
             <div class="{{#if_equals type "assessment"}}span2{{else}}span4{{/if}}">
               <div class="row-fluid">
-                <div class="span12">
+                {{#if_helpers '\
+                  #if_equals' type 'assessment' '\
+                  or ^if_equals' type 'task'}}
+                  {{^if_equals type "control"}}
+                  {{#if due_on}}
+                    <div class="span6">
+                      <div class="owner tree-title-area">
+                        {{due_on}}
+                      </div>
+                    </div>
+                  {{/if}}
+                  {{/if_equals}}
+                {{/if_helpers}}
+                <div class="{{#if due_on}}span6{{else}}span12{{/if}}">
                   <div class="owner tree-title-area">
                     {{status}}
                   </div>
