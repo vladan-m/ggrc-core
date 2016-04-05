@@ -566,7 +566,6 @@ mockup-js-template-files:
   - mockup_base_templates/quick-workflow/title.mustache
   - mockup_base_templates/quick-workflow/description.mustache
   - mockup_base_templates/quick-workflow/manager.mustache
-  - mockup_base_templates/quick-workflow/email_updates.mustache
   - mockup_base_templates/quick-workflow/folder.mustache
   - mockup_base_templates/quick-workflow/frequency.mustache
   - mockup_base_templates/quick-workflow/code.mustache
