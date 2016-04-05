@@ -1,0 +1,18 @@
+/*
+ * Copyright (C) 2016 Google Inc., authors, and contributors <see AUTHORS file>
+ * Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+ * Created By: vladan@reciprocitylabs.com
+ * Maintained By: vladan@reciprocitylabs.com
+ */
+
+.nested-checkbox-wrap {
+  margin-bottom: 20px;
+}
+
+.checkbox-list {
+  @extend %reset-list;
+  display: none;
+  .nested-checkbox-wrap & {
+    margin-left: 15px;
+  }
+}
