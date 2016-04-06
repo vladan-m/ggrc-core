@@ -3,7 +3,7 @@
   GGRC.Bootstrap.Mockups.Workflow2 = GGRC.Bootstrap.Mockups.Workflow2 || {};
 
   GGRC.Bootstrap.Mockups.Workflow2.Sprints = {
-    title: 'Sprints',
+    title: 'Monthly sprints',
     icon: 'history',
     template: '/workflow-v2.2/sprints.mustache',
     sprints: [{
