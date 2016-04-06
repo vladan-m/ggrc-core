@@ -8,10 +8,8 @@
 <div class="item-main {{#if active}}active{{/if}} {{#zero_state}}hidden{{/zero_state}}" data-model="true">
   <div class="item-wrap">
     <div class="openclose">
-      {{^tree_view_read_only}}
       <span class="status-label status-{{state_color}}"></span>
       <i class="fa fa-caret-right"></i>
-      {{/tree_view_read_only}}
     </div>
     <div class="select">
       <div class="item-data">
@@ -19,7 +17,9 @@
           <div class="span4">
             <div class="title tree-title-area" rel="tooltip" data-placement="left" title=""
             data-original-title="{{title}}">
-              <i class="fa fa-{{icon}}"></i>
+              {{#is_subtree}}
+                <i class="fa fa-{{icon}}"></i>
+              {{/is_subtree}}
               {{title}}
             </div>
           </div>

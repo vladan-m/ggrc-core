@@ -90,7 +90,13 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'AC01',
+        type: 'control',
+        icon: 'control',
+        id: '23'
+      }]
     }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

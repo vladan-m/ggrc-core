@@ -86,7 +86,18 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'Process for handling SOX',
+        type: 'process',
+        icon: 'process',
+        id: '23'
+      }, {
+        title: 'Spare IT parts',
+        icon: 'market',
+        type: 'market',
+        id: '24'
+      }]
     }, {
       title: Generator.title(1),
       description: Generator.paragraph(7),
@@ -104,7 +115,13 @@
       assignee: 'Ken Lynch',
       verifier: 'Albert Chen',
       status: 'Draft',
-      id: '2'
+      id: '2',
+      children: [{
+        title: 'Spare IT parts',
+        icon: 'market',
+        type: 'market',
+        id: '24'
+      }]
     }, {
       title: Generator.title(1),
       description: Generator.paragraph(7),
@@ -122,7 +139,13 @@
       assignee: 'Predrag Kanazir',
       verifier: 'Albert Chen',
       status: 'Draft',
-      id: '3'
+      id: '3',
+      children: [{
+        title: 'Process for handling SOX',
+        type: 'process',
+        icon: 'process',
+        id: '23'
+      }]
     }],
     template_info: [{
       title: 'Next sprint starts on',

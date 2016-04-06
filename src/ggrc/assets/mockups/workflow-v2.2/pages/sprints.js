@@ -109,7 +109,18 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'Process for handling SOX',
+        type: 'process',
+        icon: 'process',
+        id: '23'
+      }, {
+        title: 'Spare IT parts',
+        icon: 'market',
+        type: 'market',
+        id: '24'
+      }]
     }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

@@ -90,7 +90,18 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'Process for handling SOX',
+        type: 'process',
+        icon: 'process',
+        id: '23'
+      }, {
+        title: 'Spare IT parts',
+        icon: 'market',
+        type: 'market',
+        id: '24'
+      }]
     }, {
       title: Generator.title(1),
       description: Generator.paragraph(7),
@@ -167,7 +178,13 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'Process for handling SOX',
+        type: 'process',
+        icon: 'process',
+        id: '23'
+      }]
     }, {
       title: Generator.title(1),
       description: Generator.paragraph(7),
@@ -244,7 +261,13 @@
       }, {
         count: 5,
         randomize: 'data'
-      })
+      }),
+      children: [{
+        title: 'Spare IT parts in LA',
+        icon: 'market',
+        type: 'market',
+        id: '24'
+      }]
     }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);
