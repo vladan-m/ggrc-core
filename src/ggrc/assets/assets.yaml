@@ -122,7 +122,6 @@ dashboard-js-files:
   - components/paginate.js
   - components/tabs.js
   - components/assessment_attributes.js
-  - components/nest-trigger.js
   - components/object_history/object_history.js
   #- d3.v2.js
   #- related_graph.js
@@ -183,7 +182,6 @@ dashboard-js-template-files:
   - base_objects/open_close.mustache
   - base_objects/sub_tree_type_selector.mustache
   - base_objects/modal/search_title.mustache
-  - base_objects/nested_list.mustache
   - base_templates/add_comment.mustache
   - base_templates/attachment_list.mustache
   - base_templates/attachment.mustache
