@@ -6,7 +6,7 @@
     title: 'Control Info',
     info_title: 'AC01',
     icon: 'info-circle',
-    template: '/quick-workflow-v2.1/info.mustache',
+    template: '/task-creation/info.mustache',
     description: 'Managers approve user requests for new and/or modified system access based on job responsibility, prior to granting access to the in-scope systems. Access approval is documented via a formal access request.',
     owner: 'andraz@reciprocitylabs.com',
     prime_contact: 'andraz@reciprocitylabs.com',

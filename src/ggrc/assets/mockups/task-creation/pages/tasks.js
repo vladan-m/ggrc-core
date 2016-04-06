@@ -5,7 +5,7 @@
   GGRC.Bootstrap.Mockups.QTask.Tasks = {
     title: 'Tasks',
     icon: 'task',
-    template: '/quick-workflow-v2.1-dashboard/widget.mustache',
+    template: '/task-creation-dashboard/widget.mustache',
     hide_filter: true,
     tasks: Generator.create({
       type: 'task'

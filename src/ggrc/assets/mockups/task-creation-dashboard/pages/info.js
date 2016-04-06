@@ -5,7 +5,7 @@
   GGRC.Bootstrap.Mockups.QDashboard.Info = {
     title: 'Info',
     icon: 'info-circle',
-    template: '/quick-workflow-v2.1-dashboard/info.mustache',
+    template: '/task-creation-dashboard/info.mustache',
     tasks: Generator.create({
       type: 'task'
     }),

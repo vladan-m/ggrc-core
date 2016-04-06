@@ -5,7 +5,7 @@
   GGRC.Bootstrap.Mockups.QTask.Systems = {
     title: 'Systems',
     icon: 'system',
-    template: '/quick-workflow-v2.1/widget.mustache',
+    template: '/task-creation/widget.mustache',
     hide_filter: true,
     tasks: Generator.create({
       type: 'task'

@@ -446,15 +446,15 @@ mockup-js-files:
   - quick-workflow/pages/controls.js
 
   # Quick Workflow V2.1
-  - quick-workflow-v2.1/pages/info.js
-  - quick-workflow-v2.1/pages/systems.js
-  - quick-workflow-v2.1/pages/tasks.js
-  - quick-workflow-v2.1-dashboard/pages/info.js
-  - quick-workflow-v2.1-dashboard/pages/systems.js
-  - quick-workflow-v2.1-dashboard/pages/issues.js
-  - quick-workflow-v2.1-dashboard/pages/markets.js
-  - quick-workflow-v2.1-dashboard/pages/controls.js
-  - quick-workflow-v2.1-dashboard/pages/tasks.js
+  - task-creation/pages/info.js
+  - task-creation/pages/systems.js
+  - task-creation/pages/tasks.js
+  - task-creation-dashboard/pages/info.js
+  - task-creation-dashboard/pages/systems.js
+  - task-creation-dashboard/pages/issues.js
+  - task-creation-dashboard/pages/markets.js
+  - task-creation-dashboard/pages/controls.js
+  - task-creation-dashboard/pages/tasks.js
 
   # Bootstrap files shouold be above
   - javascript/add_comment.js
@@ -466,8 +466,8 @@ mockup-js-files:
   - request/main.js
   - workflow/main.js
   - quick-workflow/main.js
-  - quick-workflow-v2.1/main.js
-  - quick-workflow-v2.1-dashboard/main.js
+  - task-creation/main.js
+  - task-creation-dashboard/main.js
   - workflow-v2.2/main.js
 
 mockup-js-template-files:
@@ -496,18 +496,18 @@ mockup-js-template-files:
   - quick-workflow/workflow_modal.mustache
 
   # Quick Workflow V2.1
-  - quick-workflow-v2.1/info.mustache
-  - quick-workflow-v2.1/task_setup_modal.mustache
-  - quick-workflow-v2.1/task_modal_content.mustache
-  - quick-workflow-v2.1/widget.mustache
-  - quick-workflow-v2.1-dashboard/info.mustache
-  - quick-workflow-v2.1-dashboard/widget.mustache
-  - quick-workflow-v2.1-dashboard/task_setup_modal.mustache
-  - quick-workflow-v2.1-dashboard/task_setup_mapper.mustache
-  - quick-workflow-v2.1-dashboard/task_modal_content.mustache
-  - quick-workflow-v2.1-dashboard/task_modal_mapper_content.mustache
-  - quick-workflow-v2.1-dashboard/workflow_modal_content.mustache
-  - quick-workflow-v2.1-dashboard/workflow_setup_modal.mustache
+  - task-creation/info.mustache
+  - task-creation/task_setup_modal.mustache
+  - task-creation/task_modal_content.mustache
+  - task-creation/widget.mustache
+  - task-creation-dashboard/info.mustache
+  - task-creation-dashboard/widget.mustache
+  - task-creation-dashboard/task_setup_modal.mustache
+  - task-creation-dashboard/task_setup_mapper.mustache
+  - task-creation-dashboard/task_modal_content.mustache
+  - task-creation-dashboard/task_modal_mapper_content.mustache
+  - task-creation-dashboard/workflow_modal_content.mustache
+  - task-creation-dashboard/workflow_setup_modal.mustache
 
   # Base templates
   - mockup_base_templates/modal_base.mustache

@@ -9,7 +9,7 @@
 (function (can, $) {
 
   // Only load this file when the URL is mockups/sample:
-  if (window.location.pathname !== "/mockups/quick-workflow-v2.1") {
+  if (window.location.pathname !== "/mockups/task-creation") {
     return;
   }
 
