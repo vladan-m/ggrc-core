@@ -28,7 +28,7 @@
             <div class="row-fluid">
               <div class="span12">
                 <div class="owner tree-title-area">
-                  {{workflow_title}}
+                  {{assignee}}
                 </div>
               </div>
             </div>
@@ -38,7 +38,7 @@
             <div class="row-fluid">
               <div class="span12">
                 <div class="owner tree-title-area">
-                  {{obj_title}}
+                  {{verifier}}
                 </div>
               </div>
             </div>
@@ -49,8 +49,8 @@
               <li>
                 <div class="date">
                   {{^tree_view_read_only}}
-                    <span rel="tooltip" data-placement="top" class="error" data-original-title="Due On">
-                      <i class="fa fa-clock-o red"></i> 01/20/2016
+                    <span rel="tooltip" data-placement="top" {{#outdated}}class="error"{{/outdated}} data-original-title="Due On">
+                      <i class="fa fa-clock-o {{#outdated}}red{{/outdated}}"></i> {{due_date}}
                     </span>
                   {{/tree_view_read_only}}
                   {{#tree_view_read_only}}
@@ -110,7 +110,7 @@
             <div class="row-fluid">
               <div class="span12">
                 <div class="owner tree-title-area">
-                  Functioning System
+                  Predrag Kanazir
                 </div>
               </div>
             </div>
@@ -120,7 +120,7 @@
             <div class="row-fluid">
               <div class="span12">
                 <div class="owner tree-title-area">
-                  Management Family
+                  Albert Chen
                 </div>
               </div>
             </div>
@@ -131,8 +131,8 @@
               <li>
                 <div class="date">
                   {{^tree_view_read_only}}
-                    <span rel="tooltip" data-placement="top" class="error" data-original-title="Due On">
-                      <i class="fa fa-clock-o red"></i> 01/20/2016
+                    <span rel="tooltip" data-placement="top" data-original-title="Due On">
+                      <i class="fa fa-clock-o"></i> 04/06/2016
                     </span>
                   {{/tree_view_read_only}}
                   {{#tree_view_read_only}}

@@ -43,8 +43,10 @@
         value: Generator.title(1)
       }],
       info_pane_button: true,
-      workflow_title: Generator.title(1),
-      obj_title: Generator.title(1),
+      assignee: 'Predrag Kanazir',
+      verifier: 'Ken Lynch',
+      due_date: Generator.get_date({today: true}),
+      outdated: false,
       status: 'Draft',
       id: '1',
       mapped_workflow: [{

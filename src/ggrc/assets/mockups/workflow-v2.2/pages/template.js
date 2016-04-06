@@ -21,8 +21,8 @@
         visible: true,
         value: 'Task Group 007'
       }],
-      workflow_title: Generator.title(1),
-      obj_title: Generator.title(1),
+      assignee: 'Albert Chen',
+      verifier: 'Predrag Kanazir',
       status: 'Draft',
       id: '1',
       mapped_workflow: [{
@@ -101,8 +101,8 @@
         visible: true,
         value: Generator.title(1)
       }],
-      workflow_title: Generator.title(1),
-      obj_title: Generator.title(1),
+      assignee: 'Ken Lynch',
+      verifier: 'Albert Chen',
       status: 'Draft',
       id: '2'
     }, {
@@ -119,8 +119,8 @@
         visible: true,
         value: Generator.title(1)
       }],
-      workflow_title: Generator.title(1),
-      obj_title: Generator.title(1),
+      assignee: 'Predrag Kanazir',
+      verifier: 'Albert Chen',
       status: 'Draft',
       id: '3'
     }],
