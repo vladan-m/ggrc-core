@@ -7,7 +7,7 @@
 
 <div class="item-main {{#if active}}active{{/if}} {{#zero_state}}hidden{{/zero_state}}" data-model="true">
   <div class="item-wrap">
-    <div class="openclose">
+    <div class="openclose active">
       <span class="status-label status-{{state_color}}"></span>
       <i class="fa fa-caret-right"></i>
     </div>
@@ -178,7 +178,7 @@
 {{/zero_state}}
 
 {{#if children}}
-  <div class="tier-2-info item-content">
+  <div class="tier-2-info item-content content-open" style="display: block;">
     <div class="tier-2-info-content">
       <div class="inner-tree">
         <ul class="tree-structure new-tree"></ul>

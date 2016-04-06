@@ -10,7 +10,7 @@
   }, {
     init: function (el, opts) {
       can.each(this.options.instance.children, function (child) {
-        var $item = $('<li/>', {'class': 'tree-item'});
+        var $item = $('<li/>', {'class': 'tree-item item-open'});
         new CMS.Controllers.MockupTreeItem($item, {
           item: child
         });
