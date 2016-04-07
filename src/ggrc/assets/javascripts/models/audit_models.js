@@ -356,13 +356,17 @@
       'due date', 'due', 'name', 'notes', 'request',
       'requested on', 'status', 'test', 'title', 'request_type',
       'type', 'request type', 'due_on', 'request_object',
-      'request object', 'request title'
+      'request object', 'request title',
+      'verified', 'verified_date', 'finished_date'
     ],
     filter_mappings: {
       type: 'request_type',
       'request title': 'title',
       'request description': 'description',
-      'request type': 'request_type'
+      'request type': 'request_type',
+      'verified date': 'verified_date',
+      'finished date': 'finished_date',
+      'request date': 'requested_on'
     },
     root_collection: 'requests',
     findAll: 'GET /api/requests',
@@ -377,6 +381,8 @@
       assignee: 'CMS.Models.Person.stub',
       requested_on: 'date',
       due_on: 'date',
+      finished_date: 'date',
+      verified_date: 'date',
       documents: 'CMS.Models.Document.stubs',
       audit: 'CMS.Models.Audit.stub',
       custom_attribute_values: 'CMS.Models.CustomAttributeValue.stubs'
@@ -423,6 +429,10 @@
         attr_title: 'Status',
         attr_name: 'status'
       }, {
+        attr_title: 'Verified',
+        attr_name: 'verified',
+        attr_sort_field: 'verified'
+      }, {
         attr_title: 'Last Updated',
         attr_name: 'updated_at'
       }, {
@@ -433,6 +443,14 @@
         attr_title: 'Due Date',
         attr_name: 'due_on',
         attr_sort_field: 'due_on'
+      }, {
+        attr_title: 'Verified Date',
+        attr_name: 'verified_date',
+        attr_sort_field: 'verified_date'
+      }, {
+        attr_title: 'Finished Date',
+        attr_name: 'finished_date',
+        attr_sort_field: 'finished_date'
       }, {
         attr_title: 'Request Type',
         attr_name: 'request_type'
@@ -945,28 +963,66 @@
       modified_by: 'CMS.Models.Person.stub',
       custom_attribute_values: 'CMS.Models.CustomAttributeValue.stubs',
       start_date: 'date',
-      end_date: 'date'
+      end_date: 'date',
+      finished_date: 'date',
+      verified_date: 'date'
     },
-    filter_keys: ['operationally', 'operational', 'design'],
+    filter_keys: ['operationally', 'operational', 'design',
+                  'finished_date', 'verified_date', 'verified'],
     filter_mappings: {
-      operational: 'operationally'
+      operational: 'operationally',
+      'verified date': 'verified_date',
+      'finished date': 'finished_date'
     },
     tree_view_options: {
       add_item_view: GGRC.mustache_path +
         '/base_objects/tree_add_item.mustache',
-      attr_list: can.Model.Cacheable.attr_list.concat([{
+      attr_list: [{
+        attr_title: 'Title',
+        attr_name: 'title'
+      }, {
+        attr_title: 'Owner',
+        attr_name: 'owner',
+        attr_sort_field: 'contact.name|email'
+      }, {
+        attr_title: 'Code',
+        attr_name: 'slug'
+      }, {
+        attr_title: 'State',
+        attr_name: 'status'
+      }, {
+        attr_title: 'Verified',
+        attr_name: 'verified'
+      }, {
+        attr_title: 'Primary Contact',
+        attr_name: 'contact',
+        attr_sort_field: 'contact.name|email'
+      }, {
+        attr_title: 'Secondary Contact',
+        attr_name: 'secondary_contact',
+        attr_sort_field: 'secondary_contact.name|email'
+      }, {
+        attr_title: 'Last Updated',
+        attr_name: 'updated_at'},
+      {
         attr_title: 'Conclusion: Design',
         attr_name: 'design'
       }, {
         attr_title: 'Conclusion: Operation',
         attr_name: 'operationally'
       }, {
+        attr_title: 'Finished Date',
+        attr_name: 'finished_date'
+      }, {
+        attr_title: 'Verified Date',
+        attr_name: 'verified_date'
+      }, {
         attr_title: 'URL',
         attr_name: 'url'
       }, {
         attr_title: 'Reference URL',
         attr_name: 'reference_url'
-      }])
+      }]
     },
     info_pane_options: {
       mapped_objects: {
@@ -1065,8 +1121,8 @@
     root_collection: 'assessment_templates',
     model_singular: 'AssessmentTemplate',
     model_plural: 'AssessmentTemplates',
-    title_singular: 'AssessmentTemplate',
-    title_plural: 'AssessmentTemplates',
+    title_singular: 'Assessment Template',
+    title_plural: 'Assessment Templates',
     table_singular: 'assessment_template',
     table_plural: 'assessment_templates',
 
@@ -1081,6 +1137,19 @@
     attributes: {
       audit: 'CMS.Models.Audit.stub',
       context: 'CMS.Models.Context.stub'
+    },
+    defaults: {
+      test_plan_procedure: false,
+      template_object_type: 'Control',
+      default_people: {
+        assessors: 'Object Owners',
+        verifiers: 'Object Owners'
+      },
+
+      // the custom lists of assessor / verifier IDs if "other" is selected for
+      // the corresponding default_people setting
+      assessorsList: {},
+      verifiersList: {}
     },
 
     /**
@@ -1117,12 +1186,14 @@
      *
      */
     form_preload: function (isNewObject) {
-      if (isNewObject) {
-        this.attr('default_people', {});
+      if (!this.custom_attribute_definitions) {
+        this.attr('custom_attribute_definitions', new can.List());
       }
-
       this.attr('_objectTypes', this._choosableObjectTypes());
       this._unpackPeopleData();
+
+      this._updateDropdownEnabled('assessors');
+      this._updateDropdownEnabled('verifiers');
     },
 
     /**
@@ -1138,40 +1209,120 @@
     },
 
     /**
+     * Event handler when an assessor is picked in an autocomplete form field.
+     * It adds the picked assessor's ID to the assessors list.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    assessorAdded: function (context, $el, ev) {
+      var user = ev.selectedItem;
+      this.assessorsList.attr(user.id, true);
+    },
+
+    /**
+     * Event handler when a user clicks to remove an assessor from the
+     * assessors list. It removes the corresponding assessor ID from the list.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    assessorRemoved: function (context, $el, ev) {
+      var user = ev.person;
+      this.assessorsList.removeAttr(String(user.id));
+    },
+
+    /**
+     * Event handler when a verifier is picked in an autocomplete form field.
+     * It adds the picked verifier's ID to the verifiers list.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    verifierAdded: function (context, $el, ev) {
+      var user = ev.selectedItem;
+      this.verifiersList.attr(user.id, true);
+    },
+
+    /**
+     * Event handler when a user clicks to remove a verifier from the verifiers
+     * list. It removes the corresponding verifier ID from the list.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    verifierRemoved: function (context, $el, ev) {
+      var user = ev.person;
+      this.verifiersList.removeAttr(String(user.id));
+    },
+
+    /**
+     * Event handler when a user changes the default assessors option.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    defaultAssesorsChanged: function (context, $el, ev) {
+      this._updateDropdownEnabled('assessors');
+    },
+
+    /**
+     * Event handler when a user changes the default verifiers option.
+     *
+     * @param {can.Map} context - the Mustache context of the `$el`
+     * @param {jQuery.Element} $el - the source of the event `ev`
+     * @param {jQuery.Event} ev - the event that was triggered
+     */
+    defaultVerifiersChanged: function (context, $el, ev) {
+      this._updateDropdownEnabled('verifiers');
+    },
+
+    /**
+     * Update the autocomplete field's disabled flag based on the current value
+     * of the corresponding dropdown.
+     *
+     * @param {String} name - the value to inspect, must be either "assessors"
+     *   or "verifiers"
+     */
+    _updateDropdownEnabled: function (name) {
+      var disable = this.attr('default_people.' + name) !== 'other';
+      this.attr(name + 'ListDisable', disable);
+    },
+
+    /**
      * Pack the "default people" form data into a JSON string.
      *
      * @return {String} - the JSON-packed default people data
      */
     _packPeopleData: function () {
       var data = {};
-
       /**
-       * Convert a comma-separated list of people to an Array.
+       * Create a sorted (ascending) list of numbers from the given map's keys.
        *
-       * The list elements have any redundant whitespace trimmed from the
-       * beginning and the end. Empty elements are discared from the result,
-       * as are any duplicates.
-       *
-       * @param {String} rawString - the string to convert
-       * @return {Array} - the JSON-packed default people data
+       * @param {can.Map} peopleIds - the map to convert
+       * @return {Array} - ordered IDs
        */
-      function makeList(rawString) {
-        var result = rawString.split(',');
-        result = _.map(result, function (item) {
-          return item.trim();
+      function makeList(peopleIds) {
+        var result = Object.keys(peopleIds.attr()).map(Number);
+        return result.sort(function (x, y) {
+          return x - y;
         });
-        return _.uniq(_.filter(result));
       }
 
       data.assessors = this.attr('default_people.assessors');
       data.verifiers = this.attr('default_people.verifiers');
 
       if (data.assessors === 'other') {
-        data.assessors = makeList(this.attr('assessors_list'));
+        data.assessors = makeList(this.attr('assessorsList'));
       }
 
       if (data.verifiers === 'other') {
-        data.verifiers = makeList(this.attr('verifiers_list'));
+        data.verifiers = makeList(this.attr('verifiersList'));
       }
 
       return JSON.stringify(data);
@@ -1187,9 +1338,18 @@
       var peopleData = instance.default_people;
 
       ['assessors', 'verifiers'].forEach(function (name) {
-        if (peopleData[name] instanceof can.List) {
-          instance.attr(name + '_list', peopleData[name].join(', '));
+        var idsMap;
+        var peopleIds = peopleData[name];
+
+        if (peopleIds instanceof can.List) {
+          idsMap = new can.Map();
+          peopleIds.forEach(function (id) {
+            idsMap.attr(id, true);
+          });
+          instance.attr(name + 'List', idsMap);
           instance.attr('default_people.' + name, 'other');
+        } else {
+          instance.attr(name + 'List', {});
         }
       });
     },
@@ -1231,6 +1391,7 @@
       });
 
       return objectTypes;
-    }
+    },
+    ignore_ca_errors: true
   });
 })(this.can);
