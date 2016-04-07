@@ -31,12 +31,16 @@ function get_template_path(url) {
 $.ajaxTransport("text", function (options, _originalOptions, _jqXHR) {
   var template_path = get_template_path(options.url),
       template = template_path && GGRC.Templates[template_path];
+
+  // Show template path in HTML comment before every use
+  var path = '<!-- Template: ' + options.url.split('?')[0] + '-->';
+
   if (template) {
     return {
       send: function (headers, completeCallback) {
         function done() {
           if (template) {
-            completeCallback(200, "success", { text: template });
+            completeCallback(200, "success", { text: path+template });
           }
         }
         if (options.async) {
