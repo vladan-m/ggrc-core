@@ -261,13 +261,7 @@
       }, {
         count: 5,
         randomize: 'data'
-      }),
-      children: [{
-        title: 'Spare IT parts in LA',
-        icon: 'market',
-        type: 'market',
-        id: '24'
-      }]
+      })
     }]
   };
 })(GGRC || {}, GGRC.Mockup.Generator);

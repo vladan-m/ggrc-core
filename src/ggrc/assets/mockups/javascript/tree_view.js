@@ -10,7 +10,11 @@
   }, {
     init: function (el, opts) {
       can.each(this.options.instance.children, function (child) {
-        var $item = $('<li/>', {'class': 'tree-item item-open'});
+        var $item = $('<li/>', {'class': 'tree-item'});
+        var hasInnerTree = $('.tree-item').find('.openclose');
+        if (hasInnerTree.hasClass('active')) {
+          $('.tree-item').addClass('item-open');
+        }
         new CMS.Controllers.MockupTreeItem($item, {
           item: child
         });

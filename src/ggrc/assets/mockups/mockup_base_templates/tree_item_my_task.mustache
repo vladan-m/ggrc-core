@@ -7,9 +7,11 @@
 
 <div class="item-main {{#if active}}active{{/if}} {{#zero_state}}hidden{{/zero_state}}" data-model="true">
   <div class="item-wrap">
-    <div class="openclose active">
+    <div class="openclose{{#if children.length}} active{{/if}}">
       <span class="status-label status-{{state_color}}"></span>
-      <i class="fa fa-caret-right"></i>
+      {{#if children.length}}
+        <i class="fa fa-caret-right"></i>
+      {{/if}}
     </div>
     <div class="select">
       <div class="item-data">
@@ -64,7 +66,13 @@
               <li>
                 <span class="counter" rel="tooltip" data-placement="left" data-original-title="# of objects">
                   <i class="fa fa-list-alt"></i>
-                  <strong class="error">1</strong>
+                  <strong class="error">
+                    {{#if children.length}}
+                      {{children.length}}
+                    {{else}}
+                      0
+                    {{/if}}
+                  </strong>
                 </span>
               </li>
               <li>
