@@ -475,6 +475,7 @@ mockup-js-template-files:
   - title.mustache
   - request/info.mustache
   - request/widget.mustache
+  - request/widget-requests.mustache
   - request/assessment_modal.mustache
   - assessor/assessments.mustache
 
@@ -582,11 +583,13 @@ mockup-js-template-files:
   - mockup_base_templates/tree-system.mustache
   - mockup_base_templates/tree-my-task.mustache
   - mockup_base_templates/tree-my-task-sprint.mustache
+  - mockup_base_templates/tree-common.mustache
   - mockup_base_templates/tree-request.mustache
   - mockup_base_templates/tree_item.mustache
   - mockup_base_templates/tree_item_task.mustache
   - mockup_base_templates/tree_item_my_task.mustache
   - mockup_base_templates/tree_item_system.mustache
+  - mockup_base_templates/tree_item_common.mustache
   - mockup_base_templates/tree_item_request.mustache
   - mockup_base_templates/info_panel.mustache
   - mockup_base_templates/filter.mustache

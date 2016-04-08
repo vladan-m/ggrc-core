@@ -56,9 +56,9 @@
         name: "MTV_001_SIGNED_LoginAccess_List.pdf",
         url: "http://google.com/"
       }],
-      people_assignee: Generator.get("user", 5),
-      people_requester: Generator.get("user"),
-      people_secondary: Generator.get("user"),
+      owner: 'Albert Chan',
+      primary_contact: Generator.get('user'),
+      secondary_contact: Generator.get('user'),
       created_on: "12/03/14",
       due_on: "12/31/15",
       type_a: "assignee",
@@ -388,12 +388,18 @@
       type: "objective",
       id: "3",
       status: "Draft",
-      children: []
+      children: [],
+      owner: 'Albert Chan',
+      primary_contact: Generator.get('user'),
+      secondary_contact: Generator.get('user')
     }, {
       title: "Hungry Clown",
       type: "objective",
       id: "5",
       status: "Draft",
+      owner: 'Albert Chan',
+      primary_contact: Generator.get('user'),
+      secondary_contact: Generator.get('user'),
       children: [{
         title: "Other title",
         type: "process",
