@@ -216,16 +216,6 @@ can.Control("GGRC.Controllers.Modals", {
       , can.view(this.options.button_view, dfd)
       , can.view(this.options.custom_attributes_view, dfd)
     ).done(this.proxy('draw'));
-  },
-  '.nest-checkbox-trigger change': function (el, ev) {
-    var isChecked = el.is(':checked');
-    var nestedElement = el.closest('.nested-checkbox-wrap')
-      .find('.checkbox-list');
-    if (!isChecked) {
-      nestedElement.hide();
-    } else {
-      nestedElement.show();
-    }
   }
 
   , fetch_data : function(params) {

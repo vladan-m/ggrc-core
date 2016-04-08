@@ -11,7 +11,6 @@
 
 .checkbox-list {
   @extend %reset-list;
-  display: none;
   .nested-checkbox-wrap & {
     margin-left: 15px;
   }
