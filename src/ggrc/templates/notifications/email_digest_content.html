@@ -137,6 +137,62 @@ Maintained By: miha@reciprocitylabs.com
                   </ul>
                 {% endif %}
 
+                {% if digest.get('assessment_open') %}
+                  <h2 {{ style.sub_title() }} >New assessments are created</h2>
+                  <ul {{ style.list_wrap() }} >
+                  {% for assessment_id, assessment_data in digest['assessment_open'].items() %}
+                    <li {{ style.list_item() }} >
+                      Assessment:
+                      <a href="{{ assessment_data['url'] }}" {{ style.link_text() }} >
+                        {{ assessment_data['title'] }}
+                      </a> starts in 10 days
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if digest.get('assessment_declined') %}
+                  <h2 {{ style.sub_title() }} >Declined assessments</h2>
+                  <ul {{ style.list_wrap() }} >
+                  {% for assessment_id, assessment_data in digest['assessment_declined'].items() %}
+                    <li {{ style.list_item() }} >
+                      Assessment:
+                      <a href="{{ assessment_data['url'] }}" {{ style.link_text() }} >
+                        {{ assessment_data['title'] }}
+                      </a> declined by Predrag Kanazir
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if digest.get('request_open') %}
+                  <h2 {{ style.sub_title() }} >New Requests</h2>
+                  <ul {{ style.list_wrap() }} >
+                  {% for request_id, request_data in digest['request_open'].items() %}
+                    <li {{ style.list_item() }} >
+                      Request:
+                      <a href="{{ request_data['url'] }}" {{ style.link_text() }} >
+                        {{ request_data['title'] }}
+                      </a> starts in 10 days
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+
+                {% if digest.get('request_declined') %}
+                  <h2 {{ style.sub_title() }} >Declined Requests</h2>
+                  <ul {{ style.list_wrap() }} >
+                  {% for request_id, request_data in digest['request_declined'].items() %}
+                    <li {{ style.list_item() }} >
+                      Request:
+                      <a href="{{ request_data['url'] }}" {{ style.link_text() }} >
+                        {{ request_data['title'] }}
+                      </a> declined by Predrag Kanazir
+                    </li>
+                  {% endfor %}
+                  </ul>
+                {% endif %}
+
                 <p {{ style.text_paragraph() }} >
                   Thanks,<br>
                   gGRC team
