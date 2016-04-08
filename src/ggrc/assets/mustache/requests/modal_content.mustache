@@ -152,31 +152,16 @@
 
       <div class="row-fluid inner-hide">
         <div class="span12 hidable">
-          <div class="nested-checkbox-wrap">
+          <div class="comment-notification-wrap">
             <label class="checkbox-inline">
-              <input type="checkbox" class="nest-checkbox-trigger">
+              <input type="checkbox">
               Enable notifications on comments
             </label>
-            <ul class="checkbox-list">
-              <li>
-                <label class="checkbox-inline">
-                  <input type="checkbox">
-                  Notify requester(s)
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-inline">
-                  <input type="checkbox">
-                  Notify assignee(s)
-                </label>
-              </li>
-              <li>
-                <label class="checkbox-inline">
-                  <input type="checkbox">
-                  Notify verifier(s)
-                </label>
-              </li>
-            </ul>
+            <select class="small-multiselect" multiple="multiple">
+              <option>Notify requester(s)</option>
+              <option>Notify assignee(s)</option>
+              <option>Notify verifier(s)</option>
+            </select>
           </div>
         </div>
       </div>

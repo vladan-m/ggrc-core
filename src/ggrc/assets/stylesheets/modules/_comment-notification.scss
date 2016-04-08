@@ -5,13 +5,9 @@
  * Maintained By: vladan@reciprocitylabs.com
  */
 
-.nested-checkbox-wrap {
+.comment-notification-wrap {
   margin-bottom: 20px;
-}
-
-.checkbox-list {
-  @extend %reset-list;
-  .nested-checkbox-wrap & {
-    margin-left: 15px;
+  .small-multiselect {
+    margin-left: 18px;
   }
 }

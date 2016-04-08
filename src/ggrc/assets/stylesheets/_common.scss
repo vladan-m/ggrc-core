@@ -31,6 +31,12 @@ select {
   }
 }
 
+select[multiple] {
+  &.small-multiselect {
+    height: 52px;
+  }
+}
+
 .wrap-row {
   margin-bottom: 20px;
   p {
