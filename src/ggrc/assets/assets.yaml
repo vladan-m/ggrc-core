@@ -434,6 +434,12 @@ mockup-js-files:
   - request/pages/controls.js
   - request/pages/assessments.js
 
+  # Test workflow
+  - test-workflow/pages/info.js
+  - test-workflow/pages/assessments.js
+  - test-workflow/pages/controls.js
+  - test-workflow/pages/programs.js
+
   #Workflow
   - workflow/pages/cycle.js
   - workflow/pages/history.js
@@ -473,6 +479,7 @@ mockup-js-files:
   - task-creation/main.js
   - task-creation-dashboard/main.js
   - workflow-v2.2/main.js
+  - test-workflow/main.js
 
 mockup-js-template-files:
   # Request
@@ -482,6 +489,10 @@ mockup-js-template-files:
   - request/widget-requests.mustache
   - request/assessment_modal.mustache
   - assessor/assessments.mustache
+
+  # Test workflow
+  - test-workflow/info.mustache
+  - test-workflow/widget.mustache
 
   # Workflow
   - workflow/info.mustache

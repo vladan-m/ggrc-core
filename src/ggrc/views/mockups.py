@@ -62,3 +62,8 @@ def init_mockup_views():
   @login_required
   def mockup_workflow_v2_2():
     return render_template("mockups/workflow.haml")
+
+  @app.route("/mockups/test-workflow")
+  @login_required
+  def mockup_test_workflow():
+    return render_template("mockups/workflow.haml")

@@ -82,6 +82,24 @@
       content: "M";
     }
   }
+  &.owner {
+    background: $red;
+    &:after {
+      content: "O";
+    }
+  }
+  &.primary.contact {
+    background: $purple;
+    &:after {
+      content: "P";
+    }
+  }
+  &.secondary.contact {
+    background: $olive;
+    &:after {
+      content: "S";
+    }
+  }
 }
 
 .people-group {
