@@ -148,13 +148,13 @@
       }]
     }],
     template_info: [{
-      title: 'Next cycle starts on',
+      title: 'Next sprint starts on',
       start_date: '04/01/2016',
       text: 'All tasks will be cloned when:',
       list_item: [{
-        item: 'the current cycle ends, or'
+        item: 'the current sprint ends, or'
       }, {
-        item: 'when the next cycle starts.'
+        item: 'when the next sprint starts.'
       }]
     }]
   };
