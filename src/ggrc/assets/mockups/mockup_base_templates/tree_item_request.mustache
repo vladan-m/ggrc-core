@@ -45,22 +45,18 @@
             <div class="show-details">
               <a href="/audits/3" target="_blank"><i class="fa fa-long-arrow-right"></i></a>
             </div>
-            {{^if_equals type "assessment"}}
-              <ul class="tree-action-list">
-                <li>
-                  <i class="fa fa-person" rel="tooltip" data-placement="left"
-                  data-original-title="Audit Lead, Request Assignee "></i>
-                </li>
-                {{^if_equals type "control"}}
-                  <li>
-                    <div class="counter">
-                      <i class="fa fa-list-alt"></i>
-                      3
-                    </div>
-                  </li>
-                {{/if_equals}}
-              </ul>
-            {{/if_equals}}
+            <ul class="tree-action-list">
+              <li>
+                <i class="fa fa-person" rel="tooltip" data-placement="left"
+                data-original-title="Audit Lead, Request Assignee "></i>
+              </li>
+              <li>
+                <div class="counter">
+                  <i class="fa fa-list-alt"></i>
+                  3
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div><!-- item-data end -->
