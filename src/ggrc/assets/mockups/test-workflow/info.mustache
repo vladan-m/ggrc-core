@@ -1,0 +1,120 @@
+{{!
+    Copyright (C) 2013 Google Inc., authors, and contributors <see AUTHORS file>
+    Licensed under http://www.apache.org/licenses/LICENSE-2.0 <see LICENSE file>
+    Created By: brad@reciprocitylabs.com
+    Maintained By: brad@reciprocitylabs.com
+}}
+
+{{#instance}}
+  <section class="info{{#is_info_pin}} sticky-info-panel{{/is_info_pin}}">
+
+    {{#is_info_pin}}
+      {{{render '/static/mustache/base_objects/info-pin.mustache'}}}
+    {{/is_info_pin}}
+
+    <div class="info-pane-utility">
+      {{> /static/mustache/base_objects/dropdown_menu.mustache}}
+    </div>
+
+    <div class="tier-content">
+      {{{render '/static/mustache/base_objects/general_info.mustache' instance=instance}}}
+      <div class="row-fluid">
+        <div class="span8">
+          {{{render '/static/mustache/base_objects/description.mustache' instance=instance}}}
+          {{{render '/static/mustache/issues/remediation_plan.mustache' instance=instance}}}
+          {{{render '/static/mustache/base_objects/notes.mustache' instance=instance}}}
+          {{{render '/static/mustache/base_objects/urls.mustache' instance=instance}}}
+        </div>
+        <div class="span4">
+          {{{render '/static/mustache/mockup_base_templates/info_panel/people_list.mustache' instance=instance}}}
+        </div>
+      </div>
+      <div class="custom-attr-wrap">
+        <div class="row-fluid wrap-row">
+          <div class="span12">
+            <div class="info-expand">
+              <a class="show-hidden-fields info-show-hide" href="javascript://">
+                <span class="out">
+                  <i class="fa fa-caret-right"></i>
+                  Show
+                </span>
+                <span class="in">
+                  <i class="fa fa-caret-down"></i>
+                  Hide
+                </span>
+                Advanced
+              </a>
+            </div>
+          </div>
+        </div><!-- row-fluid end -->
+        <div class="hidden-fields-area" style="display:none;">
+          <div class="row-fluid wrap-row">
+            <div class="span4">
+              <h6>Code</h6>
+              <p>
+                {{slug}}
+              </p>
+            </div>
+            <div class="span4">
+              <h6>Effective Date</h6>
+              {{#if start_date}}
+                <p>
+                  {{localize_date start_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
+            </div>
+            <div class="span4">
+              <h6>Stop Date</h6>
+              {{#if end_date}}
+                <p>
+                  {{localize_date end_date}}
+                </p>
+              {{else}}
+                <span class="empty-message">None</span>
+              {{/if}}
+            </div>
+          </div><!-- row-fluid end -->
+        </div><!-- hidden-fields-area end -->
+      </div><!-- custom-attr-wrap end -->
+      <div class="tabs-wrap">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab1" data-toggle="tab">
+            Comments {{#if comments}}({{comments.length}}){{/if}}
+          </a></li>
+          <li><a href="#tab3" data-toggle="tab">
+            {{capitalize type}} log
+          </a></li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="tab1">
+            <div class="tree-item-add">
+              <add-comment data="comments"></add-comment>
+            </div>
+            {{> /static/mustache/mockup_base_templates/info_panel/comment_list.mustache}}
+          </div>
+          <div class="tab-pane fade" id="tab3">
+            {{> /static/mustache/mockup_base_templates/info_panel/log_list.mustache}}
+          </div>
+        </div>
+      </div>
+    </div><!-- tier-content end -->
+
+  {{{render '/static/mustache/custom_attributes/info.mustache' instance=instance}}}
+
+  </section>
+
+  <div class="info-widget-footer">
+    <p>
+      <small>
+        <em>
+          Created at {{date created_at}}
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Modified by {{#using person=modified_by}}{{{render '/static/mustache/people/popover.mustache' person=person}}}{{/using}} on {{date updated_at}}
+        </em>
+      </small>
+    </p>
+  </div>
+{{/instance}}
