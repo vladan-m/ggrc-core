@@ -7,7 +7,8 @@
 
 .comment-notification-wrap {
   margin-bottom: 20px;
-  .small-multiselect {
-    margin-left: 18px;
-  }
+}
+
+.checkbox-list {
+  @extend %reset-list;
 }
