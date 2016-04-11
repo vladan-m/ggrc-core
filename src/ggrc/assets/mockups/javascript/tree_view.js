@@ -104,11 +104,6 @@
         system: '/static/mustache/mockup_base_templates/tree_item_system.mustache',
         task_group: '/static/mustache/mockup_base_templates/tree_item_task.mustache',
         workflow: '/static/mustache/mockup_base_templates/tree_item_task.mustache',
-        control: '/static/mustache/mockup_base_templates/tree_item_common.mustache',
-        assessment: '/static/mustache/mockup_base_templates/tree_item_common.mustache',
-        regulation: '/static/mustache/mockup_base_templates/tree_item_common.mustache',
-        objective: '/static/mustache/mockup_base_templates/tree_item_common.mustache',
-        request: '/static/mustache/mockup_base_templates/tree_item_request.mustache',
         'default': '/static/mustache/mockup_base_templates/tree_item.mustache'
       }
     }
@@ -138,3 +133,4 @@
     }
   });
 })(this.can, this.can.$, GGRC.Mockup.Generator);
+
