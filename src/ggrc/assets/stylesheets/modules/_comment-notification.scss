@@ -5,10 +5,9 @@
  * Maintained By: vladan@reciprocitylabs.com
  */
 
-.comment-notification-wrap {
+.comment-notification {
   margin-bottom: 20px;
-}
-
-.checkbox-list {
-  @extend %reset-list;
+  &__list {
+    @extend %reset-list;
+  }
 }
