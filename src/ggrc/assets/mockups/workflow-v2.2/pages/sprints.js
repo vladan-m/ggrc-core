@@ -3,20 +3,20 @@
   GGRC.Bootstrap.Mockups.Workflow2 = GGRC.Bootstrap.Mockups.Workflow2 || {};
 
   GGRC.Bootstrap.Mockups.Workflow2.Sprints = {
-    title: 'Active cycles',
+    title: 'Monthly sprints',
     icon: 'history',
     template: '/workflow-v2.2/sprints.mustache',
     sprints: [{
-      value: 'Monthly cycle 1 - ENDS ON 03/31/2016',
+      value: 'Monthly Sprint 1 - ENDS ON 03/31/2016',
       archive: false
     }, {
-      value: 'Monthly cycle 2 - ENDS ON 02/31/2016',
+      value: 'Monthly Sprint 2 - ENDS ON 02/31/2016',
       archive: true
     }, {
-      value: 'Monthly cycle 3 - ENDS ON 03/31/2015',
+      value: 'Monthly Sprint 3 - ENDS ON 03/31/2015',
       archive: true
     }, {
-      value: 'Monthly cycle 4 - ENDS ON 03/31/2015',
+      value: 'Monthly Sprint 4 - ENDS ON 03/31/2015',
       archive: true
     }],
     tasks: Generator.create({
