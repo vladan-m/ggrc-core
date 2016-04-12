@@ -5,12 +5,13 @@
   GGRC.Bootstrap.Mockups.TestWorkflow.Info = {
     title: 'Issue',
     icon: 'issue',
+    type: 'issue',
     template: '/test-workflow/info.mustache',
     description: Generator.paragraph(7),
     test_plan: Generator.paragraph(1),
     notes: Generator.paragraph(1),
     people: {
-      'owner': Generator.get('user', 1),
+      owner: Generator.get('user', 1),
       'primary contact': Generator.get('user', 1),
       'secondary contact': Generator.get('user', 1)
     },
@@ -34,7 +35,9 @@
     }],
     reference_url: Generator.url().url,
     url: Generator.url().url,
-    comments: Generator.get("comment", 10, {sort: "date", types: ["assessor", "creator", "verifier"]}),
+    comments: Generator.get("comment", 10, {
+      sort: "date", types: ["assessor", "creator", "verifier"]
+    }),
     logs: Generator.create({
       author: '%user',
       timestamp: '%date',
