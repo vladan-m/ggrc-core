@@ -126,6 +126,7 @@ dashboard-js-files:
   - components/autocomplete/autocomplete.js
   - components/object_history/object_history.js
   - components/person/person.js
+  - components/checkbox/checkbox.js
   #- d3.v2.js
   #- related_graph.js
 
@@ -232,6 +233,7 @@ dashboard-js-template-files:
   - components/autocomplete/autocomplete.mustache
   - components/object_history/object_history.mustache
   - components/person/person.mustache
+  - components/checkbox/checkbox.mustache
   - custom_attributes/modal_content.mustache
   - custom_attributes/info.mustache
   - custom_attribute_definitions/modal_content.mustache
