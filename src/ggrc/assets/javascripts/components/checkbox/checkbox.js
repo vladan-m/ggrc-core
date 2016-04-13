@@ -15,8 +15,8 @@
       '/components/checkbox/checkbox.mustache'
     ),
     scope: {
-      name: '@',
-      value: '@'
+      label: '@',
+      property: '@'
     }
   });
 })(window.can, window.can.$);
