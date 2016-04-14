@@ -493,6 +493,8 @@ mockup-js-template-files:
   # Test workflow
   - test-workflow/info.mustache
   - test-workflow/widget.mustache
+  - test-workflow/issue_setup_modal.mustache
+  - test-workflow/issue_modal_content.mustache
 
   # Workflow
   - workflow/info.mustache

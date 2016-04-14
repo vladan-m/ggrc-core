@@ -35,8 +35,8 @@
     }],
     reference_url: Generator.url().url,
     url: Generator.url().url,
-    comments: Generator.get("comment", 10, {
-      sort: "date", types: ["assessor", "creator", "verifier"]
+    comments: Generator.get('comment', 10, {
+      sort: 'date', types: ['assessor', 'creator', 'verifier']
     }),
     logs: Generator.create({
       author: '%user',
