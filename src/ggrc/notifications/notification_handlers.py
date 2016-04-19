@@ -67,6 +67,7 @@ def _add_assignable_declined_notif(obj):
     obj (Assignable): Any object with assignable mixin for which we want to add
       notifications.
   """
+  # pylint: disable=protected-access
   name = "{}_declined".format(obj._inflector.table_singular)
   notif_type = models.NotificationType.query.filter_by(name=name).first()
 
@@ -94,6 +95,20 @@ def handle_assignable_deleted(obj):
       object_id=obj.id,
       object_type=obj.type,
   ).delete()
+
+
+def handle_reminder(obj, reminder_type):
+  """Handles reminders for an object
+
+  Args:
+    obj: Object to process
+    reminder_type: Reminder handler to use for processing event
+    """
+  if reminder_type in obj.REMINDERABLE_HANDLERS:
+    reminder_settings = obj.REMINDERABLE_HANDLERS[reminder_type]
+    handler = reminder_settings['handler']
+    data = reminder_settings['data']
+    handler(obj, data)
 
 
 def handle_comment_created(obj, src):
@@ -130,6 +145,12 @@ def register_handlers():
   @Resource.model_posted_after_commit.connect_via(models.Assessment)
   def assignable_created_listener(sender, obj=None, src=None, service=None):
     handle_assignable_created(obj)
+
+  @Resource.model_put.connect_via(models.Assessment)
+  def assessment_send_reminder(sender, obj=None, src=None, service=None):
+    reminder_type = src.get("reminderType", False)
+    if reminder_type:
+      handle_reminder(obj, reminder_type)
 
   @Resource.model_posted_after_commit.connect_via(models.Comment)
   def comment_created_listener(sender, obj=None, src=None, service=None):
