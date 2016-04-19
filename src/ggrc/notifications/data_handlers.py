@@ -208,8 +208,11 @@ def generate_comment_notification(obj, comment, person):
       "comment_created": {
           comment.id: {
               "description": comment.description,
+              "commentator": get_person_dict(comment.modified_by),
               "parent_type": obj._inflector.title_singular.title(),
               "parent_id": obj.id,
+              "parent_url": get_object_url(obj),
+              "parent_title": obj.title
           }
       }
   }
@@ -243,11 +246,7 @@ def get_comment_data(notif):
     recipients = set(comment_obj.recipients.split(","))
 
   for person, assignee_type in comment_obj.assignees:
-    if recipients:
-      if recipients.intersection(set(assignee_type)):
-        data[person.email] = generate_comment_notification(
-            comment_obj, comment, person)
-    else:
+    if not recipients or recipients.intersection(set(assignee_type)):
       data[person.email] = generate_comment_notification(
           comment_obj, comment, person)
   return data
