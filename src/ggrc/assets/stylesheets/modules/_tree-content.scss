@@ -669,3 +669,9 @@ ul.new-tree {
 .new-task {
   display: none;
 }
+
+.tier-2-info {
+  &.hidden {
+    display: none !important;
+  }
+}

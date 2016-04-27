@@ -354,6 +354,7 @@
     '.show-first-task-trigger click': function (el, ev) {
       $('.zero-state').remove();
       $('.item-main').removeClass('hidden');
+      $('.tier-2-info').removeClass('hidden');
       // GGRC.Bootstrap.Mockups.Workflow2.Sprints.children[0].zero_state = false;
     },
     '.new-task-trigger click': function (el, ev) {

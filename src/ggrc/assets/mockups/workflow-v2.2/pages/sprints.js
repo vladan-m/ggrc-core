@@ -114,12 +114,14 @@
         title: 'Process for handling SOX',
         type: 'process',
         icon: 'process',
-        id: '23'
+        id: '23',
+        zero_state: true
       }, {
         title: 'Spare IT parts',
         icon: 'market',
         type: 'market',
-        id: '24'
+        id: '24',
+        zero_state: true
       }]
     }]
   };
