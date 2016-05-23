@@ -32,7 +32,8 @@
     _enqueue_bucket: function (bucket) {
       var that = this;
       return function () {
-        var objs = bucket.objs.splice(0, that.BATCH_SIZE);
+        var size = bucket.background ? bucket.objs.length : that.BATCH_SIZE;
+        var objs = bucket.objs.splice(0, size);
         var body = _.map(objs, function (obj) {
           var list = {};
           list[bucket.type] = obj.serialize();
@@ -41,7 +42,12 @@
         var dfd = $.ajax({
           type: 'POST',
           url: '/api/' + bucket.plural,
-          data: body
+          data: body,
+          beforeSend: function (xhr) {
+            if (bucket.background) {
+              xhr.setRequestHeader('X-GGRC-BackgroundTask', 'true');
+            }
+          }
         }).promise();
         dfd.always(function (data, type) {
           var cb;
@@ -54,6 +60,16 @@
             if (_.isUndefined(data)) {
               return;
             }
+          }
+          if ("background_task" in data) {
+            return CMS.Models.BackgroundTask.findOne({
+              id: data.background_task.id
+            }).then(function (task) {
+              // Resolve all the dfds with the task
+              can.each(objs, function (obj) {
+                obj._dfd.resolve(task);
+              });
+            });
           }
           cb = function (single) {
             return function () {
@@ -96,22 +112,26 @@
     enqueue: function (obj, args) {
       var type;
       var bucket;
+      var bucketName;
       var plural;
       var elem = function () {
         return obj._save.apply(obj, args);
       };
       if (obj.isNew()) {
         type = obj.constructor.table_singular;
-        bucket = this._buckets[type];
+        bucketName = type + (obj.run_in_background ? "_bg" : "");
+        bucket = this._buckets[bucketName];
+
         if (_.isUndefined(bucket)) {
           plural = obj.constructor.table_plural;
           bucket = {
             objs: [],
             type: type,
             plural: plural,
+            background: obj.run_in_background,
             in_flight: false // is there a "thread" running for this bucket
           };
-          this._buckets[type] = bucket;
+          this._buckets[bucketName] = bucket;
         }
         bucket.objs.push(obj);
         if (bucket.in_flight) {

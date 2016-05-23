@@ -754,7 +754,7 @@
     defaults: {
       status: 'Not Started'
     },
-    filter_keys: ['operationally', 'operational', 'design',
+    filter_keys: ['title', 'state', 'operationally', 'operational', 'design',
                   'finished_date', 'verified_date', 'verified'],
     filter_mappings: {
       operational: 'operationally',
@@ -884,27 +884,32 @@
         }
       });
     },
+    info_pane_preload: function () {
+      if (!this._pane_preloaded) {
+        this._set_mandatory_msgs();
+        this.get_mapping('comments').bind('length',
+            this._set_mandatory_msgs.bind(this));
+        this.get_mapping('all_documents').bind('length',
+            this._set_mandatory_msgs.bind(this));
+        this._pane_preloaded = true;
+      }
+    },
     init: function () {
       if (this._super) {
         this._super.apply(this, arguments);
       }
-      this._set_mandatory_msgs();
-      this.get_mapping('comments').bind('length',
-          this._set_mandatory_msgs.bind(this));
-      this.get_mapping('all_documents').bind('length',
-          this._set_mandatory_msgs.bind(this));
     },
     _set_recipients: function (recipients) {
-      if (recipients){
+      if (recipients) {
         labels = ['Creator', 'Assessor', 'Verifier'];
-        _.each(labels, function(label) {
+        _.each(labels, function (label) {
           this.attr(label, _.includes(recipients, label));
         }.bind(this));
       }
     },
-    _get_recipients: function (){
+    _get_recipients: function () {
       labels = ['Creator', 'Assessor', 'Verifier'];
-      return _.map(labels, function(label) {
+      return _.map(labels, function (label) {
         return this.attr(label) ? label : '';
       }.bind(this)).join(',');
     },
@@ -1098,6 +1103,7 @@
       people_values: [
         {value: 'Object Owners', title: 'Object Owners'},
         {value: 'Audit Lead', title: 'Audit Lead'},
+        {value: 'Auditors', title: 'Auditors'},
         {value: 'Primary Assessor', title: 'Principal Assessor'},
         {value: 'Secondary Assessors', title: 'Secondary Assessors'},
         {value: 'Primary Contact', title: 'Primary Contact'},

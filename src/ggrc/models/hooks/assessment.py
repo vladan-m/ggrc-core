@@ -12,7 +12,6 @@
 
 from ggrc import db
 from ggrc.login import get_current_user_id
-from ggrc.automapper import AutomapperGenerator
 from ggrc.models import all_models
 from ggrc.models import Assessment
 from ggrc.models import Person
@@ -65,7 +64,6 @@ def map_assessment(assessment, obj):
       "destination_type": obj["type"],
       "context": assessment.context,
   })
-  AutomapperGenerator().generate_automappings(rel)
   db.session.add(rel)
 
 
@@ -84,20 +82,33 @@ def get_model_query(model_type):
   return db.session.query(model)
 
 
-def get_value(which, audit, obj, template=None):
-  """Gets person value from string
+def get_value(people_group, audit, obj, template=None):
+  """Return the people related to an Audit belonging to the given role group.
 
-      Args:
-        which (string): type of people we are getting from template
-        template (model instance): Template related to Assessment
-        audit (model instance): Audit related to Assessment
-        obj (model instance): Object related to Assessment
-            (it can be any object in our app ie. Control,Issue, Facility...)
+  Args:
+    people_group: (string) the name of the group of people to return,
+      e.g. "assessors"
+    template: (ggrc.models.AssessmentTemplate) a template to take into
+      consideration
+    audit: (ggrc.models.Audit) an audit instance
+    obj: an object related to `audit`, can be anything that can be mapped
+      to an Audit, e.g. Control, Issue, Facility, etc.
+  Returns:
+    Either a Person object, a list of Person objects, or None if no people
+    matching the criteria are found.
   """
+  auditors = (
+      user_role.person for user_role in audit.context.user_roles
+      if user_role.role.name == u"Auditor"
+  )
+
   if not template:
-    if which in ("assessors", "creator"):
+    if people_group == "creator":
       # don't use get_current_user because that returns a proxy
       return Person.query.get(get_current_user_id())
+    elif people_group == "assessors":
+      return list(auditors)
+
     return None
 
   types = {
@@ -110,7 +121,7 @@ def get_value(which, audit, obj, template=None):
       "Primary Assessor": getattr(obj, 'principal_assessor', None),
       "Secondary Assessor": getattr(obj, 'secondary_assessor', None),
   }
-  people = template.default_people.get(which)
+  people = template.default_people.get(people_group)
   if not people:
     return None
 
@@ -119,6 +130,11 @@ def get_value(which, audit, obj, template=None):
         'type': 'Person',
         'id': person_id
     }) for person_id in people]
+
+  # only consume the generator if it will be used in the return value
+  if people == u"Auditors":
+    types[u"Auditors"] = list(auditors)
+
   return types.get(people)
 
 
@@ -170,6 +186,7 @@ def relate_assignees(assessment, related):
         related (dict): Dict containing model instances related to assessment
                         - obj
                         - audit
+                        - template (an AssessmentTemplate, can be None)
   """
   people_types = {
       "assessors": "Assessor",
@@ -185,7 +202,12 @@ def relate_assignees(assessment, related):
 
   for person in people_list:
     if person['source'] is not None and person['destination'] is not None:
-      db.session.add(Relationship(**person))
+      rel = Relationship(
+          source=person['source'],
+          destination=person['destination'],
+          context=person['context'])
+      rel.attrs = person['attrs']
+      db.session.add(rel)
 
 
 def relate_ca(assessment, related):
