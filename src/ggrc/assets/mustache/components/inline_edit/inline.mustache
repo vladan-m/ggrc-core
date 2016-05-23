@@ -34,7 +34,7 @@
         <content></content>
       {{/default}}
     {{/switch}}
-    <ul class="inline-edit__controls {{#if context.isEdit}}inline-edit__controls--edit-mode{{/if}}">
+    <ul class="inline-edit__controls {{#if context.isEdit}}inline-edit__controls--edit-mode{{/if}}{{#if_equals type 'date'}} inline-edit__controls--thick{{/if_equals}}">
       {{#if context.isEdit}}
       <li><a can-click="onSave" href="#"><i class="fa fa-check"></i></a></li>
       <li><a can-click="onCancel" href="#"><i class="fa fa-times"></i></a></li>

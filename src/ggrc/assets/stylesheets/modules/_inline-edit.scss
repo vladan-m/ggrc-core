@@ -76,6 +76,9 @@
       border: 1px solid $warmGray;
       border-top: none;
       background: $itemBgnd;
+      &.inline-edit__controls--thick {
+        bottom: -234px;
+      }
     }
     .inline-edit--active & {
       display: block;
