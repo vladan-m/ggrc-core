@@ -87,6 +87,8 @@ small {
   input[type="radio"] {
     margin: -1px 0 0 0;
   }
+  display: inline-block;
+  cursor: pointer;
 }
 
 .gray {

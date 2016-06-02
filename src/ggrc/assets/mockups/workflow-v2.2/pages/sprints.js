@@ -22,7 +22,8 @@
     tasks: Generator.create({
       type: 'task',
       zero_state: true,
-      task_group: true
+      task_group: true,
+      help_text: 'Make a template out of this task'
     }),
     mapped_workflow: [{
       icon: 'workflow',
