@@ -305,29 +305,34 @@ can.Control("CMS.Controllers.LHN", {
           .removeClass("active");
 
       this.options.display_prefs.setLHNState({is_open: false});
-   }
+   },
+  open_lhn: function () {
+    var lhsCtr = $('#lhs').control();
+    this.set_active_tab();
 
-  , open_lhn: function () {
-      this.set_active_tab();
+    // not nested
+    $('.lhn-trigger').removeClass('hide').addClass('active');
 
-      // not nested
-      $(".lhn-trigger").removeClass('hide').addClass("active");
+    this.element.find('.lhs-holder')
+      .css('left', '')
+      .addClass('active');
 
-      this.element.find(".lhs-holder")
-          .css("left", "")
-          .addClass("active");
+    this.element.find('.lhn-type')
+      .css('left', '')
+      .addClass('active');
 
-      this.element.find(".lhn-type")
-          .css("left", "")
-          .addClass("active");
+    this.element.find('.bar-v')
+      .addClass('active');
 
-      this.element.find(".bar-v")
-          .addClass("active");
+    this.element.find('.lhs-search')
+      .addClass('active');
 
-      this.element.find(".lhs-search")
-          .addClass("active");
-
-      this.options.display_prefs.setLHNState({is_open: true});
+    this.options.display_prefs.setLHNState({
+      is_open: true
+    });
+    if (lhsCtr.options._hasPendingRefresh) {
+      lhsCtr.refresh_counts();
+    }
   }
 
   , set_active_tab: function (newval) {
@@ -700,32 +705,40 @@ can.Control("CMS.Controllers.LHN_Search", {
           );
         }
       });
-    }
+    },
+    post_init: function () {
+      var lhnCtr = $('#lhn').control();
+      var refreshCounts = _.debounce(this.refresh_counts.bind(this), 1000, {
+        leading: true,
+        trailing: false
+      });
 
-  , post_init: function() {
-      var self = this;
       this.init_object_lists();
       this.init_list_views();
 
-      can.Model.Cacheable.bind("created", function(ev, instance) {
+      can.Model.Cacheable.bind('created', function (ev, instance) {
+        var modelNames;
+        var modelName;
 
         if (instance instanceof can.Model.Join) {
           // Don't refresh LHN counts when joins are created
           return;
         }
+        if (!lhnCtr.is_lhn_open()) {
+          this.options._hasPendingRefresh = true;
+          return;
+        }
+        modelNames = can.map(
+          this.get_visible_lists(), this.proxy('get_list_model'));
+        modelName = instance.constructor.shortName;
 
-        var visible_model_names =
-              can.map(self.get_visible_lists(), self.proxy("get_list_model"))
-          , model_name = instance.constructor.shortName
-          ;
-
-        if(visible_model_names.indexOf(model_name) > -1) {
-          self.options.visible_lists[model_name].unshift(instance);
-          self.options.results_lists[model_name].unshift(instance);
+        if (modelNames.indexOf(modelName) > -1) {
+          this.options.visible_lists[modelName].unshift(instance);
+          this.options.results_lists[modelName].unshift(instance);
         }
         // Refresh the counts whenever the lists change
-        self.refresh_counts();
-      });
+        refreshCounts();
+      }.bind(this));
     }
 
   , "{list_toggle_selector} click": function (el, ev) {
@@ -1092,25 +1105,26 @@ can.Control("CMS.Controllers.LHN_Search", {
       });
 
       return $.when.apply($, dfds);
-    }
+    },
+    refresh_counts: function () {
+      var search_id = this.search_id;
+      var models;
+      var extraModels;
 
-  , refresh_counts: function() {
-      var self = this
-        , search_id = this.search_id
-        , models
-        , extra_models;
-      models = can.map(this.get_lists(), this.proxy("get_list_model"));
-      extra_models = can.map(this.get_lists(), this.proxy("get_extra_list_model"));
+      models = can.map(this.get_lists(), this.proxy('get_list_model'));
+      extraModels = can.map(
+        this.get_lists(), this.proxy('get_extra_list_model'));
+
+      this.options._hasPendingRefresh = false;
       // Retrieve and display counts
       return GGRC.Models.Search.counts_for_types(
-          this.current_term, models, this.current_params, extra_models
-        ).then(function() {
-          if (self.search_id === search_id) {
-            return self.display_counts.apply(self, arguments);
+          this.current_term, models, this.current_params, extraModels
+        ).then(function () {
+          if (this.search_id === search_id) {
+            return this.display_counts.apply(this, arguments);
           }
-        });
+        }.bind(this));
     }
-
   , refresh_visible_lists: function() {
       var self = this
         , search_id = this.search_id

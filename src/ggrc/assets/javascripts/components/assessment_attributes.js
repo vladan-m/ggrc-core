@@ -17,6 +17,27 @@
     template: '<content></content>',
     scope: {
       fields: new can.List()
+    },
+    events: {
+      inserted: function () {
+        var el = $(this.element);
+        var list = el.find('.sortable-list');
+        list.sortable({
+          items: 'li.sortable-item',
+          placeholder: 'sortable-placeholder'
+        });
+        list.find('.sortable-item').disableSelection();
+      },
+      '.sortable-list sortstop': function () {
+        var el = $(this.element);
+        var sortables = el.find('li.sortable-item');
+
+        // It's not nice way to rely on DOM for sorting,
+        // but it was easiest for implementation
+        this.scope.fields.replace(_.map(sortables, function (item) {
+          return $(item).data('field');
+        }));
+      }
     }
   });
 
@@ -117,24 +138,27 @@
     scope: {
       selected: new can.Map(),
       types: [{
-        type: 'Dropdown',
-        text: 'Type values separated by comma'
-      }, {
-        type: 'Checkbox',
-        text: 'Type label'
-      }, {
-        type: 'Radio',
-        text: 'Type values separated by comma'
-      }, {
         type: 'Text',
         text: 'Type description'
+      }, {
+        type: 'Rich Text',
+        text: 'Type description'
+      }, {
+        type: 'Date',
+        text: 'MM/DD/YYYY'
+      }, {
+        type: 'Checkbox',
+        text: ''
+      }, {
+        type: 'Dropdown',
+        text: 'Type values separated by comma'
       }, {
         type: 'Map:Person',
         text: ''  // not used
       }],
 
       // the field types that require a list of possible values to be defined
-      valueAttrs: ['Dropdown', 'Checkbox', 'Radio'],
+      valueAttrs: ['Dropdown'],
 
       /*
        * Create a new field.
@@ -161,17 +185,20 @@
             (_.contains(scope.valueAttrs, type) && !values)) {
           return;
         }
+        // We need to defer adding in modal since validation is preventing
+        // on adding the first item
+        _.defer(function () {
+          fields.push({
+            id: scope.attr('id'),
+            title: title,
+            attribute_type: type,
+            multi_choice_options: values,
+            opts: new can.Map()
+          });
 
-        fields.push({
-          id: scope.attr('id'),
-          title: title,
-          attribute_type: type,
-          multi_choice_options: values,
-          opts: new can.Map()
-        });
-
-        _.each(['title', 'values', 'multi_choice_options'], function (type) {
-          selected.attr(type, '');
+          _.each(['title', 'values', 'multi_choice_options'], function (type) {
+            selected.attr(type, '');
+          });
         });
       }
     },

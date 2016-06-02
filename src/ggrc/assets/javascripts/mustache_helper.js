@@ -355,6 +355,35 @@ Mustache.registerHelper("if_null", function (val1, options) {
     return options.inverse(options.context);
   });
 
+  /**
+   * Return the value of the given object's property.
+   *
+   * If the first argument is not an object, an error is raised.
+   *
+   * @param {Object | Function} object - the object itself
+   * @param {String | Function} key - the name of the property to retrieve
+   * @param {Object} options - the Mustache options object
+   *
+   * @return {*} - the value of the property object[key]
+   */
+  Mustache.registerHelper('get_item', function (object, key, options) {
+    if (arguments.length !== 3) {
+      throw new Error(
+        'Invalid number of arguments (' +
+        (arguments.length - 1) +  // do not count the auto-provided options arg
+        '), expected 2.');
+    }
+
+    object = Mustache.resolve(object);
+
+    if (!_.isObject(object)) {
+      throw new Error('First argument must be an object.');
+    }
+
+    key = Mustache.resolve(key);
+    return object[key];
+  });
+
 // Resolve and return the first computed value from a list
 Mustache.registerHelper("firstexist", function () {
   var args = can.makeArray(arguments).slice(0, arguments.length - 1);  // ignore the last argument (some Can object)
@@ -723,18 +752,6 @@ Mustache.registerHelper("iterate_string", function (str, separator, options) {
   return ret.join("");
 });
 
-Mustache.registerHelper("is_private", function (options) {
-  var context = this;
-  if (options.isComputed) {
-    context = resolve_computed(options);
-    options = arguments[1];
-  }
-  if (context && context.attr('private')) {
-    return options.fn(context);
-  }
-  return options.inverse(context);
-});
-
 Mustache.registerHelper("option_select", function (object, attr_name, role, options) {
   var selected_option = object.attr(attr_name)
     , selected_id = selected_option ? selected_option.id : null
@@ -815,7 +832,9 @@ Mustache.registerHelper("get_permalink_for_object", function (instance, options)
 
 Mustache.registerHelper("get_view_link", function (instance, options) {
   function finish(link) {
-    return "<a href=" + link + " target=\"_blank\"><i class=\"fa fa-long-arrow-right\"></i></a>";
+    return "<a href=" + link + " target=\"_blank\" class=\"view-link\">" +
+           "  <i class=\"fa fa-long-arrow-right\"></i>" +
+           "</a>";
   }
   instance = resolve_computed(instance);
   if (!instance.viewLink && !instance.get_permalink) {
@@ -1858,7 +1877,7 @@ Mustache.registerHelper("is_profile", function (parent_instance, options) {
   else
     options = parent_instance;
 
-  if (GGRC.page_instance() instanceof CMS.Models.Person && (!instance || instance.constructor.shortName !== 'DocumentationResponse'))
+  if (GGRC.page_instance() instanceof CMS.Models.Person)
     return options.fn(options.contexts);
   else
     return options.inverse(options.contexts);
@@ -2286,11 +2305,6 @@ Mustache.registerHelper("prune_context", function (options) {
   return options.fn(new can.view.Scope(options.context));
 });
 
-// Turns DocumentationResponse to Response
-Mustache.registerHelper("type_to_readable", function (str, options) {
-  return resolve_computed(str, true).replace(/([A-Z])/g, ' $1').split(' ').pop();
-});
-
 Mustache.registerHelper("mixed_content_check", function (url, options) {
   url = Mustache.getHelper("schemed_url", options.contexts).fn(url);
   if (window.location.protocol === "https:" && !/^https:/.test(url)) {
@@ -2486,20 +2500,6 @@ can.each({
           || options.can_assignee_edit
           || options.can_program_editor_edit
           || (!options.accepted
-              && (options.update
-                || options.map
-                || options.create));
-    }
-  },
-  "if_can_create_response": {
-    assignee_states: ["Requested", "Amended Request"],
-    program_editor_states: ["Requested", "Amended Request"],
-    predicate: function(options) {
-      return (!options.draft && (options.admin || options.editor))
-          || options.can_assignee_edit
-          || options.can_program_editor_edit
-          || (!options.accepted
-              && !options.draft
               && (options.update
                 || options.map
                 || options.create));
@@ -3212,7 +3212,6 @@ Mustache.registerHelper('get_url_value', function (attr_name, instance) {
         due_on: 1,
         end_date: 1,
         finished_date: 1,
-        requested_on: 1,
         start_date: 1,
         updated_at: 1,
         verified_date: 1

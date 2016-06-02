@@ -10,6 +10,7 @@ resources.
 
 import datetime
 import hashlib
+import json
 import logging
 import time
 from exceptions import TypeError
@@ -25,6 +26,7 @@ import sqlalchemy.orm.exc
 from werkzeug.exceptions import BadRequest, Forbidden
 
 import ggrc.builder.json
+import ggrc.models
 from flask.ext.sqlalchemy import Pagination
 from ggrc import db, utils
 from ggrc.utils import as_json, UnicodeSafeJsonWrapper, benchmark
@@ -110,31 +112,31 @@ def get_related_keys_for_expiration(context, o):
   return keys
 
 
-def set_ids_for_new_custom_attribute_values(objects, obj):
+def set_ids_for_new_custom_attributes(objects, parent_obj):
   """
   When we are creating custom attribute values for
-  POST requests, obj.id is not yet defined. This is why we update
+  POST requests, parent object ID is not yet defined. This is why we update
   custom attribute values at this point and set the correct attributable_id
 
   Args:
     objects: newly created objects (we update only the ones that
              are CustomAttributeValue
-    obj: parent object to be set as attributable
+    parent_obj: parent object to be set as attributable
 
   Returns:
     None
   """
 
   from ggrc.models.custom_attribute_value import CustomAttributeValue
-  for object in objects:
-    if not isinstance(object, CustomAttributeValue):
+  for obj in objects:
+    if not isinstance(obj, CustomAttributeValue):
       continue
-    object.attributable_id = obj.id
+    obj.attributable_id = parent_obj.id
     # Disable state updating so that a newly create object doesn't go straight
     # from Draft to Modified.
-    if hasattr(object, '_skip_os_state_update'):
-      object.skip_os_state_update()
-    db.session.add(object)
+    if hasattr(obj, '_skip_os_state_update'):
+      obj.skip_os_state_update()
+    db.session.add(obj)
   db.session.flush()
 
 
@@ -459,11 +461,11 @@ class ModelView(View):
     joinlist = []
     if request.args:
       querybuilder = AttributeQueryBuilder(self.model)
-      filter, joinlist, options = querybuilder.collection_filters(request.args)
-      if filter is not None:
+      filter_, joinlist, _ = querybuilder.collection_filters(request.args)
+      if filter_ is not None:
         for j in joinlist:
           query = query.join(j)
-        query = query.filter(filter)
+        query = query.filter(filter_)
     if filter_by_contexts:
       contexts = permissions.read_contexts_for(self.model.__name__)
       resources = permissions.read_resources_for(self.model.__name__)
@@ -617,7 +619,7 @@ class Resource(ModelView):
 
   signals = Namespace()
   model_posted = signals.signal(
-      'Model POSTed',
+      "Model POSTed",
       """
       Indicates that a model object was received via POST and will be committed
       to the database. The sender in the signal will be the model class of the
@@ -629,7 +631,7 @@ class Resource(ModelView):
         :service: The instance of Resource handling the POST request.
       """,)
   model_posted_after_commit = signals.signal(
-      'Model POSTed - after',
+      "Model POSTed - after",
       """
       Indicates that a model object was received via POST and has been
       committed to the database. The sender in the signal will be the model
@@ -641,7 +643,7 @@ class Resource(ModelView):
         :service: The instance of Resource handling the POST request.
       """,)
   model_put = signals.signal(
-      'Model PUT',
+      "Model PUT",
       """
       Indicates that a model object update was received via PUT and will be
       updated in the database. The sender in the signal will be the model class
@@ -653,7 +655,7 @@ class Resource(ModelView):
         :service: The instance of Resource handling the PUT request.
       """,)
   model_put_after_commit = signals.signal(
-      'Model PUT - after',
+      "Model PUT - after",
       """
       Indicates that a model object update was received via PUT and has been
       updated in the database. The sender in the signal will be the model class
@@ -665,7 +667,7 @@ class Resource(ModelView):
         :service: The instance of Resource handling the PUT request.
       """,)
   model_deleted = signals.signal(
-      'Model DELETEd',
+      "Model DELETEd",
       """
       Indicates that a model object was DELETEd and will be removed from the
       databse. The sender in the signal will be the model class of the DELETEd
@@ -675,7 +677,7 @@ class Resource(ModelView):
         :service: The instance of Resource handling the DELETE request.
       """,)
   model_deleted_after_commit = signals.signal(
-      'Model DELETEd - after',
+      "Model DELETEd - after",
       """
       Indicates that a model object was DELETEd and has been removed from the
       database. The sender in the signal will be the model class of the DELETEd
@@ -711,12 +713,12 @@ class Resource(ModelView):
             return self.delete(*args, **kwargs)
           else:
             raise NotImplementedError()
-        except (IntegrityError, ValidationError) as v:
-          message = translate_message(v)
+        except (IntegrityError, ValidationError) as err:
+          message = translate_message(err)
           current_app.logger.warn(message)
           return (message, 403, [])
-        except Exception as e:
-          current_app.logger.exception(e)
+        except Exception as err:
+          current_app.logger.exception(err)
           raise
         finally:
           # When running integration tests, cache sometimes does not clear
@@ -853,7 +855,8 @@ class Resource(ModelView):
             self.object_for_json(task, 'background_task'),
             self.modified_at(task))
     else:
-      task = BackgroundTask.query.get(request.args.get("task_id"))
+      task_id = int(request.headers.get('x-task-id'))
+      task = BackgroundTask.query.get(task_id)
     task.start()
     try:
       with benchmark("Query for object"):
@@ -959,8 +962,9 @@ class Resource(ModelView):
       # because it will filter out objects that the Creator can access.
       # We are doing a special permissions check for these objects
       # below in the filter_resource method.
-      filter_by_contexts = not (self.model.__name__ == "Relationship" and
-                                _is_creator())
+      filter_by_contexts = not (
+          self.model.__name__ in ("Relationship", "Revision") and _is_creator()
+      )
       matches_query = self.get_collection_matches(
           self.model, filter_by_contexts)
     with benchmark("dispatch_request > collection_get > Query Data"):
@@ -997,11 +1001,8 @@ class Resource(ModelView):
       # TODO this can be optimized by filter_resource() not retrieving
       # the other fields to being with
       if '__fields' in request.args:
-          custom_fields = request.args['__fields'].split(',')
-          objs = [
-              {f: o[f] for f in custom_fields if f in o}
-              for o in objs]
-
+        custom_fields = request.args['__fields'].split(',')
+        objs = [{f: o[f] for f in custom_fields if f in o} for o in objs]
       with benchmark("Serialize collection"):
         collection = self.build_collection_representation(
             objs, extras=extras)
@@ -1018,6 +1019,11 @@ class Resource(ModelView):
   def get_resources_from_cache(self, matches):
     """Get resources from cache for specified matches"""
     resources = {}
+    # Disable caching for background tasks
+    # Setting background task status circumvents our memcache
+    # invalidation logic so we have to disabling memcache.
+    if self.model.__name__ == 'BackgroundTask':
+      return resources
     # Skip right to memcache
     memcache_client = self.request.cache_manager.cache_object.memcache_client
     key_matches = {}
@@ -1077,7 +1083,7 @@ class Resource(ModelView):
     """Do NOTHING by default"""
     pass
 
-  def collection_post_step(self, src):
+  def collection_post_step(self, src, no_result):
     try:
       obj = self.model()
       root_attribute = self.model._inflector.table_singular
@@ -1114,7 +1120,7 @@ class Resource(ModelView):
       with benchmark("Get modified objects"):
         modified_objects = get_modified_objects(db.session)
       with benchmark("Update custom attribute values"):
-        set_ids_for_new_custom_attribute_values(modified_objects.new, obj)
+        set_ids_for_new_custom_attributes(modified_objects.new, obj)
       with benchmark("Log event"):
         log_event(db.session, obj)
       with benchmark("Update memcache before commit for collection POST"):
@@ -1130,7 +1136,7 @@ class Resource(ModelView):
         self.model_posted_after_commit.send(obj.__class__, obj=obj,
                                             src=src, service=self)
       with benchmark("Serialize object"):
-        object_for_json = self.object_for_json(obj)
+        object_for_json = {} if no_result else self.object_for_json(obj)
       with benchmark("Make response"):
         return (201, object_for_json)
     except (IntegrityError, ValidationError) as e:
@@ -1152,41 +1158,72 @@ class Resource(ModelView):
     if self.request.mimetype != 'application/json':
       return current_app.make_response((
           'Content-Type must be application/json', 415, []))
-    body = self.request.json
-    wrap = type(body) == dict
+
+    running_async = False
+    if 'X-GGRC-BackgroundTask' in request.headers:
+      if 'X-Appengine-Taskname' not in request.headers:
+        task = create_task(request.method, request.full_path,
+                           None, request.data)
+        if getattr(settings, 'APP_ENGINE', False):
+          return self.json_success_response(
+              self.object_for_json(task, 'background_task'),
+              self.modified_at(task))
+        body = self.request.json
+      else:
+        task_id = int(self.request.headers.get('x-task-id'))
+        task = BackgroundTask.query.get(task_id)
+        body = json.loads(task.parameters)
+        running_async = True
+      task.start()
+      no_result = True
+    else:
+      body = self.request.json
+      no_result = False
+    wrap = isinstance(body, dict)
     if wrap:
       body = [body]
     res = []
     for src in body:
       try:
         src_res = None
-        src_res = self.collection_post_step(UnicodeSafeJsonWrapper(src))
+        src_res = self.collection_post_step(
+            UnicodeSafeJsonWrapper(src), no_result)
         db.session.commit()
+        if running_async:
+          time.sleep(settings.BACKGROUND_COLLECTION_POST_SLEEP)
       except Exception as e:
         if not src_res or 200 <= src_res[0] < 300:
           src_res = (getattr(e, "code", 500), e.message)
-        current_app.logger.warn("Collection POST commit failed: " + str(e))
+        current_app.logger.warn("Collection POST commit failed:")
+        current_app.logger.exception(e)
         db.session.rollback()
       res.append(src_res)
     headers = {"Content-Type": "application/json"}
     errors = []
     if wrap:
       status, res = res[0]
-      if type(res) == dict and len(res) == 1:
+      if isinstance(res, dict) and len(res) == 1:
         value = res.values()[0]
         if "id" in value:
           headers['Location'] = self.url_for(id=value["id"])
     else:
       for res_status, body in res:
-        if not (200 <= res_status < 300):
+        if not 200 <= res_status < 300:
           errors.append((res_status, body))
       if len(errors) > 0:
         status = errors[0][0]
         headers["X-Flash-Error"] = ' || '.join((error for _, error in errors))
       else:
         status = 200
-    return current_app.make_response(
+    result = current_app.make_response(
         (self.as_json(res), status, headers))
+
+    if 'X-GGRC-BackgroundTask' in request.headers:
+      if status == 200:
+        task.finish("Success", result)
+      else:
+        task.finish("Failure", result)
+    return result
 
   @classmethod
   def add_to(cls, app, url, model_class=None, decorators=()):
@@ -1346,7 +1383,7 @@ def filter_resource(resource, depth=0, user_permissions=None):  # noqa
   if user_permissions is None:
     user_permissions = permissions.permissions_for(get_current_user())
 
-  if type(resource) in (list, tuple):
+  if isinstance(resource, (list, tuple)):
     filtered = []
     for sub_resource in resource:
       filtered_sub_resource = filter_resource(
@@ -1354,7 +1391,7 @@ def filter_resource(resource, depth=0, user_permissions=None):  # noqa
       if filtered_sub_resource is not None:
         filtered.append(filtered_sub_resource)
     return filtered
-  elif type(resource) is dict and 'type' in resource:
+  elif isinstance(resource, dict) and 'type' in resource:
     # First check current level
     context_id = False
     if 'context' in resource:
@@ -1374,8 +1411,8 @@ def filter_resource(resource, depth=0, user_permissions=None):  # noqa
     if resource['type'] == "Relationship" and _is_creator():
       # Make a check for relationship objects that are a special case
       can_read = True
-      for t in ('source', 'destination'):
-        inst = resource[t]
+      for name in ('source', 'destination'):
+        inst = resource[name]
         if not inst:
           # If object was deleted but relationship still exists
           continue
@@ -1390,6 +1427,13 @@ def filter_resource(resource, depth=0, user_permissions=None):  # noqa
           continue
         can_read = False
       if not can_read:
+        return None
+    elif resource['type'] == "Revision" and _is_creator():
+      # Make a check for revision objects that are a special case
+      res_model = getattr(ggrc.models.all_models, resource['resource_type'])
+      instance = res_model.query.get(resource['resource_id'])
+      if instance is None or\
+         not user_permissions.is_allowed_read_for(instance):
         return None
     else:
       if not user_permissions.is_allowed_read(resource['type'],

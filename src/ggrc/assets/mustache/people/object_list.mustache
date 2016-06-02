@@ -11,7 +11,7 @@
     <li class="tree-item role" data-model="true" {{data 'model'}}>
       <div class="item-main">
         <div class="item-wrap">
-          {{{render '/static/mustache/base_objects/open_close.mustache' instance=instance}}}
+          {{> '/static/mustache/base_objects/open_close.mustache'}}
           <div class="select">
             <div class="item-data">
               <div class="row-fluid">
@@ -180,7 +180,7 @@
     </li>
   {{/each}}
 
-  <li>
+  <li class="tree-item">
     {{#if has_prev_page}}
     <a href="javascript://" class="view-more-paging">
       Previous Page

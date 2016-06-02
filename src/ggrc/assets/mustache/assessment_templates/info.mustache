@@ -49,7 +49,7 @@
         <div class="span4">
           <h6>Default procedure description</h6>
           {{#if procedure_description}}
-            {{procedure_description}}
+            {{{procedure_description}}}
           {{else}}
             <span class="empty-message">None</span>
           {{/if}}
@@ -61,12 +61,14 @@
           <h6>Default Assessors</h6>
           {{#if default_people.assessors}}
             {{#if_string default_people.assessors}}
-              {{default_people.assessors}}
+              {{get_item DEFAULT_PEOPLE_LABELS default_people.assessors}}
             {{else}}
               {{#if default_people.assessors.length}}
                 <ul>
                   {{#each default_people.assessors}}
-                    <li>User {{.}}</li>  {{!TODO: get the actual User object}}
+                    <li>
+                      <person editable="true" person-id="{{.}}"></person>
+                    </li>
                   {{/each}}
                 </ul>
               {{else}}
@@ -82,12 +84,14 @@
           <h6>Default Verifier</h6>
           {{#if default_people.verifiers}}
             {{#if_string default_people.verifiers}}
-              {{default_people.verifiers}}
+              {{get_item DEFAULT_PEOPLE_LABELS default_people.verifiers}}
             {{else}}
               {{#if default_people.verifiers.length}}
                 <ul>
                   {{#each default_people.verifiers}}
-                    <li>User {{.}}</li>  {{!TODO: get the actual User object}}
+                    <li>
+                      <person editable="true" person-id="{{.}}"></person>
+                    </li>
                   {{/each}}
                 </ul>
               {{else}}

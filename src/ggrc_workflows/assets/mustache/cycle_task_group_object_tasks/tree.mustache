@@ -11,7 +11,7 @@
   >
   <div class="item-main" {{data 'model'}}>
     <div class="item-wrap">
-      {{{render '/static/mustache/base_objects/open_close.mustache' instance=instance}}}
+      {{> '/static/mustache/base_objects/open_close.mustache'}}
       <div class="select">
         <div class="item-data">
           <div class="row-fluid">
@@ -55,7 +55,7 @@
                                   </a>
                               {{else}}
                                 {{get_default_attr_value attr_name instance}}
-                              {{/in_helpers}}
+                              {{/if_helpers}}
                             {{/default}}
                           {{/switch}}
                         {{/instance}}

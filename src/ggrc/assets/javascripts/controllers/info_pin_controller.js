@@ -5,14 +5,12 @@
     Maintained By: anze@reciprocitylabs.com
 */
 
-
 can.Control("CMS.Controllers.InfoPin", {
   defaults: {
     view: GGRC.mustache_path + "/base_objects/info.mustache"
   }
 }, {
   init: function (el, options) {
-    var instance = GGRC.page_instance();
     this.element.height(0);
   },
   findView: function (instance) {
@@ -20,12 +18,13 @@ can.Control("CMS.Controllers.InfoPin", {
 
     if (instance instanceof CMS.Models.Person) {
       view = GGRC.mustache_path + "/ggrc_basic_permissions/people_roles/info.mustache";
-    } else if (instance instanceof CMS.Models.Response) {
-      view = GGRC.mustache_path + "/responses/info.mustache";
     } else if (view in GGRC.Templates) {
       view = GGRC.mustache_path + "/" + view + ".mustache";
     } else {
       view = this.options.view;
+    }
+    if (instance.info_pane_preload) {
+      instance.info_pane_preload();
     }
     return view;
   },
@@ -160,4 +159,3 @@ can.Control("CMS.Controllers.InfoPin", {
     el.find("i").css({"opacity": 1});
   }
 });
-

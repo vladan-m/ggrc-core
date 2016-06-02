@@ -2,6 +2,7 @@ Google Governance, Risk and Compliance (GGRC)
 =========
 
 [![Build Status](https://jenkins.reciprocitylabs.com/job/ggrc_develop_build/badge/icon)](https://jenkins.reciprocitylabs.com/job/ggrc_develop_build/)
+[![Issue Stats](http://www.issuestats.com/github/google/ggrc-core/badge/pr?style=flat)](http://www.issuestats.com/github/google/ggrc-core)
 
 Governance, Risk Management, and Compliance are activities necessary for any organization with regulatory or contractual obligations.
 
@@ -25,24 +26,52 @@ Migrated from [Google](https://code.google.com/archive/p/compliance-management)
 The following software is required to stand up a GGRC-Core development
 environment:
 
+|               Prerequisite                       |                 Description              |
+|--------------------------------------------------|------------------------------------------|
+|[Docker](https://www.docker.com/)                 | Container management tool                |
+|[Docker compose](https://docs.docker.com/compose/)| A tool for defining multi-container apps |
+
+**NOTE for Windows/OSX users:** The easiest way of getting docker is by installing the
+[docker toolbox](https://www.docker.com/products/docker-toolbox).
+
+Or alternatively with our legacy vagrant environemnt:
+
 |               Prerequisite               |               Description                |
 |------------------------------------------|------------------------------------------|
 |[VirtualBox](https://www.virtualbox.org/) | Oracle VirtualBox Virtual Machine player |
 |[Vagrant](https://www.vagrantup.com/)      | Handy scriptable VM management           |
 |[Ansible](https://www.ansible.com/)    | Provisioning and deployment tool         |
 
-Or alternatively (see Quickstart with docker)
-
-|               Prerequisite                       |                 Description              |
-|--------------------------------------------------|------------------------------------------|
-|[Docker](https://www.docker.com/)                 | Container management tool                |
-|[Docker compose](https://docs.docker.com/compose/)| A tool for defining multi-container apps |
-
-
-## Quick Start
+## Quick Start with Docker
 
 Getting started with GGRC-Core development should be fast and easy once you
-have the prerequisite software installed. Here are the steps:
+have docker up and running. Here are the steps:
+
+**NOTE for Windows/OSX users:** Make sure `docker` is up and running by following the [windows guide](https://docs.docker.com/engine/installation/windows/#using-docker-from-windows-command-prompt-cmd-exe) / [osx guide](https://docs.docker.com/engine/installation/mac/#from-your-shell).
+
+* clone the repo
+* cd to the project
+directory
+* run the following:
+
+    ```
+    git submodule update --init
+    docker-compose up -d
+    docker exec -it ggrccore_dev_1 su vagrant
+    make bower_components
+    build_css
+    build_assets
+    db_reset
+    ```
+
+If you see download errors during the `docker-compose up -d` stage, or if any subsequent
+step fails, try running `docker-compose build` (See [Reprovisioning a Docker container](#reprovisioning-a-docker-container) below for more).
+
+_NOTE: Because docker shared volumes do not have permission mappings, you should run these commands as a user with UID 1000, to match the users inside the containers._
+
+## Quick Start with Vagrant (legacy)
+
+Alternative setup is using vagrant
 
 * clone the repo
 * cd to the project directory
@@ -65,31 +94,6 @@ VM](#provision-a-running-vagrant-vm) below for more).
 
 Now you're in the VM and ready to rock. Get to work!
 
-## Quickstart with docker
-
-Alternative setup is using just docker. Run a vagrant-like fat docker container
-named *ggrccore_dev_1*.
-
-
-* clone the repo
-* cd to the project
-directory
-* run the following:
-
-    ```
-    git submodule update --init
-    docker-compose up -d
-    docker exec -it ggrccore_dev_1 su vagrant
-    make bower_components
-    build_css
-    build_assets
-    db_reset
-    ```
-
-If you see download errors during the `docker-compose up -d` stage, or if any subsequent
-step fails, try running `docker-compose build` (See [Reprovisioning a Docker container](#reprovisioning-a-docker-container) below for more).
-
-_NOTE: Because docker shared volumes do not have permission mappings, you should run these commands as a user with UID 1000, to match the users inside the containers._
 
 ### Launching GGRC as Stand-alone Flask
 
@@ -284,6 +288,11 @@ vagrant up
 
 To reprovision a docker container run the following:
 
+Remove files that are not in the repository e.g. python cache:
+```sh
+git clean -df
+```
+Start reprovisioning:
 ```sh
 docker-compose build --pull --no-cache
 ```
@@ -347,13 +356,13 @@ There are three primary classes of requirements for GGRC-Core: Submodules, Pytho
 
 There are two pip requirements files: a runtime requirements file,
 `src/requirements.txt`, for application package dependencies and a
-development requirements file, `src/dev-requirements.txt`, for additional
+development requirements file, `src/requirements-dev.txt`, for additional
 development-time package dependencies. The runtime requirements are deployed
 with the application while the development requirements are only used in the
 development environment (largely for testing purposes).
 
 Most requirements changes should be in either `src/requirements.txt` or
-`src/dev-requirements.txt` and would manifest as module import failures.
+`src/requirements-dev.txt` and would manifest as module import failures.
 
 ### Environment Variables
 
@@ -408,8 +417,8 @@ requirements.
 To Manually update the requirements, you can login to vagrant or docker virtual machine and run
 
 ```sh
-pip install -r src/dev-requirements.txt
-pip install --no-deps -r src/requirements.txt
+pip install -r src/requirements-dev.txt
+pip install --no-deps -r src/requirements-basic.txt
 ```
 
 Note that if you're using `launch_gae_ggrc`, then changes to

@@ -137,18 +137,8 @@
         allow_creating: true,
         parent_find_param: 'audit.id'
       }, {
-        model: 'Response',
-        mapping: 'related_owned_responses',
-        allow_creating: false,
-        parent_find_param: 'audit.id'
-      }, {
         model: 'Request',
         mapping: 'related_mapped_requests',
-        allow_creating: false,
-        parent_find_param: 'audit.id'
-      }, {
-        model: 'Response',
-        mapping: 'related_mapped_responses',
         allow_creating: false,
         parent_find_param: 'audit.id'
       }]
@@ -352,11 +342,10 @@
 
   can.Model.Cacheable('CMS.Models.Request', {
     root_object: 'request',
-    filter_keys: ['assignee', 'audit', 'code', 'company', 'control',
-      'due date', 'due', 'name', 'notes', 'request',
-      'requested on', 'status', 'test', 'title', 'request_type',
-      'type', 'request type', 'due_on', 'request_object',
-      'request object', 'request title',
+    filter_keys: ['assignee', 'audit', 'code', 'company', 'control', 'due on',
+      'due', 'name', 'notes', 'request', 'starts', 'starts on', 'status',
+      'test', 'title', 'request_type', 'type', 'request type',
+      'request_object', 'request object', 'request title',
       'verified', 'verified_date', 'finished_date'
     ],
     filter_mappings: {
@@ -399,8 +388,8 @@
     attributes: {
       context: 'CMS.Models.Context.stub',
       assignee: 'CMS.Models.Person.stub',
-      requested_on: 'date',
-      due_on: 'date',
+      start_date: 'date',
+      end_date: 'date',
       finished_date: 'date',
       verified_date: 'date',
       documents: 'CMS.Models.Document.stubs',
@@ -408,9 +397,9 @@
       custom_attribute_values: 'CMS.Models.CustomAttributeValue.stubs'
     },
     defaults: {
-      status: 'Open',
-      requested_on: moment().toDate(),
-      due_on: GGRC.Utils.firstWorkingDay(moment().add(1, 'weeks'))
+      status: 'Not Started',
+      start_date: moment().toDate(),
+      end_date: GGRC.Utils.firstWorkingDay(moment().add(1, 'weeks'))
     },
     info_pane_options: {
       mapped_objects: {
@@ -456,13 +445,13 @@
         attr_title: 'Last Updated',
         attr_name: 'updated_at'
       }, {
-        attr_title: 'Request Date',
-        attr_name: 'requested_on',
-        attr_sort_field: 'report_start_date'
+        attr_title: 'Starts On',
+        attr_name: 'start_date',
+        attr_sort_field: 'start_date'
       }, {
-        attr_title: 'Due Date',
-        attr_name: 'due_on',
-        attr_sort_field: 'due_on'
+        attr_title: 'Due On',
+        attr_name: 'end_date',
+        attr_sort_field: 'end_date'
       }, {
         attr_title: 'Verified Date',
         attr_name: 'verified_date',
@@ -481,7 +470,7 @@
         attr_title: 'Audit',
         attr_name: 'audit'
       }],
-      display_attr_names: ['title', 'assignee', 'due_on',
+      display_attr_names: ['title', 'assignee', 'end_date',
         'status', 'request_type'],
       mandatory_attr_names: ['title'],
       draw_children: true,
@@ -507,21 +496,21 @@
     init: function () {
       this._super.apply(this, arguments);
       this.validateNonBlank('title');
-      this.validateNonBlank('due_on');
-      this.validateNonBlank('requested_on');
+      this.validateNonBlank('end_date');
+      this.validateNonBlank('start_date');
       this.validatePresenceOf('validate_assignee');
       this.validatePresenceOf('validate_requester');
       this.validatePresenceOf('audit');
 
-      this.validate(['requested_on', 'due_on'], function (newVal, prop) {
+      this.validate(['start_date', 'end_date'], function (newVal, prop) {
         var dates_are_valid;
 
-        if (this.requested_on && this.due_on) {
-          dates_are_valid = this.due_on >= this.requested_on;
+        if (this.start_date && this.end_date) {
+          dates_are_valid = this.end_date >= this.start_date;
         }
 
         if (!dates_are_valid) {
-          return 'Requested and/or Due date is invalid';
+          return 'Start and/or Due date is invalid';
         }
       });
 
@@ -564,7 +553,8 @@
       var audit;
       var that = this;
       var assignees = {};
-      var current_user = CMS.Models.get_instance(GGRC.current_user);
+      var current_user = CMS.Models.get_instance('Person',
+                                                 GGRC.current_user.id);
       var contact;
 
       if (new_object_form) {
@@ -623,20 +613,24 @@
     get_filter_vals: function () {
       var filterVals = can.Model.Cacheable.prototype.get_filter_vals;
       var mappings = $.extend({}, this.class.filter_mappings, {
-        title: 'title',
-        description: 'description',
-        state: 'status',
-        'due date': 'due_on',
-        due: 'due_on',
+        audit: 'audit',
         code: 'slug',
-        audit: 'audit'
+        description: 'description',
+        due: 'end_date',
+        'due on': 'end_date',
+        starts: 'start_date',
+        'starts on': 'start_date',
+        state: 'status',
+        title: 'title'
       });
       var keys = _.union(this.class.filter_keys, ['state'], _.keys(mappings));
       var vals = filterVals.call(this, keys, mappings);
 
       try {
-        vals.due_on = moment(this.due_on).format('YYYY-MM-DD');
-        vals.due = vals['due date'] = vals.due_on;
+        vals.starts = moment(this.start_date).format('YYYY-MM-DD');
+        vals['starts on'] = vals.starts;
+        vals.due = moment(this.end_date).format('YYYY-MM-DD');
+        vals['due on'] = vals.due;
         if (this.assignee) {
           vals.assignee = filterVals.apply(this.assignee.reify(), []);
         }
@@ -652,18 +646,18 @@
       return this._super.apply(this, arguments);
     },
     after_save: function () {
-      // Create a relationship between request & assessment & control
-      var dfds = can.map(['control', 'assessment'], function (obj) {
-        if (!(this.attr(obj) && this.attr(obj).stub)) {
-          return undefined;
-        }
-        return new CMS.Models.Relationship({
-          source: this.attr(obj).stub(),
-          destination: this.stub(),
-          context: this.context.stub()
-        }).save();
-      }.bind(this));
-      GGRC.delay_leaving_page_until($.when.apply($, dfds));
+      // Create a relationship between request & assessment
+      // if the request is created from the assessment view page
+      var dfd;
+      if (!(this.attr('assessment') && this.attr('assessment').stub)) {
+        return;
+      }
+      dfd = new CMS.Models.Relationship({
+        source: this.attr('assessment').stub(),
+        destination: this.stub(),
+        context: this.context.stub()
+      }).save();
+      GGRC.delay_leaving_page_until(dfd);
     },
     _refresh: function (bindings) {
       var refresh_queue = new RefreshQueue();
@@ -674,254 +668,6 @@
     }
   });
 
-  can.Model.Cacheable('CMS.Models.Response', {
-    root_object: 'response',
-    root_collection: 'responses',
-    subclasses: [],
-    init: function () {
-      if (this._super) {
-        this._super.apply(this, arguments);
-      }
-
-      function refresh_request(ev, instance) {
-        if (instance instanceof CMS.Models.Response) {
-          instance.request.reify().refresh();
-        }
-      }
-      this.cache = {};
-      if (this !== CMS.Models.Response) {
-        CMS.Models.Response.subclasses.push(this);
-      } else {
-        this.bind('created', refresh_request);
-        this.bind('destroyed', refresh_request);
-      }
-
-      this.validateNonBlank('description');
-      this.validatePresenceOf('contact');
-    },
-    create: 'POST /api/responses',
-    update: 'PUT /api/responses/{id}',
-    findAll: 'GET /api/responses',
-    findOne: 'GET /api/responses/{id}',
-    destroy: 'DELETE /api/responses/{id}',
-    model: function (params) {
-      var found = false;
-      if (this.shortName !== 'Response') {
-        return this._super(params);
-      }
-      if (!params || (params instanceof CMS.Models.Response &&
-          params.constructor !== CMS.Models.Response)) {
-        return params;
-      }
-      params = this.object_from_resource(params);
-      if (!params.selfLink) {
-        if (params.type && params.type !== 'Response') {
-          return CMS.Models[params.type].model(params);
-        }
-      } else {
-        can.each(this.subclasses, function (m) {
-          if (m.root_object === params.response_type + '_response') {
-            params = m.model(params);
-            found = true;
-            return false;
-          } else if (m.root_object in params) {
-            params = m.model(m.object_from_resource(params));
-            found = true;
-            return false;
-          }
-        });
-      }
-      if (found) {
-        return params;
-      }
-      console.debug('Invalid Response:', params);
-    },
-    attributes: {
-      context: 'CMS.Models.Context.stub',
-      object_documents: 'CMS.Models.ObjectDocument.stubs',
-      documents: 'CMS.Models.Document.stubs',
-      population_worksheet: 'CMS.Models.Document.stub',
-      sample_worksheet: 'CMS.Models.Document.stub',
-      sample_evidence: 'CMS.Models.Document.stub',
-      object_people: 'CMS.Models.ObjectPerson.stubs',
-      people: 'CMS.Models.Person.stubs',
-      meetings: 'CMS.Models.Meeting.stubs',
-      request: 'CMS.Models.Request.stub',
-      related_sources: 'CMS.Models.Relationship.stubs',
-      related_destinations: 'CMS.Models.Relationship.stubs',
-      controls: 'CMS.Models.Control.stubs',
-      contact: 'CMS.Models.Person.stub'
-    },
-    defaults: {
-      status: 'Assigned'
-    },
-    tree_view_options: {
-      show_view: GGRC.mustache_path + '/responses/tree.mustache',
-      add_item_view: GGRC.mustache_path + '/responses/tree_add_item.mustache',
-      draw_children: true,
-      child_options: [{
-        // 0: mapped objects
-        mapping: 'business_objects',
-        model: can.Model.Cacheable,
-        show_view: GGRC.mustache_path + '/base_objects/tree.mustache',
-        footer_view: GGRC.mustache_path + '/base_objects/tree_footer.mustache',
-        add_item_view: GGRC.mustache_path +
-          '/base_objects/tree_add_item.mustache',
-        allow_mapping: false,
-        allow_creating: false,
-        exclude_option_types: function () {
-          var types = {
-            DocumentationResponse: 'Document',
-            InterviewResponse: 'Person'
-          };
-          return types[this.parent_instance.constructor.shortName] || '';
-        }
-      }, {
-        // 1: Document Evidence
-        model: 'Document',
-        mapping: 'documents',
-        show_view: GGRC.mustache_path + '/documents/pbc_tree.mustache',
-        allow_mapping: false,
-        allow_creating: false
-      }, {
-        // 3: Meeting participants
-        model: 'Person',
-        mapping: 'people',
-        show_view: GGRC.mustache_path + '/people/tree.mustache',
-        footer_view: GGRC.mustache_path + '/people/tree_footer.mustache',
-        add_item_view: GGRC.mustache_path + '/people/tree_add_item.mustache',
-        allow_mapping: false,
-        allow_creating: false
-      }, {
-        // 2: Meetings
-        model: 'Meeting',
-        mapping: 'meetings',
-        show_view: GGRC.mustache_path + '/meetings/tree.mustache',
-        footer_view: GGRC.mustache_path + '/meetings/tree_footer.mustache',
-        add_item_view: GGRC.mustache_path + '/meeting/tree_add_item.mustache',
-        allow_mapping: false,
-        allow_creating: false
-      }]
-    }
-  }, {
-    display_name: function () {
-      var desc = this.description;
-      var max_len = 20;
-      var out_name = desc;
-      // Truncate if greater than max_len chars
-      if (desc.length > max_len) {
-        out_name = desc.slice(0, max_len) + ' ...';
-      }
-      return 'Response "' + out_name + '"';
-    },
-    before_create: function () {
-      if (!this.contact) {
-        this.attr('contact', this.request.reify().assignee);
-      }
-    },
-    form_preload: function (new_object_form) {
-      if (new_object_form && !this.contact) {
-        if (!this.request) {
-          this.bind('request', function (ev, request) {
-            if (request && request.reify) {
-              this.attr('contact', request.reify().assignee);
-            }
-          });
-        } else {
-          this.attr('contact', this.request.reify().assignee);
-        }
-      }
-    }
-  });
-
-  CMS.Models.Response('CMS.Models.DocumentationResponse', {
-    root_object: 'documentation_response',
-    root_collection: 'documentation_responses',
-    create: 'POST /api/documentation_responses',
-    update: 'PUT /api/documentation_responses/{id}',
-    findAll: 'GET /api/documentation_responses',
-    findOne: 'GET /api/documentation_responses/{id}',
-    destroy: 'DELETE /api/documentation_responses/{id}',
-    attributes: {},
-    init: function () {
-      if (this._super) {
-        this._super.apply(this, arguments);
-      }
-      can.extend(this.attributes, CMS.Models.Response.attributes);
-      this.cache = CMS.Models.Response.cache;
-    },
-    process_args: function (args, names) {
-      var params = this._super(args, names);
-      params[this.root_object].response_type = 'documentation';
-      return params;
-    }
-  }, {});
-
-  CMS.Models.Response('CMS.Models.InterviewResponse', {
-    root_object: 'interview_response',
-    root_collection: 'interview_responses',
-    create: 'POST /api/interview_responses',
-    update: 'PUT /api/interview_responses/{id}',
-    findAll: 'GET /api/interview_responses',
-    findOne: 'GET /api/interview_responses/{id}',
-    destroy: 'DELETE /api/interview_responses/{id}',
-    attributes: {},
-    init: function () {
-      if (this._super) {
-        this._super.apply(this, arguments);
-      }
-      can.extend(this.attributes, CMS.Models.Response.attributes);
-      this.cache = CMS.Models.Response.cache;
-    },
-    process_args: function (args, names) {
-      var params = this._super(args, names);
-      params[this.root_object].response_type = 'interview';
-      return params;
-    }
-  }, {
-    save: function () {
-      var that = this;
-      var audit;
-      var auditors_dfd;
-      if (this.isNew()) {
-        audit = this.request.reify().audit.reify();
-        auditors_dfd = audit.findAuditors();
-
-        return auditors_dfd.then(function (auditors) {
-          if (auditors.length > 0) {
-            that.mark_for_addition('people', auditors[0].person);
-          }
-          that.mark_for_addition('people', that.contact);
-          return that._super.apply(that, arguments);
-        });
-      }
-      return this._super.apply(this, arguments);
-    }
-  });
-
-  CMS.Models.Response('CMS.Models.PopulationSampleResponse', {
-    root_object: 'population_sample_response',
-    root_collection: 'population_sample_responses',
-    create: 'POST /api/population_sample_responses',
-    update: 'PUT /api/population_sample_responses/{id}',
-    findAll: 'GET /api/population_sample_responses',
-    findOne: 'GET /api/population_sample_responses/{id}',
-    destroy: 'DELETE /api/population_sample_responses/{id}',
-    attributes: {},
-    init: function () {
-      if (this._super) {
-        this._super.apply(this, arguments);
-      }
-      can.extend(this.attributes, CMS.Models.Response.attributes);
-      this.cache = CMS.Models.Response.cache;
-    },
-    process_args: function (args, names) {
-      var params = this._super(args, names);
-      params[this.root_object].response_type = 'population sample';
-      return params;
-    }
-  }, {});
-
   can.Model.Cacheable('CMS.Models.Meeting', {
     root_collection: 'meetings',
     root_object: 'meeting',
@@ -931,7 +677,6 @@
     destroy: 'DELETE /api/meetings/{id}',
     attributes: {
       context: 'CMS.Models.Context.stub',
-      response: 'CMS.Models.Response.stub',
       people: 'CMS.Models.Person.stubs',
       object_people: 'CMS.Models.ObjectPerson.stubs',
       start_at: 'datetime',
@@ -1007,7 +752,10 @@
       finished_date: 'date',
       verified_date: 'date'
     },
-    filter_keys: ['operationally', 'operational', 'design',
+    defaults: {
+      status: 'Not Started'
+    },
+    filter_keys: ['title', 'state', 'operationally', 'operational', 'design',
                   'finished_date', 'verified_date', 'verified'],
     filter_mappings: {
       operational: 'operationally',
@@ -1020,10 +768,6 @@
       attr_list: [{
         attr_title: 'Title',
         attr_name: 'title'
-      }, {
-        attr_title: 'Owner',
-        attr_name: 'owner',
-        attr_sort_field: 'contact.name|email'
       }, {
         attr_title: 'Code',
         attr_name: 'slug'
@@ -1043,8 +787,8 @@
         attr_sort_field: 'secondary_contact.name|email'
       }, {
         attr_title: 'Last Updated',
-        attr_name: 'updated_at'},
-      {
+        attr_name: 'updated_at'
+      }, {
         attr_title: 'Conclusion: Design',
         attr_name: 'design'
       }, {
@@ -1107,6 +851,7 @@
         this._super.apply(this, arguments);
       }
       this.validatePresenceOf('object');
+      this.validatePresenceOf('audit');
       this.validatePresenceOf('validate_creator');
       this.validatePresenceOf('validate_assessor');
       this.validateNonBlank('title');
@@ -1125,7 +870,8 @@
   }, {
     form_preload: function (newObjectForm) {
       var pageInstance = GGRC.page_instance();
-      var currentUser = CMS.Models.get_instance(GGRC.current_user);
+      var currentUser = CMS.Models.get_instance('Person',
+        GGRC.current_user.id, GGRC.current_user);
 
       if (!newObjectForm) {
         return;
@@ -1140,12 +886,166 @@
         }
       });
     },
-    before_save: function (newForm) {
-      if (!this.isNew()) {
-        return;
+    info_pane_preload: function () {
+      if (!this._pane_preloaded) {
+        this._set_mandatory_msgs();
+        this.get_mapping('comments').bind('length',
+            this._set_mandatory_msgs.bind(this));
+        this.get_mapping('all_documents').bind('length',
+            this._set_mandatory_msgs.bind(this));
+        this._pane_preloaded = true;
       }
-      this.mark_for_addition(
-        'related_objects_as_destination', this.audit.program);
+    },
+    init: function () {
+      if (this._super) {
+        this._super.apply(this, arguments);
+      }
+    },
+    save: function () {
+      if (!this.attr('program')) {
+        this.attr('program', this.attr('audit.program'));
+      }
+      return this._super.apply(this, arguments);
+    },
+    after_save: function () {
+      this._set_mandatory_msgs();
+    },
+    _set_mandatory_msgs: function () {
+      var instance = this;
+      var FLAGS = {
+        COMMENT: 1,
+        ATTACHMENT: 2 // binary 10
+      };
+      var needed = {
+        attachment: [],
+        comment: [],
+        value: []
+      };
+      var rq = new RefreshQueue();
+
+      if (!instance.custom_attribute_definitions) {
+        instance.load_custom_attribute_definitions();
+      }
+
+      _.each(instance.custom_attribute_values, function (cav) {
+        rq.enqueue(cav);
+      });
+      $.when(
+          instance.refresh_all('custom_attribute_values'),
+          instance.get_binding('comments').refresh_count(),
+          instance.get_binding('all_documents').refresh_count(),
+          rq.trigger()
+      ).then(function (customAttrVals, commentCount, attachmentCount, rqRes) {
+        var values = _.map(instance.custom_attribute_values, function (cav) {
+          return cav.reify();
+        });
+        commentCount = commentCount();
+        attachmentCount = attachmentCount();
+        _.each(instance.custom_attribute_definitions, function (definition) {
+          var pred = {custom_attribute_id: definition.id};
+          if (definition.mandatory && !_.some(values, pred)) {
+            needed.value.push(definition.title);
+          }
+        });
+        _.each(values, function (cav) {
+          var definition;
+          var i;
+          var mandatory;
+          definition = _.find(instance.custom_attribute_definitions, {
+            id: cav.custom_attribute_id
+          });
+          if (!definition.multi_choice_options ||
+              !definition.multi_choice_mandatory) {
+            return;
+          }
+          i = definition.multi_choice_options.split(',')
+                    .indexOf(cav.attribute_value);
+          mandatory = definition.multi_choice_mandatory.split(',')[i];
+          if (mandatory === undefined) {
+            return;
+          }
+          mandatory = Number(mandatory);
+          if (mandatory & FLAGS.COMMENT) {
+            needed.comment.push(definition.title + ': ' + cav.attribute_value);
+          }
+          if (mandatory & FLAGS.ATTACHMENT) {
+            needed.attachment.push(definition.title + ': ' +
+                                   cav.attribute_value);
+          }
+        });
+        if (!commentCount && needed.comment.length) {
+          instance.attr(
+              '_mandatory_comment_msg',
+              'Comment required by: ' + needed.comment.join(', ')
+          );
+        } else {
+          instance.removeAttr('_mandatory_comment_msg');
+        }
+        if (!attachmentCount && needed.attachment.length) {
+          instance.attr(
+              '_mandatory_attachment_msg',
+              'Evidence required by: ' + needed.attachment.join(', ')
+          );
+        } else {
+          instance.removeAttr('_mandatory_attachment_msg');
+        }
+        if (needed.value.length) {
+          instance.attr(
+              '_mandatory_value_msg',
+              'Values required for: ' + needed.value.join(', ')
+          );
+        } else {
+          instance.removeAttr('_mandatory_value_msg');
+        }
+        instance.attr(
+            '_mandatory_msg',
+            _.filter([
+              instance.attr('_mandatory_value_msg'),
+              instance.attr('_mandatory_attachment_msg'),
+              instance.attr('_mandatory_comment_msg')
+            ]).join('; <br />') || null
+        );
+      });
+    },
+    related_issues: function () {
+      var relevantTypes = {
+        Audit: {
+          objectBinding: 'audits',
+          relatableBinding: 'program_issues',
+          weight: 5
+        },
+        Regulation: {
+          objectBinding: 'related_regulations',
+          relatableBinding: 'related_issues',
+          weight: 3
+        },
+        Control: {
+          objectBinding: 'related_controls',
+          relatableBinding: 'related_issues',
+          weight: 10
+        }
+      };
+      return this._related(relevantTypes, 5);
+    },
+    related_requests: function () {
+      var relevantTypes = {
+        Audit: {
+          objectBinding: 'audits',
+          relatableBinding: 'program_requests',
+          weight: 5
+        },
+        Regulation: {
+          objectBinding: 'related_regulations',
+          relatableBinding: 'related_requests',
+          weight: 3
+        },
+        Control: {
+          objectBinding: 'related_controls',
+          relatableBinding: 'related_requests',
+          weight: 10
+        }
+      };
+      return this._related(relevantTypes, 5);
     }
   });
 
@@ -1178,6 +1078,7 @@
       audit: 'CMS.Models.Audit.stub',
       context: 'CMS.Models.Context.stub'
     },
+
     defaults: {
       test_plan_procedure: false,
       template_object_type: 'Control',
@@ -1185,11 +1086,20 @@
         assessors: 'Object Owners',
         verifiers: 'Object Owners'
       },
-
       // the custom lists of assessor / verifier IDs if "other" is selected for
       // the corresponding default_people setting
       assessorsList: {},
-      verifiersList: {}
+      verifiersList: {},
+      people_values: [
+        {value: 'Object Owners', title: 'Object Owners'},
+        {value: 'Audit Lead', title: 'Audit Lead'},
+        {value: 'Auditors', title: 'Auditors'},
+        {value: 'Primary Assessor', title: 'Principal Assessor'},
+        {value: 'Secondary Assessors', title: 'Secondary Assessors'},
+        {value: 'Primary Contact', title: 'Primary Contact'},
+        {value: 'Secondary Contact', title: 'Secondary Contact'},
+        {value: 'other', title: 'Others...'}
+      ]
     },
 
     /**
@@ -1204,6 +1114,7 @@
     // the object types that are not relevant to the AssessmentTemplate,
     // i.e. it does not really make sense to assess them
     _NON_RELEVANT_OBJ_TYPES: Object.freeze({
+      AssessmentTemplate: true,
       Assessment: true,
       Audit: true,
       CycleTaskGroupObjectTask: true,

@@ -899,7 +899,6 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
     var pageCount;
     var mid;
     var pos;
-    var renderStep;
     if (this.options.disable_lazy_loading || this.element === null) {
       return;
     }
@@ -968,20 +967,19 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
         toRender.push(control);
       }
     }
-    renderStep = function renderStep(toRender, count) {
-      // If there is nothing left to render or if draw_visible was run while
-      // rendering we simply terminate.
-      if (toRender.length === 0 || this.draw_visible_call_count > count) {
-        return;
-      }
-      toRender[0].draw_node();
-      setTimeout(function () {
-        renderStep(toRender.slice(1), count);
-      }, 0);
-    }.bind(this);
-    renderStep(toRender, ++this.draw_visible_call_count);
+    this.renderStep(toRender, ++this.draw_visible_call_count);
   }, 100, {leading: true}),
-
+  renderStep: function renderStep(toRender, count) {
+    // If there is nothing left to render or if draw_visible was run while
+    // rendering we simply terminate.
+    if (toRender.length === 0 || this.draw_visible_call_count > count) {
+      return;
+    }
+    toRender[0].draw_node();
+    setTimeout(function () {
+      this.renderStep(toRender.slice(1), count);
+    }.bind(this), 0);
+  },
   _last_scroll_top: 0,
 
   _is_scrolling_up: false,
@@ -996,8 +994,10 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
     setTimeout(this.draw_visible.bind(this), 0);
   },
 
-  '.tree-item-placeholder mouseenter': function (el, ev) {
-    el.control().draw_node();
+  '.tree-item-placeholder click': function (el, ev) {
+    var node = el.control();
+    node.draw_node();
+    node.select();
   },
 
   '{original_list} add': function (list, ev, newVals, index) {
@@ -1458,7 +1458,6 @@ CMS.Controllers.TreeLoader('CMS.Controllers.TreeView', {
       }
     }
   }
-
 });
 
 can.Control('CMS.Controllers.TreeViewNode', {
@@ -1522,16 +1521,45 @@ can.Control('CMS.Controllers.TreeViewNode', {
       this.draw_node();
     }
   },
+
+  /**
+   * Trigger rendering the tree node in the DOM.
+   */
   draw_node: function () {
-    if (this._draw_node_in_progress) {
+    var isActive;
+    var isPlaceholder;
+    var lazyLoading = this.options.disable_lazy_loading;
+
+    if (!this.element) {
       return;
     }
+    isPlaceholder = this.element.hasClass('tree-item-placeholder');
+
+    if (this._draw_node_in_progress || !lazyLoading && !isPlaceholder) {
+      return;
+    }
+
     this._draw_node_in_progress = true;
     this.add_child_lists_to_child();
-    can.view(this.options.show_view, this.options, this._ifNotRemoved(function (frag) {
-      this.replace_element(frag);
-      this._draw_node_deferred.resolve();
-    }.bind(this)));
+
+    // the node's isActive state is not stored anywhere, thus we need to
+    // determine it from the presemce of the corresponding CSS class
+    isActive = this.element.hasClass('active');
+
+    can.view(
+      this.options.show_view,
+      this.options,
+      this._ifNotRemoved(function (frag) {
+        this.replace_element(frag);
+
+        if (isActive) {
+          this.element.addClass('active');
+        }
+
+        this._draw_node_deferred.resolve();
+      }.bind(this))
+    );
+
     this._draw_node_in_progress = false;
     this.options.attr('is_subtree',
         this.element && this.element.closest('.inner-tree').length > 0);
@@ -1675,12 +1703,21 @@ can.Control('CMS.Controllers.TreeViewNode', {
     return $.when.apply($, child_tree_dfds);
   },
 
+  /**
+   * Expand the tree node to make its subnodes visible.
+   *
+   * @return {can.Deferred} - a deferred object resolved when all the child
+   *   nodes have been loaded and displayed
+   */
   expand: function () {
     var that = this;
-    if (this._expand_deferred) {
-      //  If we've already expanded, then short-circuit the call.  However,
-      //  we still need to toggle `expanded`, but if it's the first time
-      //  expanding, `this.add_child_lists_to_child` *must* be called first.
+    var $el = this.element;
+
+    if (this._expand_deferred && $el.find('.openclose').is('.active')) {
+      // If we have already expanded and are currently still expanded, then
+      // short-circuit the call. However, we still need to toggle `expanded`,
+      // but if it's the first time expanding, `this.add_child_lists_to_child`
+      // *must* be called first.
       this.options.attr('expanded', true);
       return this._expand_deferred;
     }
@@ -1713,10 +1750,20 @@ can.Control('CMS.Controllers.TreeViewNode', {
     }
   },
 
+  /**
+   * Mark the tree node as active (and all other tree nodes as inactive).
+   */
   select: function () {
     var $tree = this.element;
 
-    $tree.closest('section').find('.cms_controllers_tree_view_node').removeClass('active');
+    if ($tree.hasClass('active')) {
+      return;  // tree node already selected, no need to activate it again
+    }
+
+    $tree.closest('section')
+      .find('.cms_controllers_tree_view_node')
+      .removeClass('active');
+
     $tree.addClass('active');
 
     this.update_hash_fragment();

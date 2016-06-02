@@ -19,6 +19,7 @@ dashboard-js-files:
   - zeroclipboard/dist/ZeroClipboard.min.js
   - stickyfill/stickyfill.js
   - mousetrap/mousetrap.min.js
+  - quill/dist/quill.min.js
   - canjs/can.jquery.js
   - canjs/can.construct.super.js
   - canjs/can.list.sort.js
@@ -111,11 +112,15 @@ dashboard-js-files:
   - apps/quick_search.js
   - apps/business_objects.js
   - apps/custom_attributes.js
+  - components/spinner/spinner.js
+  - components/unified_mapper/mapper.js
+  - components/unified_mapper/mapper_results.js
+  - components/unified_mapper/mapper_checkbox.js
+  - components/dropdown/dropdown.js
   - components/link_to_clipboard.js
   - components/relevant_filters.js
   - components/csv/export.js
   - components/csv/import.js
-  - components/mapper.js
   - components/people_list.js
   - components/mapped_tree_view.js
   - components/reusable_objects.js
@@ -124,8 +129,26 @@ dashboard-js-files:
   - components/tabs.js
   - components/assessment_attributes.js
   - components/autocomplete/autocomplete.js
+  - components/lazy_open_close.js
   - components/object_history/object_history.js
   - components/person/person.js
+  - components/unified_mapper/mapper.js
+  - components/unified_mapper/mapper_results.js
+  - components/unified_mapper/mapper_checkbox.js
+  - components/assessment_templates/assessment_templates.js
+  - components/modal_wrappers/assessment_template_form.js
+  - components/modal_wrappers/checkboxes_to_list.js
+  - components/reminder.js
+  - components/datepicker/datepicker.js
+  - components/inline_edit/inline.js
+  - components/inline_edit/inline_checkbox.js
+  - components/inline_edit/inline_dropdown.js
+  - components/inline_edit/inline_input.js
+  - components/inline_edit/inline_text.js
+  - components/rich_text/rich_text.js
+  - components/add_comment/add_comment.js
+  - components/inline_edit/inline_person.js
+  - components/inline_edit/inline_datepicker.js
   #- d3.v2.js
   #- related_graph.js
 
@@ -160,6 +183,7 @@ dashboard-js-template-files:
   - base_objects/relevance_action.mustache
   - base_objects/search_actions.mustache
   - base_objects/search_result.mustache
+  - base_objects/title.mustache
   - base_objects/tree.mustache
   - base_objects/tree_placeholder.mustache
   - base_objects/tree_footer_no_access.mustache
@@ -221,17 +245,33 @@ dashboard-js-template-files:
   - assessments/tree_add_item.mustache
   - assessments/info.mustache
   - assessments/reusable_objects.mustache
+  - assessments/header.mustache
   - assessments/generator_title.mustache
   - assessment_templates/attribute_field.mustache
   - assessment_templates/attribute_add_field.mustache
   - assessment_templates/modal_content.mustache
   - assessment_templates/info.mustache
+  - assessments/related_issues.mustache
+  - assessments/related_requests.mustache
   - issues/modal_content.mustache
   - issues/info.mustache
   - issues/remediation_plan.mustache
+  - components/inline_edit/inline.mustache
+  - components/inline_edit/text.mustache
+  - components/inline_edit/input.mustache
+  - components/inline_edit/checkbox.mustache
+  - components/inline_edit/dropdown.mustache
+  - components/inline_edit/person.mustache
+  - components/inline_edit/datepicker.mustache
   - components/autocomplete/autocomplete.mustache
+  - components/unified_mapper/mapper_results.mustache
+  - components/assessment_templates/assessment_templates.mustache
+  - components/dropdown/dropdown.mustache
   - components/object_history/object_history.mustache
   - components/person/person.mustache
+  - components/spinner/spinner.mustache
+  - components/rich_text/rich_text.mustache
+  - components/datepicker/datepicker.mustache
   - custom_attributes/modal_content.mustache
   - custom_attributes/info.mustache
   - custom_attribute_definitions/modal_content.mustache
@@ -265,6 +305,7 @@ dashboard-js-template-files:
   - help/help_modal_header.mustache
   - help/filters_helper_content.mustache
   - markets/modal_content.mustache
+  - mapped_objects/dropdown_menu_tier2.mustache
   - modals/close_buttons.mustache
   - modals/confirm.mustache
   - modals/confirm_buttons.mustache
@@ -361,14 +402,10 @@ dashboard-js-template-files:
   - requests/modal_content.mustache
   - requests/tier2_content.mustache
   - requests/general_info.mustache
+  - requests/dates_list.mustache
   - requests/reusable_objects.mustache
   - base_templates/subtree.mustache
   - objectives/autocomplete_result.mustache
-  - responses/confirm_delete_evidence.mustache
-  - responses/tree.mustache
-  - responses/info.mustache
-  - responses/tree_add_item.mustache
-  - responses/modal_content.mustache
   - meetings/modal_content.mustache
   - meetings/tree_footer.mustache
   - meetings/tree_add_item.mustache

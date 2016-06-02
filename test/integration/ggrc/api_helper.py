@@ -15,6 +15,7 @@ latest etag needed for such requests.
 """
 
 from ggrc import db
+from ggrc import builder
 from ggrc.app import app
 from ggrc.services.common import Resource
 import flask
@@ -102,6 +103,25 @@ class Api():
     return self.data_to_json(self.tc.get(
         "{}?{}".format(self.api_link(obj), query)))
 
+  def modify_object(self, obj, data=None):
+    """Make a put call for a given object.
+
+    Args:
+      obj (db.Model): Object that should be modified, and it can also contain
+        the changes that should be made.
+      data (dict): dictionary containing the changed values for the object.
+        This is not mandatory if the object itself has the given changes.
+
+    Returns:
+      response, db.Model: The put response from the server and the modified
+        object if the put request was successful.
+    """
+    obj_dict = builder.json.publish(obj)
+    builder.json.publish_representation(obj_dict)
+    obj_dict.update(data)
+    data = {obj._inflector.table_singular: obj_dict}
+    return self.put(obj, data)
+
   def delete(self, obj):
     """Delete api call helper.
 
@@ -123,6 +143,8 @@ class Api():
     api_link = self.api_link(obj, obj.id)
     return self.tc.delete(api_link, headers=headers)
 
-  def search(self, types, q="", counts=False):
-    return (self.tc.get('/search?q={}&types={}&counts_only={}'.format(
-        q, types, counts)), self.headers)
+  def search(self, types, q="", counts=False, relevant_objects=None):
+    query = '/search?q={}&types={}&counts_only={}'.format(q, types, counts)
+    if relevant_objects is not None:
+      query += '&relevant_objects=' + relevant_objects
+    return (self.tc.get(query), self.headers)

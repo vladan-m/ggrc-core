@@ -324,9 +324,9 @@ class TestAutomappings(integration.ggrc.TestCase):
         'title': make_name('Request'),
         'assignee': {'id': creator.id},
         'request_type': 'documentation',
-        'status': 'Open',
-        'requested_on': '1/1/2015',
-        'due_on': '1/1/2016',
+        'status': 'Not Started',
+        'start_date': '1/1/2015',
+        'end_date': '1/1/2016',
     })
     self.assert_mapping(request, program)
     self.assert_mapping(request, audit, missing=True)
@@ -349,8 +349,14 @@ class TestAutomappings(integration.ggrc.TestCase):
     })
     assessment = self.create_object(models.Assessment, {
         'title': make_name('Test CA'),
-        'audit': {'id': audit.id},
-        'control': {'id': control.id},
+        'audit': {
+            'id': audit.id,
+            'type': audit.type
+        },
+        'object': {
+            'id': control.id,
+            'type': control.type
+        },
     })
     self.assert_mapping_implication(
         to_create=[(program, regulation), (regulation, assessment)],

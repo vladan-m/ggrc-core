@@ -362,11 +362,6 @@
       sections: TypeFilter("related_objects", "Section"),
       clauses: TypeFilter("related_objects", "Clause"),
       objectives: TypeFilter("related_objects", "Objective"),
-      related_documentation_responses: TypeFilter("related_objects", "DocumentationResponse"),
-      related_interview_responses: TypeFilter("related_objects", "InterviewResponse"),
-      related_population_sample_responses: TypeFilter("related_objects", "PopulationSampleResponse"),
-      related_responses: Multi(["related_documentation_responses", "related_interview_responses", "related_population_sample_responses"]),
-      related_requests_via_related_responses: Cross("related_responses", "_request"),
       related_audits_via_related_responses: Cross("related_responses", "audit_via_request")
     },
     // Program
@@ -546,7 +541,7 @@
           "Section", "Clause", "Objective", "Control", "AccessGroup",
           "System", "Process", "DataAsset", "Product", "Project", "Facility",
           "Market", "OrgGroup", "Vendor", "Audit", "Issue", "Assessment",
-          "Request" //, "Response"
+          "Request"
         ];
 
         //checkfor window.location
@@ -617,8 +612,11 @@
         requests: 'Request',
         _program: 'Program',
         context: 'Context',
-        related_objects_as_source: ['Assessment', 'AssessmentTemplate', 'Issue']
+
       },
+      _mixins: [
+        'related_object'
+      ],
       requests: Direct("Request", "audit", "requests"),
       active_requests: CustomFilter('requests', function (result) {
         return result.instance.status !== 'Accepted';
@@ -632,8 +630,6 @@
       program_issues: Cross('_program', 'related_issues'),
       program_assessments: Cross('_program', 'related_assessments'),
       objects: Proxy(null, 'auditable', 'AuditObject', 'audit', 'audit_objects'),
-      objectives: TypeFilter('objects', 'Objective'),
-      objectives_via_program: Cross('_program', 'objectives'),
       responses_via_requests: Cross('requests', 'related_objects'),
       related_objects_via_requests: Multi(['requests', 'responses_via_requests']),
       context: Direct('Context', 'related_object', 'context'),
@@ -652,10 +648,6 @@
         return !person || (result.instance.attr("contact") && result.instance.contact.id === person.id) || (result.instance.attr("assignee") && result.instance.assignee.id === person.id) || (result.instance.attr("requestor") && result.instance.requestor.id === person.id);
       }),
       related_owned_requests: TypeFilter("related_owned_objects", "Request"),
-      related_owned_documentation_responses: TypeFilter("related_owned_objects", "DocumentationResponse"),
-      related_owned_interview_responses: TypeFilter("related_owned_objects", "InterviewResponse"),
-      related_owned_population_sample_responses: TypeFilter("related_owned_objects", "PopulationSampleResponse"),
-      related_owned_responses: Multi(["related_owned_documentation_responses", "related_owned_interview_responses", "related_owned_population_sample_responses"]),
       related_mapped_objects: CustomFilter("related_objects_via_requests", function (result) {
         var page_instance = GGRC.page_instance(),
           instance = result.instance,
@@ -679,35 +671,12 @@
 
         if (instance instanceof CMS.Models.Request && instance.responses)
           return is_mapped(instance.responses.reify());
-        else if (instance instanceof CMS.Models.Response)
-          return is_mapped([instance]);
         else
           return false;
       }),
-      //related_mapped_requests: TypeFilter("related_mapped_objects", "Request"),
-      related_requests: TypeFilter("related_objects_via_relationship", "Request"),
-      related_mapped_documentation_responses: TypeFilter("related_mapped_objects", "DocumentationResponse"),
-      related_mapped_interview_responses: TypeFilter("related_mapped_objects", "InterviewResponse"),
-      related_mapped_population_sample_responses: TypeFilter("related_mapped_objects", "PopulationSampleResponse"),
-      related_mapped_responses: Multi(["related_mapped_documentation_responses", "related_mapped_interview_responses", "related_mapped_population_sample_responses"]),
       extended_related_objects: Cross("requests", "extended_related_objects"),
-      related_objects_as_source: Proxy(
-        null, "destination", "Relationship", "source", "related_destinations"),
-      related_objects_as_destination: Proxy(
-        null, "source", "Relationship", "destination", "related_sources"),
-      related_objects: Multi(["related_objects_as_source", "related_objects_as_destination"]),
-      related_assessments: TypeFilter("related_objects", "Assessment"),
       related_assessment_templates: TypeFilter(
-        'related_objects', 'AssessmentTemplate'),
-      related_issues: TypeFilter('related_objects', 'Issue'),
-      regulations: TypeFilter('related_objects', 'Regulation'),
-      policies: TypeFilter('related_objects', 'Policy'),
-      standards: TypeFilter('related_objects', 'Standard'),
-      contracts: TypeFilter('related_objects', 'Contract'),
-      sections: TypeFilter('related_objects', 'Section'),
-      clauses: TypeFilter('related_objects', 'Clause'),
-      objectives: TypeFilter('related_objects', 'Objective'),
-      controls: TypeFilter('related_objects', 'Control')
+        'related_objects', 'AssessmentTemplate')
     },
     Assessment: {
       _mixins: [
@@ -762,40 +731,11 @@
               return mappings.entries;
             });
       }, "Program,Regulation,Contract,Policy,Standard,Section,Clause,Objective,Control,System,Process,DataAsset,AccessGroup,Product,Project,Facility,Market,OrgGroup,Vendor,Audit,Assessment,Request"),
-            //, responses : Multi(["documentation_responses", "interview_responses", "population_sample_responses"])
     },
     Comment: {
       _mixins: ["related_object", "documentable"],
       urls: TypeFilter("related_objects", "Document"),
       documents_and_urls: Multi(["documents", "urls"])
-    },
-    response: {
-      _mixins: ["business_object", "documentable"],
-      _request: Direct("Request", "responses", "request"),
-      audit_via_request: Cross("_request", "_audit")
-    },
-    Response: {
-      _mixins: ["response"]
-    },
-    DocumentationResponse: {
-      _mixins: ["response"],
-      business_objects: Multi(["related_objects", "controls", "objectives", "people", "sections", "clauses"])
-    },
-    InterviewResponse: {
-      _canonical: {
-        "meetings": "Meeting"
-      },
-      _mixins: ["response"],
-      meetings: Direct("Meeting", "response", "meetings"),
-      business_objects: Multi(["related_objects", "controls", "documents", "people", "sections", "clauses"])
-    },
-    PopulationSampleResponse: {
-      _canonical: {
-        "population_samples": "PopulationSample"
-      },
-      _mixins: ["response"],
-      business_objects: Multi(["related_objects", "controls", "people", "documents", "sections", "clauses"]),
-      population_samples: Direct("PopulationSample", "response", "population_samples")
     },
     Meeting: {
       _mixins: ["personable"]

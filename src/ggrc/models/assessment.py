@@ -3,16 +3,23 @@
 # Created By: anze@reciprocitylabs.com
 # Maintained By: anze@reciprocitylabs.com
 
+"""Module for Assessment object"""
+
 from sqlalchemy.orm import validates
 
 from ggrc import db
+from ggrc.models import mixins_reminderable
+from ggrc.models import mixins_statusable
 from ggrc.models import reflection
+from ggrc.models.audit import Audit
+from ggrc.models.comment import Commentable
+from ggrc.models.mixin_autostatuschangable import AutoStatusChangable
 from ggrc.models.mixins import BusinessObject
 from ggrc.models.mixins import CustomAttributable
 from ggrc.models.mixins import FinishedDate
-from ggrc.models.mixins import VerifiedDate
 from ggrc.models.mixins import TestPlanned
 from ggrc.models.mixins import Timeboxed
+from ggrc.models.mixins import VerifiedDate
 from ggrc.models.mixins import deferred
 from ggrc.models.mixins_assignable import Assignable
 from ggrc.models.object_document import Documentable
@@ -20,23 +27,39 @@ from ggrc.models.object_owner import Ownable
 from ggrc.models.object_person import Personable
 from ggrc.models.reflection import PublishOnly
 from ggrc.models.relationship import Relatable
+from ggrc.models.relationship import Relationship
 from ggrc.models.track_object_state import HasObjectState
 from ggrc.models.track_object_state import track_state_for_class
 
 
-class Assessment(Assignable, HasObjectState, TestPlanned, CustomAttributable,
-                 Documentable, Personable, Timeboxed, Ownable,
-                 Relatable, FinishedDate, VerifiedDate,
+class Assessment(mixins_statusable.Statusable,
+                 AutoStatusChangable, Assignable, HasObjectState, TestPlanned,
+                 CustomAttributable, Documentable, Commentable, Personable,
+                 mixins_reminderable.Reminderable, Timeboxed,
+                 Ownable, Relatable, FinishedDate, VerifiedDate,
                  BusinessObject, db.Model):
+  """Class representing Assessment.
+
+  Assessment is an object representing an individual assessment performed on
+  a specific object during an audit to ascertain whether or not
+  certain conditions were met for that object.
+  """
+
   __tablename__ = 'assessments'
 
-  NOT_DONE_STATES = {u"Open", u"In Progress"}
-  DONE_STATES = {u"Finished", u"Verified", u"Final"}
-  VALID_STATES = tuple(NOT_DONE_STATES | DONE_STATES)
   ASSIGNEE_TYPES = (u"Creator", u"Assessor", u"Verifier")
 
-  status = deferred(db.Column(db.Enum(*VALID_STATES), nullable=False,
-                    default=VALID_STATES[0]), "Assessment")
+  REMINDERABLE_HANDLERS = {
+      "statusToPerson": {
+          "handler":
+              mixins_reminderable.Reminderable.handle_state_to_person_reminder,
+          "data": {
+              mixins_statusable.Statusable.START_STATE: "Assessor",
+              "In Progress": "Assessor"
+          },
+          "reminders": {"assessment_assessor_reminder", }
+      }
+  }
 
   design = deferred(db.Column(db.String), "Assessment")
   operationally = deferred(db.Column(db.String), "Assessment")
@@ -59,10 +82,26 @@ class Assessment(Assignable, HasObjectState, TestPlanned, CustomAttributable,
       PublishOnly('object')
   ]
 
+  _tracked_attrs = {
+      'contact_id',
+      'description',
+      'design',
+      'notes',
+      'operationally',
+      'reference_url',
+      'secondary_contact_id',
+      'test_plan',
+      'title',
+      'url',
+      'start_date',
+      'end_date'
+  }
+
   _aliases = {
       "audit": {
           "display_name": "Audit",
           "mandatory": True,
+          "filter_by": "_filter_by_audit",
       },
       "url": "Assessment URL",
       "design": "Conclusion: Design",
@@ -91,11 +130,29 @@ class Assessment(Assignable, HasObjectState, TestPlanned, CustomAttributable,
 
   @validates("operationally")
   def validate_opperationally(self, key, value):
+    # pylint: disable=unused-argument
     return self.validate_conclusion(value)
 
   @validates("design")
   def validate_design(self, key, value):
+    # pylint: disable=unused-argument
     return self.validate_conclusion(value)
+
+  @classmethod
+  def _filter_by_audit(cls, predicate):
+    return Relationship.query.filter(
+        Relationship.source_type == cls.__name__,
+        Relationship.source_id == cls.id,
+        Relationship.destination_type == Audit.__name__,
+    ).join(Audit, Relationship.destination_id == Audit.id).filter(
+        predicate(Audit.slug)
+    ).exists() | Relationship.query.filter(
+        Relationship.destination_type == cls.__name__,
+        Relationship.destination_id == cls.id,
+        Relationship.source_type == Audit.__name__,
+    ).join(Audit, Relationship.source_id == Audit.id).filter(
+        predicate(Audit.slug)
+    ).exists()
 
   @classmethod
   def _filter_by_related_creators(cls, predicate):

@@ -25,8 +25,13 @@ small {
 }
 
 .inline {
-  display:inline;
+  display: inline;
 }
+
+.inline-block {
+  display: inline-block;
+}
+
 
 .spacing {
   margin: 15px 0 24px 0;
@@ -77,12 +82,8 @@ small {
   font-style: italic;
 }
 
-.checkbox-inline {
-  input[type="checkbox"] {
-    margin: -1px 0 0 0;
-  }
-}
-.radio-inline {
+.input--inline {
+  input[type="checkbox"],
   input[type="radio"] {
     margin: -1px 0 0 0;
   }

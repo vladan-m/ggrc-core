@@ -106,9 +106,13 @@
                 }
               } else if (roles.length) {
                 rel.attrs.attr('AssigneeType', roles.join(','));
-                rel.save();
+                rel.save().then(function () {
+                  return instance.refresh();
+                });
               } else {
-                rel.destroy();
+                rel.destroy().then(function () {
+                  return instance.refresh();
+                });
               }
             }.bind(this));
           }
@@ -210,21 +214,11 @@
         } else {
           model = CMS.Models.Relationship.get_relationship(person, instance);
           if (!model) {
-            model = new CMS.Models.Relationship({
-              attrs: {
-                AssigneeType: role
-              },
-              source: {
-                href: person.href,
-                type: person.type,
-                id: person.id
-              },
-              context: instance.context,
-              destination: {
-                href: instance.href,
-                type: instance.type,
-                id: instance.id
-              }
+            model = CMS.Models.Relationship.createAssignee({
+              role: role,
+              source: person,
+              destination: instance,
+              context: instance.context
             });
             model = $.Deferred().resolve(model);
           } else {
@@ -234,7 +228,9 @@
           model.done(function (model) {
             var type = model.attr('attrs.AssigneeType');
             model.attr('attrs.AssigneeType', role + (type ? ',' + type : ''));
-            model.save();
+            model.save().then(function () {
+              instance.refresh();
+            });
           });
         }
       },

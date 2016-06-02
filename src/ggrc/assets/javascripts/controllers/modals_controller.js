@@ -5,32 +5,34 @@
     Maintained By: brad@reciprocitylabs.com
 */
 
-(function(can, $) {
+(function (can, $) {
+can.Control('GGRC.Controllers.Modals', {
+  BUTTON_VIEW_DONE: GGRC.mustache_path + '/modals/done_buttons.mustache',
+  BUTTON_VIEW_CLOSE: GGRC.mustache_path + '/modals/close_buttons.mustache',
+  BUTTON_VIEW_SAVE_CANCEL:
+    GGRC.mustache_path + '/modals/save_cancel_buttons.mustache',
+  BUTTON_VIEW_SAVE_CANCEL_DELETE:
+    GGRC.mustache_path + '/modals/save_cancel_delete_buttons.mustache',
 
-can.Control("GGRC.Controllers.Modals", {
-  BUTTON_VIEW_DONE : GGRC.mustache_path + "/modals/done_buttons.mustache"
-  , BUTTON_VIEW_CLOSE : GGRC.mustache_path + "/modals/close_buttons.mustache"
-//  BUTTON_VIEW_SAVE
-  , BUTTON_VIEW_SAVE_CANCEL : GGRC.mustache_path + "/modals/save_cancel_buttons.mustache"
-  , BUTTON_VIEW_SAVE_CANCEL_DELETE : GGRC.mustache_path + "/modals/save_cancel_delete_buttons.mustache"
+  defaults: {
+    preload_view: GGRC.mustache_path + '/dashboard/modal_preload.mustache',
+    content_view: GGRC.mustache_path + '/help/help_modal_content.mustache',
+    header_view: GGRC.mustache_path + '/modals/modal_header.mustache',
+    custom_attributes_view:
+      GGRC.mustache_path + '/custom_attributes/modal_content.mustache',
+    button_view: null,
+    model: null,    // model class to use when finding or creating new
+    instance: null, // model instance to use instead of finding/creating (e.g. for update)
+    new_object_form: false,
+    mapping: false,
+    find_params: {},
+    add_more: false,
+    ui_array: [],
+    reset_visible: false,
+    isSaving: false  // is there a save/map operation currently in progress
+  },
 
-  , defaults : {
-    preload_view : GGRC.mustache_path + "/dashboard/modal_preload.mustache"
-    , content_view : GGRC.mustache_path + "/help/help_modal_content.mustache"
-    , header_view : GGRC.mustache_path + "/modals/modal_header.mustache"
-    , custom_attributes_view : GGRC.mustache_path + "/custom_attributes/modal_content.mustache"
-    , button_view : null
-    , model : null    // model class to use when finding or creating new
-    , instance : null // model instance to use instead of finding/creating (e.g. for update)
-    , new_object_form : false
-    , mapping : false
-    , find_params : {}
-    , add_more : false
-    , ui_array : []
-    , reset_visible : false
-  }
-
-  , init : function() {
+  init: function () {
     this.defaults.button_view = this.BUTTON_VIEW_DONE;
   }
 
@@ -358,8 +360,8 @@ can.Control("GGRC.Controllers.Modals", {
     }
   },
   serialize_form: function () {
-    var $form = this.options.$content.find("form"),
-        $elements = $form.find(":input:not(isolate-form *)");
+    var $form = this.options.$content.find("form");
+    var $elements = $form.find(":input:not(isolate-form *)");
 
     can.each($elements.toArray(), this.proxy("set_value_from_element"));
   },
@@ -378,6 +380,18 @@ can.Control("GGRC.Controllers.Modals", {
     if (!this.options.model) {
       return;
     }
+    // if data was populated in a callback, use that data from the instance
+    // except if we are editing an instance and some fields are already populated
+    if (!_.isUndefined(el.attr('data-populated-in-callback')) && value === '') {
+      if (!_.isUndefined(instance[name])) {
+        if (typeof instance[name] === 'object' && instance[name] !== null) {
+          this.set_value({name: name, value: instance[name].id});
+        } else {
+          this.set_value({name: name, value: instance[name]});
+        }
+        return;
+      }
+    }
     if (cb) {
       cb = cb.split(' ');
       instance[cb[0]].apply(instance, cb.slice(1).concat([value]));
@@ -385,31 +399,34 @@ can.Control("GGRC.Controllers.Modals", {
       this.set_value({name: name, value: value});
     }
     if (el.is('[data-also-set]')) {
-      can.each(el.data('also-set').split(','), function(oname) {
+      can.each(el.data('also-set').split(','), function (oname) {
         this.set_value({name: oname, value: value});
       }, this);
     }
   },
   set_value: function (item) {
+    var instance = this.options.instance;
+    var name = item.name.split(".");
+    var $elem;
+    var value;
+    var model;
+    var $other;
+
     // Don't set `_wysihtml5_mode` on the instances
     if (item.name === '_wysihtml5_mode') {
       return;
     }
 
-    var instance = this.options.instance
-      , that = this;
     if (!(instance instanceof this.options.model)) {
       instance = this.options.instance
                = new this.options.model(instance && instance.serialize ? instance.serialize() : instance);
     }
-    var name = item.name.split(".")
-      , $elem, value, model, $other;
     $elem = this.options.$content.find("[name='" + item.name + "']:not(isolate-form *)");
     model = $elem.attr("model");
 
     if (model) {
       if (item.value instanceof Array) {
-        value = can.map(item.value, function(id) {
+        value = can.map(item.value, function (id) {
           return CMS.Models.get_instance(model, id);
         });
       } else {
@@ -426,8 +443,8 @@ can.Control("GGRC.Controllers.Modals", {
     }
 
     if ($elem.is("[data-binding]") && $elem.is("[type=checkbox]")) {
-      can.map($elem, function(el){
-        if(el.value != value.id) {
+      can.map($elem, function (el) {
+        if (el.value !== value.id) {
           return;
         }
         if ($(el).is(":checked")) {
@@ -437,12 +454,17 @@ can.Control("GGRC.Controllers.Modals", {
         }
       });
       return;
-    } else if($elem.is("[data-binding]")) {
-      can.each(can.makeArray($elem[0].options), function(opt) {
-        instance.mark_for_deletion($elem.data("binding"), CMS.Models.get_instance(model, opt.value));
+    } else if ($elem.is("[data-binding]")) {
+      can.each(can.makeArray($elem[0].options), function (opt) {
+        instance.mark_for_deletion(
+          $elem.data("binding"),
+          CMS.Models.get_instance(model, opt.value));
       });
       if (value.push) {
-        can.each(value, $.proxy(instance, "mark_for_addition", $elem.data("binding")));
+        can.each(value, $.proxy(
+          instance,
+          "mark_for_addition",
+          $elem.data("binding")));
       } else {
         instance.mark_for_addition($elem.data("binding"), value);
       }
@@ -754,40 +776,46 @@ can.Control("GGRC.Controllers.Modals", {
     });
   }
 
-  , triggerSave : function(el, ev) {
-    var ajd,
-        save_close_btn = this.element.find("a.btn[data-toggle=modal-submit]"),
-        save_addmore_btn = this.element.find("a.btn[data-toggle=modal-submit-addmore]"),
-        modal_backdrop = this.element.data("modal_form").$backdrop;
+  , triggerSave: function (el, ev) {
+    var ajd;
+    var saveCloseBtn = this.element.find('a.btn[data-toggle=modal-submit]');
+    var saveAddmoreBtn = this.element.find(
+      'a.btn[data-toggle=modal-submit-addmore]');
+    var modalBackdrop = this.element.data('modal_form').$backdrop;
 
     // Normal saving process
     if (el.is(':not(.disabled)')) {
       ajd = this.save_instance(el, ev);
-      if (this.options.add_more) {
-        if (ajd) {
-          this.bindXHRToButton_disable(ajd, save_close_btn);
-          this.bindXHRToButton_disable(ajd, save_addmore_btn);
 
-          this.bindXHRToBackdrop(ajd, modal_backdrop, "Saving, please wait...");
-        }
-      } else {
-        if (ajd) {
-          this.bindXHRToButton(ajd, save_close_btn, "Saving, please wait...");
-          this.bindXHRToButton(ajd, save_addmore_btn);
-        }
+      if (!ajd) {
+        return;
       }
 
-    }
-    // Queue a save if clicked after verifying the email address
-    else if (this._email_check) {
-      this._email_check.done(function(data) {
-        if (data.length != null)
+      this.options.attr('isSaving', true);
+
+      ajd.always(function () {
+        this.options.attr('isSaving', false);
+      }.bind(this));
+
+      if (this.options.add_more) {
+        this.bindXHRToButton_disable(ajd, saveCloseBtn);
+        this.bindXHRToButton_disable(ajd, saveAddmoreBtn);
+        this.bindXHRToBackdrop(ajd, modalBackdrop, 'Saving, please wait...');
+      } else {
+        this.bindXHRToButton(ajd, saveCloseBtn, 'Saving, please wait...');
+        this.bindXHRToButton(ajd, saveAddmoreBtn);
+      }
+    } else if (this._email_check) {
+      // Queue a save if clicked after verifying the email address
+      this._email_check.done(function (data) {
+        if (!_.isNull(data.length) && !_.isUndefined(data.length)) {
           data = data[0];
+        }
         if (data) {
-          setTimeout(function() {
-            delete that._email_check;
+          setTimeout(function () {
+            delete this._email_check;
             el.trigger('click');
-          }, 0);
+          }.bind(this), 0);
         }
       });
     }
@@ -938,19 +966,9 @@ can.Control("GGRC.Controllers.Modals", {
           && ev.target === this.element[0]
           && !this.options.skip_refresh
           && !this.options.instance.isNew()) {
-        this.options.instance.refresh().then(this.proxy("open_created"));
+        this.options.instance.refresh();
       }
     }
-
-  , open_created : function() {
-    var instance = this.options.instance;
-    if (instance instanceof CMS.Models.Response) {
-      // Open newly created responses
-      var object_type = instance.constructor.table_singular;
-      $('[data-object-id="'+instance.id+'"][data-object-type="'+object_type+'"]')
-        .find('.openclose').click().openclose("open");
-    }
-  }
 
   , destroy : function() {
     if(this.options.model && this.options.model.cache) {
@@ -1011,6 +1029,7 @@ can.Component.extend({
     instance_attr: "@",
     source_mapping: "@",
     source_mapping_source: "@",
+    default_mappings: [], // expects array of objects
     mapping: "@",
     deferred: "@",
     attributes: {},
@@ -1030,6 +1049,15 @@ can.Component.extend({
         this.scope.attr("instance", this.scope.instance.reify());
       }
 
+      this.scope.default_mappings.forEach(function (default_mapping) {
+        if (default_mapping.id && default_mapping.type) {
+          var model = CMS.Models[default_mapping.type];
+          var object_to_add = model.findInCacheById(default_mapping.id);
+          that.scope.instance.mark_for_addition("related_objects_as_source", object_to_add, {});
+          that.scope.list.push(object_to_add);
+        }
+      });
+
       if (!this.scope.source_mapping) {
         this.scope.attr("source_mapping", this.scope.mapping);
       }
@@ -1041,9 +1069,10 @@ can.Component.extend({
         .get_binding(this.scope.source_mapping)
         .refresh_instances()
         .then(function (list) {
-          this.scope.attr("list", can.map(list, function (binding) {
+          var current_list = this.scope.attr("list");
+          this.scope.attr("list", current_list.concat(can.map(list, function (binding) {
             return binding.instance;
-          }));
+          })));
         }.bind(this));
         //this.scope.instance.attr("_transient." + this.scope.mapping, this.scope.list);
       } else {
@@ -1264,5 +1293,4 @@ can.Component.extend({
     }
   },
 });
-
 })(window.can, window.can.$);

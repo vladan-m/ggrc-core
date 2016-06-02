@@ -8,7 +8,7 @@
 <li class="tree-item requests" data-object-id="{{instance.id}}" data-object-type="{{instance.class.table_singular}}" {{addclass "rq-" instance.status}}>
   <div class="item-main" {{#instance}}{{data 'model'}}{{/instance}} data-model="true">
     <div class="item-wrap">
-      {{{render '/static/mustache/base_objects/open_close.mustache' instance=instance}}}
+      {{> '/static/mustache/base_objects/open_close.mustache'}}
       <div class="select">
         <div class="item-data">
           <div class="row-fluid">
@@ -112,7 +112,7 @@
   {{#if expanded}}
   <div class="tier-2-info item-content">
     <div class="tier-2-info-content">
-      {{^if_equals instance.status "Draft"}}
+      {{^if_equals instance.status "Not Started"}}
       {{#if draw_children}}
         {{#each child_options}}
           <div class="inner-tree">
