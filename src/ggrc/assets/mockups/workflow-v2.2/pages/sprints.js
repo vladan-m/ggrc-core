@@ -23,7 +23,7 @@
       type: 'task',
       zero_state: true,
       task_group: true,
-      help_text: 'Make a template out of this task'
+      help_text: 'Add task to sprint template'
     }),
     mapped_workflow: [{
       icon: 'workflow',

@@ -44,12 +44,6 @@
     </div>
   </div>
 
-  <div class="row-fluid wrap-row">
-    <div class="span12">
-      {{> /static/mustache/mockup_base_templates/quick-task/create_template.mustache}}
-    </div>
-  </div>
-
   <div class="row-fluid">
     <div class="span8">
       {{> /static/mustache/mockup_base_templates/quick-task/objects_list.mustache}}
@@ -72,9 +66,10 @@
 
 <div class="modal-footer">
   <div class="row-fluid">
-    <div class="span6"></div>
-    <div class="span6">
+    <div class="span4"></div>
+    <div class="span8">
       <div class="confirm-buttons">
+        {{> /static/mustache/mockup_base_templates/quick-task/create_template.mustache}}
         <a tabindex="24" class="btn btn-small btn-info preventdoubleclick disabled" data-toggle="modal-submit-addmore"
         href="javascript://">
           Save &amp; Add Another

@@ -89,6 +89,9 @@ small {
   }
   display: inline-block;
   cursor: pointer;
+  .confirm-buttons & {
+    margin-right: 5px;
+  }
 }
 
 .gray {
