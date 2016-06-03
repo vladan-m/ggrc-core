@@ -303,9 +303,6 @@
       font-size:$f-small;
       display: inline-block;
       margin-left: 6px;
-      &.no-margin {
-        margin-left: 0;
-      }
       &.autogenerate-result {
         display: none;
         &.active {
