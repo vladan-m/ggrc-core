@@ -3400,4 +3400,58 @@ Mustache.registerHelper("un_camel_case", function (str, options) {
   }
   return newval;
 });
+
+  /**
+   * Check if the current user is allowed to edit a comment, and render the
+   * corresponding block in the template.
+   *
+   * Example usage:
+   *
+   *   {{#can_edit_comment commentInstance parentIntance}}
+   *     ... (display e.g. an edit button) ...
+   *   {{else}}
+   *     ... (no edit button) ...
+   *   {{/can_edit_comment}}
+   *
+   * @param {can.Model} comment - the Comment instance to check
+   * @param {can.Model} parentInstance - the object the comment was posted
+   *    under, e.g. an Assessment or a Request instance
+   * @param {Object} options - a CanJS options argument passed to every helper
+   *
+   */
+  Mustache.registerHelper('can_edit_comment',
+    function (comment, parentInstance, options) {
+      var END_STATES = Object.freeze({
+        Verified: true,
+        Completed: true
+      });
+
+      var canEdit = false;
+      var user = GGRC.current_user;
+
+      comment = Mustache.resolve(comment);
+      parentInstance = Mustache.resolve(parentInstance);
+
+      if (user.system_wide_role === 'Superuser') {
+        // administrators can always edit comments
+        canEdit = true;
+      } else if (parentInstance.status in END_STATES) {
+        // non-administrators cannot edit comments if the underlying object is
+        // in final or verfiied state
+        canEdit = false;
+      } else {
+        // a non-admin user can only edit a comment on a "non-finished"
+        // object if he/she created that comment in the first place
+
+        // FIXME: make Comment objects Ownable, add created_by_id field
+        canEdit = (comment.modified_by.id === user.id);
+      }
+
+      if (canEdit) {
+        return options.fn(options.context);
+      }
+
+      return options.inverse(options.context);
+    }
+  );
 })(this, jQuery, can);

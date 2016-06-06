@@ -21,6 +21,7 @@
         instance="instance"
         property="description"
         value="description"
+        {{^can_edit_comment instance parentInstance}}readonly{{/can_edit_comment}}
         can-on-save="instance.updateDescription"
         empty-text="No comment was entered"
       ></inline-edit>
